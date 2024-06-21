@@ -1,0 +1,22 @@
+{
+    "name": "ProjectDesigner.Data.Nodes",
+    "rootNamespace": "ProjectDesigner.Data.Nodes",
+    "references": [
+        "GUID:c8a5fc8bb7a287c4ba692242992390b9",
+        "GUID:ffed3dcc766f77c44b7b994f10713844",
+        "GUID:3038c76c75ca16b4ca29329ff3ce2d58",
+        "GUID:db06333e1cd7d7b4c93bedd7fc5ca964",
+        "GUID:555febd69a34d84408e840091f66bf53"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -1,0 +1,18 @@
+{
+    "name": "ProjectDesigner.Core",
+    "rootNamespace": "ProjectDesigner.Core",
+    "references": [
+        "GUID:555febd69a34d84408e840091f66bf53"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

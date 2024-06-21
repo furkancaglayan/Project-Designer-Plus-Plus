@@ -1,0 +1,909 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e059683c4067734e8a84115539c117a, type: 3}
+  m_Name: start
+  m_EditorClassIdentifier: 
+  SerializedObjects:
+  - id: 0
+  - id: 1
+  - id: 2
+  - id: 3
+  - id: 4
+  _logHistory:
+    _logs:
+    - <Text>k__BackingField: 'Do Context Action: Create Node'
+      <Description>k__BackingField: New Notepad is created.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (VA5E8YhrCkYaRqhV) is moved to (471.0,
+        98.0).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (VA5E8YhrCkYaRqhV) is moved to (469.9,
+        98.0).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (VA5E8YhrCkYaRqhV) is moved to (468.7,
+        98.0).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (VA5E8YhrCkYaRqhV) is moved to (322.1,
+        66.2).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (VA5E8YhrCkYaRqhV) is moved to (627.8,
+        184.4).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (VA5E8YhrCkYaRqhV) is moved to (626.7,
+        184.4).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Duplicate Nodes'
+      <Description>k__BackingField: 1 nodes are duplicated.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (215.8, 187.1).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (VA5E8YhrCkYaRqhV) is moved to (1048.3,
+        188.9).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (VA5E8YhrCkYaRqhV) is moved to (1057.4,
+        190.0).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Create new Connection'
+      <Description>k__BackingField: New RelationRegularConnection is created.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (VA5E8YhrCkYaRqhV) is moved to (492.6,
+        574.1).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (VA5E8YhrCkYaRqhV) is moved to (192.6,
+        791.3).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (467.2, 89.9).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (VA5E8YhrCkYaRqhV) is moved to (178.3,
+        724.1).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (VA5E8YhrCkYaRqhV) is moved to (180.0,
+        686.2).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (VA5E8YhrCkYaRqhV) is moved to (255.9,
+        786.2).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (VA5E8YhrCkYaRqhV) is moved to (367.4,
+        817.0).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Delete Connection'
+      <Description>k__BackingField: RelationRegularConnection is deleted.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Create new Connection'
+      <Description>k__BackingField: New RelationCurvedConnection is created.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (490.3, 26.5).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (VA5E8YhrCkYaRqhV) is moved to (569.4,
+        847.7).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (VA5E8YhrCkYaRqhV) is moved to (432.8,
+        803.5).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (VA5E8YhrCkYaRqhV) is moved to (523.6,
+        723.3).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (VA5E8YhrCkYaRqhV) is moved to (501.2,
+        857.7).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (VA5E8YhrCkYaRqhV) is moved to (333.9,
+        795.7).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (VA5E8YhrCkYaRqhV) is moved to (1025.3,
+        818.1).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (VA5E8YhrCkYaRqhV) is moved to (459.8,
+        742.2).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (VA5E8YhrCkYaRqhV) is moved to (590.8,
+        712.9).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (VA5E8YhrCkYaRqhV) is moved to (232.2,
+        761.2).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (VA5E8YhrCkYaRqhV) is moved to (470.2,
+        806.0).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Delete Connection'
+      <Description>k__BackingField: RelationCurvedConnection is deleted.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Create new Connection'
+      <Description>k__BackingField: New RelationRegularConnection is created.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (VA5E8YhrCkYaRqhV) is moved to (498.3,
+        671.6).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (VA5E8YhrCkYaRqhV) is moved to (498.3,
+        676.3).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (VA5E8YhrCkYaRqhV) is moved to (485.8,
+        666.9).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (VA5E8YhrCkYaRqhV) is moved to (488.9,
+        670.1).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (VA5E8YhrCkYaRqhV) is moved to (290.6,
+        828.7).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (VA5E8YhrCkYaRqhV) is moved to (495.3,
+        681.8).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (VA5E8YhrCkYaRqhV) is moved to (490.6,
+        675.6).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (VA5E8YhrCkYaRqhV) is moved to (487.5,
+        675.6).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (VA5E8YhrCkYaRqhV) is moved to (384.1,
+        767.6).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (VA5E8YhrCkYaRqhV) is moved to (1462.9,
+        1329.2).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (1569.1, 588.0).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (VA5E8YhrCkYaRqhV) is moved to (1393.7,
+        1317.6).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Duplicate Nodes'
+      <Description>k__BackingField: 1 nodes are duplicated.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (1969.9, 1307.2).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (VA5E8YhrCkYaRqhV) is moved to (1162.9,
+        1358.0).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Clear Members'
+      <Description>k__BackingField: Notepad () members are cleared.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Undo Context Action: Clear Members'
+      <Description>k__BackingField: Notepad () members are cleared.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Create new Connection'
+      <Description>k__BackingField: New RelationRegularConnection is created.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (1894.9, 1349.5).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Duplicate Nodes'
+      <Description>k__BackingField: 1 nodes are duplicated.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (2351.8, 1316.1).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (2578.7, 1323.8).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (1223.7, 2036.3).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (1222.0, 2038.0).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Duplicate Nodes'
+      <Description>k__BackingField: 1 nodes are duplicated.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (1879.6, 2011.1).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Delete Nodes'
+      <Description>k__BackingField: 1 nodes are deleted.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (2580.7, 1398.9).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Delete Nodes'
+      <Description>k__BackingField: 1 nodes are deleted.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (1077.6, 1378.4).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (VA5E8YhrCkYaRqhV) is moved to (1036.0,
+        1359.9).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (2023.0, 1368.1).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Create Node From Asset'
+      <Description>k__BackingField: Notepad () is created from project_designer_icon.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (951.9, 565.4).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Create Node From Asset'
+      <Description>k__BackingField: Notepad () is created from birch_games_logo_7_small.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (610.9, 817.4).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Delete Nodes'
+      <Description>k__BackingField: 1 nodes are deleted.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Delete Node'
+      <Description>k__BackingField: Notepad () is deleted.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Add New Member'
+      <Description>k__BackingField: ImageMember(61VEvAqpEfgoIrGa) is added to Notepad
+        ().
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (VA5E8YhrCkYaRqhV) is moved to (1105.0,
+        1182.3).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (2005.7, 1171.5).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (VA5E8YhrCkYaRqhV) is moved to (1105.0,
+        1270.3).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (2073.0, 1261.2).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (VA5E8YhrCkYaRqhV) is moved to (1049.2,
+        1458.7).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (1569.1, 586.1).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (2165.3, 1463.1).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (2065.3, 1393.6).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (VA5E8YhrCkYaRqhV) is moved to (1057.9,
+        1406.6).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (2065.3, 1391.4).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Delete Nodes'
+      <Description>k__BackingField: 1 nodes are deleted.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (VA5E8YhrCkYaRqhV) is moved to (1257.9,
+        1345.7).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (VA5E8YhrCkYaRqhV) is moved to (1588.3,
+        1284.8).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (VA5E8YhrCkYaRqhV) is moved to (1353.6,
+        1269.6).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Duplicate Nodes'
+      <Description>k__BackingField: 1 nodes are duplicated.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (2021.5, 1253.0).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Create new Connection'
+      <Description>k__BackingField: New RelationRegularConnection is created.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (VA5E8YhrCkYaRqhV) is moved to (1249.7,
+        1281.1).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (1940.7, 1270.4).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (VA5E8YhrCkYaRqhV) is moved to (1220.9,
+        1267.7).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (VA5E8YhrCkYaRqhV) is moved to (1143.9,
+        1492.7).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (2056.1, 1493.4).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (2060.0, 1426.1).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (VA5E8YhrCkYaRqhV) is moved to (1149.7,
+        1413.8).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (2060.0, 1424.2).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (2052.3, 1389.6).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (VA5E8YhrCkYaRqhV) is moved to (1153.6,
+        1367.7).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (2035.0, 1360.7).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (1569.1, 584.2).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (1542.2, 568.8).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (VA5E8YhrCkYaRqhV) is moved to (1182.4,
+        1331.1).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (VA5E8YhrCkYaRqhV) is moved to (1203.6,
+        1356.1).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (VA5E8YhrCkYaRqhV) is moved to (1197.8,
+        1350.4).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (2033.0, 1353.0).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Create Node From Asset'
+      <Description>k__BackingField: Notepad () is created from orangelight.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Delete Nodes'
+      <Description>k__BackingField: 1 nodes are deleted.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (1835.0, 1362.7).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (VA5E8YhrCkYaRqhV) is moved to (1228.2,
+        1339.5).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (1852.3, 1364.6).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (VA5E8YhrCkYaRqhV) is moved to (1102.1,
+        1350.4).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (1915.3, 1358.1).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (1935.6, 1356.2).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (1762.9, 1349.6).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Duplicate Nodes'
+      <Description>k__BackingField: 1 nodes are duplicated.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (2397.4, 1343.0).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Delete Nodes'
+      <Description>k__BackingField: 1 nodes are deleted.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (1986.1, 1342.2).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (VA5E8YhrCkYaRqhV) is moved to (1133.5,
+        1348.5).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (VA5E8YhrCkYaRqhV) is moved to (1109.5,
+        1383.6).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (VA5E8YhrCkYaRqhV) is moved to (1105.8,
+        1339.3).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Duplicate Nodes'
+      <Description>k__BackingField: Notepad () is duplicated.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (3008.0, 1304.2).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Create new Connection'
+      <Description>k__BackingField: New RelationCurvedConnection is created.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (3005.9, 1739.8).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (2548.8, 2187.5).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Delete Nodes'
+      <Description>k__BackingField: 1 nodes are deleted.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (VA5E8YhrCkYaRqhV) is moved to (700.2,
+        902.8).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (1136.6, 132.3).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (1580.5, 905.7).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Duplicate Nodes'
+      <Description>k__BackingField: 1 nodes are duplicated.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (1208.7, 1511.3).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Create new Connection'
+      <Description>k__BackingField: New RelationRegularConnection is created.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Create new Connection'
+      <Description>k__BackingField: New RelationRegularConnection is created.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (1177.8, 1714.1).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (1170.1, 1714.1).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (1168.2, 1714.1).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (1168.2, 1717.9).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (1164.3, 1717.9).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Duplicate Nodes'
+      <Description>k__BackingField: Notepad () is duplicated.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (1136.4, 2275.2).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (1165.3, 2238.5).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (1131.1, 2409.4).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Create new Connection'
+      <Description>k__BackingField: New RelationRegularConnection is created.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (1174.6, 2462.3).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (1154.4, 2479.4).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+  references:
+    version: 1
+    00000000:
+      type: {class: Notepad, ns: ProjectDesigner.Data.Nodes, asm: ProjectDesigner.Data.Nodes}
+      data:
+        _rect:
+          serializedVersion: 2
+          x: 700.2217
+          y: 902.7845
+          width: 440
+          height: 440
+        _targetSize: {x: 440, y: 440}
+        _members:
+        - id: 5
+        _assignees: []
+        _status: 0
+        _scroll: {x: 0, y: 0}
+        _headerText: Modularity
+        _connections:
+          id: 6
+        <Id>k__BackingField: VA5E8YhrCkYaRqhV
+    00000001:
+      type: {class: Notepad, ns: ProjectDesigner.Data.Nodes, asm: ProjectDesigner.Data.Nodes}
+      data:
+        _rect:
+          serializedVersion: 2
+          x: 1136.5922
+          y: 132.28156
+          width: 440
+          height: 440
+        _targetSize: {x: 440, y: 440}
+        _members:
+        - id: 7
+        - id: 8
+        _assignees: []
+        _status: 0
+        _scroll: {x: 0, y: 0}
+        _headerText: Project Designer
+        _connections:
+          id: 9
+        <Id>k__BackingField: 
+    00000002:
+      type: {class: Notepad, ns: ProjectDesigner.Data.Nodes, asm: ProjectDesigner.Data.Nodes}
+      data:
+        _rect:
+          serializedVersion: 2
+          x: 1580.4653
+          y: 905.6817
+          width: 440
+          height: 440
+        _targetSize: {x: 440, y: 440}
+        _members:
+        - id: 10
+        _assignees: []
+        _status: 0
+        _scroll: {x: 0, y: 0}
+        _headerText: Easy-to-use
+        _connections:
+          id: 11
+        <Id>k__BackingField: 
+    00000003:
+      type: {class: Notepad, ns: ProjectDesigner.Data.Nodes, asm: ProjectDesigner.Data.Nodes}
+      data:
+        _rect:
+          serializedVersion: 2
+          x: 1164.2954
+          y: 1717.9277
+          width: 440
+          height: 440
+        _targetSize: {x: 440, y: 440}
+        _members:
+        - id: 12
+        _assignees: []
+        _status: 0
+        _scroll: {x: 0, y: 0}
+        _headerText: How to start?
+        _connections:
+          id: 13
+        <Id>k__BackingField: 
+    00000004:
+      type: {class: Notepad, ns: ProjectDesigner.Data.Nodes, asm: ProjectDesigner.Data.Nodes}
+      data:
+        _rect:
+          serializedVersion: 2
+          x: 1154.4464
+          y: 2479.3708
+          width: 440
+          height: 440
+        _targetSize: {x: 440, y: 440}
+        _members:
+        - id: 14
+        _assignees: []
+        _status: 0
+        _scroll: {x: 0, y: 0}
+        _headerText: Add Team Members
+        _connections:
+          id: 15
+        <Id>k__BackingField: 
+    00000005:
+      type: {class: CommentMember, ns: ProjectDesigner.Data.Members, asm: ProjectDesigner.Data.Members}
+      data:
+        <Priority>k__BackingField: 0
+        <Id>k__BackingField: srGeMXrtBdK4RAtV
+        _text: '<color=orange>Project Designer</color> also offers <color=cyan>modular</color>
+          capabilities, allowing users to extend its functionality and tailor it
+          to their unique project requirements. '
+        _header: 
+    00000006:
+      type: {class: SerializableConnectionDictionary, ns: ProjectDesigner.Core, asm: ProjectDesigner.Core}
+      data:
+        _keys:
+        - id: 3
+        _values:
+        - id: 16
+    00000007:
+      type: {class: CommentMember, ns: ProjectDesigner.Data.Members, asm: ProjectDesigner.Data.Members}
+      data:
+        <Priority>k__BackingField: 0
+        <Id>k__BackingField: D0pJmHm6KrPQbgoI
+        _text: <color=orange>Project Designer</color> is a <color=blue>versatile</color>
+          node editor built in Unity, designed to simplify project management and
+          planning.
+        _header: 
+    00000008:
+      type: {class: ImageMember, ns: ProjectDesigner.Data.Members, asm: ProjectDesigner.Data.Members}
+      data:
+        <Priority>k__BackingField: 0
+        <Id>k__BackingField: 61VEvAqpEfgoIrGa
+        _image: {fileID: 2800000, guid: e293201e4cc19614daa1f624941dd4f1, type: 3}
+        _size: 380
+    00000009:
+      type: {class: SerializableConnectionDictionary, ns: ProjectDesigner.Core, asm: ProjectDesigner.Core}
+      data:
+        _keys:
+        - id: 0
+        - id: 2
+        _values:
+        - id: 17
+        - id: 18
+    0000000A:
+      type: {class: CommentMember, ns: ProjectDesigner.Data.Members, asm: ProjectDesigner.Data.Members}
+      data:
+        <Priority>k__BackingField: 0
+        <Id>k__BackingField: 6RnJSdrMmQrIY8i3
+        _text: <color=orange>Project Designer</color> is easy-to-use, easy-to-create
+          and works <color=red>out of the box</color>.
+        _header: 
+    0000000B:
+      type: {class: SerializableConnectionDictionary, ns: ProjectDesigner.Core, asm: ProjectDesigner.Core}
+      data:
+        _keys:
+        - id: 3
+        _values:
+        - id: 19
+    0000000C:
+      type: {class: CommentMember, ns: ProjectDesigner.Data.Members, asm: ProjectDesigner.Data.Members}
+      data:
+        <Priority>k__BackingField: 0
+        <Id>k__BackingField: J5jFQocbPO3GEpqk
+        _text: 'To create a new <color=lightblue>Project</color>:
+
+
+          1.
+          Go under Tools/Project Designer
+
+
+          2. Right click on project view
+          and hit Create/Project Designer/New Project
+
+
+          or
+
+
+          3.
+          Hit Control + L.'
+        _header: 
+    0000000D:
+      type: {class: SerializableConnectionDictionary, ns: ProjectDesigner.Core, asm: ProjectDesigner.Core}
+      data:
+        _keys:
+        - id: 4
+        _values:
+        - id: 20
+    0000000E:
+      type: {class: CommentMember, ns: ProjectDesigner.Data.Members, asm: ProjectDesigner.Data.Members}
+      data:
+        <Priority>k__BackingField: 0
+        <Id>k__BackingField: FTK3VSl4esSrAmPd
+        _text: To add team members, use the settings button on top right corner of
+          the editor which will take you under Preferences/Project Designer
+        _header: 
+    0000000F:
+      type: {class: SerializableConnectionDictionary, ns: ProjectDesigner.Core, asm: ProjectDesigner.Core}
+      data:
+        _keys: []
+        _values: []
+    00000010:
+      type: {class: RelationRegularConnection, ns: ProjectDesigner.Data.Connections, asm: ProjectDesigner.Data.Connections}
+      data:
+        _to:
+          id: 3
+        _from:
+          id: 0
+        <Id>k__BackingField: 
+    00000011:
+      type: {class: RelationRegularConnection, ns: ProjectDesigner.Data.Connections, asm: ProjectDesigner.Data.Connections}
+      data:
+        _to:
+          id: 0
+        _from:
+          id: 1
+        <Id>k__BackingField: 
+    00000012:
+      type: {class: RelationRegularConnection, ns: ProjectDesigner.Data.Connections, asm: ProjectDesigner.Data.Connections}
+      data:
+        _to:
+          id: 2
+        _from:
+          id: 1
+        <Id>k__BackingField: 
+    00000013:
+      type: {class: RelationRegularConnection, ns: ProjectDesigner.Data.Connections, asm: ProjectDesigner.Data.Connections}
+      data:
+        _to:
+          id: 3
+        _from:
+          id: 2
+        <Id>k__BackingField: 
+    00000014:
+      type: {class: RelationRegularConnection, ns: ProjectDesigner.Data.Connections, asm: ProjectDesigner.Data.Connections}
+      data:
+        _to:
+          id: 4
+        _from:
+          id: 3
+        <Id>k__BackingField: 

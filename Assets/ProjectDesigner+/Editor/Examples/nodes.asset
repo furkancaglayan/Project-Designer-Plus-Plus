@@ -1,0 +1,2112 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e059683c4067734e8a84115539c117a, type: 3}
+  m_Name: nodes
+  m_EditorClassIdentifier: 
+  SerializedObjects:
+  - id: 0
+  - id: 1
+  - id: 2
+  - id: 3
+  - id: 4
+  - id: 5
+  - id: 6
+  - id: 7
+  - id: 8
+  - id: 9
+  - id: 10
+  - id: 11
+  - id: 12
+  - id: 13
+  - id: 14
+  - id: 15
+  _logHistory:
+    _logs:
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (O5rW0M9OR3Nc94MI) is moved to (2697.5,
+        267.2).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (O5rW0M9OR3Nc94MI) is moved to (2732.0,
+        270.5).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Add New Member'
+      <Description>k__BackingField: ImageMember(yJSZveNoLRFtGO3K) is added to Notepad
+        (2x7Iv7lFUMteESJm).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (2x7Iv7lFUMteESJm) is moved to (2091.6,
+        257.8).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (O5rW0M9OR3Nc94MI) is moved to (2735.3,
+        218.0).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Create new Connection'
+      <Description>k__BackingField: New RelationRegularConnection is created.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (2x7Iv7lFUMteESJm) is moved to (2057.0,
+        192.4).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (O5rW0M9OR3Nc94MI) is moved to (2713.4,
+        205.3).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (3375.6, 1040.1).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Delete Nodes'
+      <Description>k__BackingField: 1 nodes are deleted.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Create Node'
+      <Description>k__BackingField: New Task is created.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: New Task (NotStarted) is moved to (3764.5, 879.6).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: System Implementation (NotStarted) is moved to
+        (3546.1, 249.0).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (1087.1, 1997.2).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (1747.1, 2027.4).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (2335.3, 2022.9).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (1691.2, 1011.1).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (399.2, 2066.8).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (1059.3, 2097.0).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (1647.4, 2092.5).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: System Implementation (NotStarted) is moved to
+        (2858.2, 1086.7).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (2x7Iv7lFUMteESJm) is moved to (1718.7,
+        91.1).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (O5rW0M9OR3Nc94MI) is moved to (2547.3,
+        116.2).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (2x7Iv7lFUMteESJm) is moved to (3203.9,
+        88.8).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (O5rW0M9OR3Nc94MI) is moved to (1594.9,
+        90.8).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (2x7Iv7lFUMteESJm) is moved to (2463.6,
+        84.2).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (O5rW0M9OR3Nc94MI) is moved to (1396.5,
+        72.3).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Create new Connection'
+      <Description>k__BackingField: New RelationRegularConnection is created.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: System Implementation (NotStarted) is moved to
+        (2839.8, 1029.1).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: System Implementation (NotStarted) is moved to
+        (3259.5, 1022.2).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: System Implementation (NotStarted) is moved to
+        (2958.0, 963.5).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Add New Member'
+      <Description>k__BackingField: SubTasksMember(khz3ZwsaxUpvng2y) is added to
+        System Implementation (NotStarted).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Delete Nodes'
+      <Description>k__BackingField: 1 nodes are deleted.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Create Node'
+      <Description>k__BackingField: New Task is created.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: New Task (NotStarted) is moved to (2802.9, 805.8).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: New Task (NotStarted) is moved to (2771.9, 998.1).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: New Task (NotStarted) is moved to (2771.9, 996.5).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: New Task (NotStarted) is moved to (2771.9, 994.9).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: New Task (NotStarted) is moved to (2770.3, 994.9).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: New Task (NotStarted) is moved to (2763.8, 994.9).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Clear Assignees'
+      <Description>k__BackingField: New Task (NotStarted) assignees are cleared.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: New Task (NotStarted) is moved to (2763.8, 993.2).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: New Task (NotStarted) is moved to (2620.4, 840.1).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Create new Connection'
+      <Description>k__BackingField: New RelationRegularConnection is created.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: New Task (NotStarted) is moved to (2969.0, 957.5).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (1689.4, 1011.1).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Task Node (NotStarted) is moved to (2967.2, 957.5).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Task Node (NotStarted) is moved to (2992.5, 948.4).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Duplicate Nodes'
+      <Description>k__BackingField: 1 nodes are duplicated.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Task Node (NotStarted) is moved to (2462.5, 1240.3).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Task Node (NotStarted) is moved to (2981.7, 775.0).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Create new Connection'
+      <Description>k__BackingField: New SubTaskConnection is created.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Task assignees (NotStarted) is moved to (2471.6,
+        1238.5).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Remove Member'
+      <Description>k__BackingField: DateTimeMember(QnV08A0J99tVcIrk) is removed from
+        Task assignees (InProgress).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Task assignees (InProgress) is moved to (2596.2,
+        1278.3).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Task assignees (InProgress) is moved to (2462.5,
+        1290.9).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Task assignees (InProgress) is moved to (3000.8,
+        1278.3).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Duplicate Nodes'
+      <Description>k__BackingField: 1 nodes are duplicated.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Task assignees (InProgress) is moved to (2404.0,
+        1270.3).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Add New Member'
+      <Description>k__BackingField: DateTimeMember(uw61ldOsC7j6HbCS) is added to
+        Task assignees (InProgress).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Clear Members'
+      <Description>k__BackingField: Task assignees (InProgress) members are cleared.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Add New Member'
+      <Description>k__BackingField: DateTimeMember(36mk5K14Dm3FSYx6) is added to
+        Task assignees (InProgress).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Add New Member'
+      <Description>k__BackingField: CommentMember(DbhbYhKWIOsZN7Ej) is added to Task
+        assignees (InProgress).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Task assignees (InProgress) is moved to (2402.2,
+        1268.5).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Create new Connection'
+      <Description>k__BackingField: New SubTaskConnection is created.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Task Due Date (InProgress) is moved to (2454.6,
+        1279.4).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Duplicate Nodes'
+      <Description>k__BackingField: 1 nodes are duplicated.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Task assignees (InProgress) is moved to (3572.7,
+        1288.4).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Remove Member'
+      <Description>k__BackingField: SubTasksMember(QnV08A0J99tVcIrk) is removed from
+        Task Descriptions (InProgress).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Remove Member'
+      <Description>k__BackingField: AssigneeMember(QnV08A0J99tVcIrk) is removed from
+        Task Descriptions (InProgress).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Remove Member'
+      <Description>k__BackingField: TaskStatusMember(QnV08A0J99tVcIrk) is removed
+        from Task Descriptions (InProgress).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Remove Member'
+      <Description>k__BackingField: SubTasksMember(qZP0mCCtPjyzKqPi) is removed from
+        Task assignees (InProgress).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Remove Member'
+      <Description>k__BackingField: TaskStatusMember(qZP0mCCtPjyzKqPi) is removed
+        from Task assignees (InProgress).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Delete Nodes'
+      <Description>k__BackingField: 1 nodes are deleted.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Task Descriptions (InProgress) is moved to (3000.8,
+        1276.5).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Duplicate Nodes'
+      <Description>k__BackingField: 1 nodes are duplicated.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Task Descriptions (InProgress) is moved to (3536.6,
+        1234.2).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Delete Nodes'
+      <Description>k__BackingField: 1 nodes are deleted.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Create Node'
+      <Description>k__BackingField: New Task is created.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: New Task (NotStarted) is moved to (3578.8, 1230.1).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Remove Member'
+      <Description>k__BackingField: AssigneeMember(1UJbklmZY1gr6EQP) is removed from
+        New Task (NotStarted).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Duplicate Nodes'
+      <Description>k__BackingField: 1 nodes are duplicated.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Task Descriptions (InProgress) is moved to (3654.0,
+        1154.7).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Delete Nodes'
+      <Description>k__BackingField: 1 nodes are deleted.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Clear Members'
+      <Description>k__BackingField: Task Descriptions (InProgress) members are cleared.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Add New Member'
+      <Description>k__BackingField: CommentMember(7b0iaLmOnHwAZPZ3) is added to Task
+        Descriptions (InProgress).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Task Descriptions (InProgress) is moved to (3590.8,
+        1261.3).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Delete Nodes'
+      <Description>k__BackingField: 1 nodes are deleted.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Create Node'
+      <Description>k__BackingField: New Task is created.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: New Task (NotStarted) is moved to (3625.8, 1221.0).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Remove Member'
+      <Description>k__BackingField: SubTasksMember(3XCmDxkGvlbpOUJX) is removed from
+        New Task (NotStarted).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Remove Member'
+      <Description>k__BackingField: AssigneeMember(3XCmDxkGvlbpOUJX) is removed from
+        New Task (NotStarted).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Remove Member'
+      <Description>k__BackingField: TaskStatusMember(3XCmDxkGvlbpOUJX) is removed
+        from New Task (NotStarted).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Remove Member'
+      <Description>k__BackingField: DateTimeMember(3XCmDxkGvlbpOUJX) is removed from
+        New Task (NotStarted).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: New Task (NotStarted) is moved to (3504.8, 1260.8).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Add New Member'
+      <Description>k__BackingField: AssigneeMember(Eu7xzAG36XZTaSCg) is added to
+        New Task (NotStarted).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: New Task (NotStarted) is moved to (3544.5, 1284.3).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Create new Connection'
+      <Description>k__BackingField: New SubTaskConnection is created.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Task Descriptions (InProgress) is moved to (2992.6,
+        1301.0).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Remove Member'
+      <Description>k__BackingField: AssigneeMember(wIftBmxDPhmtZcJG) is removed from
+        Task Node (NotStarted).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Duplicate Nodes'
+      <Description>k__BackingField: 1 nodes are duplicated.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Task Assignees (NotStarted) is moved to (3955.8,
+        1273.5).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Task Assignees (NotStarted) is moved to (3955.8,
+        1271.9).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Add New Member'
+      <Description>k__BackingField: TaskStatusMember(3RBNXx3LFIsrzypw) is added to
+        Task Status (NotStarted).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Task Status (NotStarted) is moved to (3955.8,
+        1270.3).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Task Status (NotStarted) is moved to (4094.4,
+        1284.9).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Create new Connection'
+      <Description>k__BackingField: New SubTaskConnection is created.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Task Assignees (NotStarted) is moved to (3495.6,
+        1365.7).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Task Descriptions (InProgress) is moved to (2922.6,
+        1436.3).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Task Due Date (InProgress) is moved to (2290.0,
+        1356.0).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Task Status (NotStarted) is moved to (4157.9,
+        1444.6).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Task Status (NotStarted) is moved to (4127.0,
+        1353.4).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Task Assignees (NotStarted) is moved to (3471.2,
+        1461.9).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Task Due Date (InProgress) is moved to (2266.9,
+        1725.0).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Task Descriptions (InProgress) is moved to (2938.7,
+        1821.4).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Task Assignees (NotStarted) is moved to (3717.9,
+        1798.6).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Task Status (NotStarted) is moved to (4341.4,
+        1547.1).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Task Node (NotStarted) is moved to (3368.7, 1367.2).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Task Descriptions (InProgress) is moved to (3325.8,
+        2413.6).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Task Due Date (InProgress) is moved to (2654.0,
+        2317.1).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Task Assignees (NotStarted) is moved to (4105.0,
+        2390.8).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Task Status (NotStarted) is moved to (4728.5,
+        2139.3).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (1702.6, 1523.8).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (412.5, 2579.6).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (1072.5, 2609.8).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (1660.7, 2605.2).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (1254.4, 2606.5).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (1842.6, 2601.9).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (792.9, 2579.6).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (1634.9, 2606.5).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (2223.1, 2601.9).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (2219.8, 2926.1).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (1433.1, 2871.1).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (634.1, 2692.0).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Create Node'
+      <Description>k__BackingField: New Class is created.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Add New Member'
+      <Description>k__BackingField: CommentMember(GnilrEY4mLmQ8Gm6) is added to Class
+        (81fd4nRV7RYceqSh).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Delete Nodes'
+      <Description>k__BackingField: 1 nodes are deleted.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Create Node'
+      <Description>k__BackingField: New Class is created.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Add New Member'
+      <Description>k__BackingField: CommentMember(jpmW9DHqSK9Lz94V) is added to Class
+        (WIcExQ0R2vtQ5KvT).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Remove Member'
+      <Description>k__BackingField: CommentMember(jpmW9DHqSK9Lz94V) is removed from
+        Class (WIcExQ0R2vtQ5KvT).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad (2x7Iv7lFUMteESJm) is moved to (2463.6,
+        82.4).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Duplicate Nodes'
+      <Description>k__BackingField: 1 nodes are duplicated.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (4091.8, 541.4).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Clear Members'
+      <Description>k__BackingField: Notepad () members are cleared.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (4091.8, 539.6).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Add New Member'
+      <Description>k__BackingField: CommentMember(ezH0fYWIeBEV7X24) is added to Notepad
+        ().
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Class (WIcExQ0R2vtQ5KvT) is moved to (4138.7,
+        872.7).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (4091.8, 537.8).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (3868.5, 398.1).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Class (WIcExQ0R2vtQ5KvT) is moved to (4340.0,
+        805.6).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Class (WIcExQ0R2vtQ5KvT) is moved to (4340.0,
+        804.2).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Delete Nodes'
+      <Description>k__BackingField: 1 nodes are deleted.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Create Node From Asset'
+      <Description>k__BackingField: Class () is created from NodeBase.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Create Node From Asset'
+      <Description>k__BackingField: Class () is created from NodeBase.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Delete Nodes'
+      <Description>k__BackingField: 1 nodes are deleted.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Class () is moved to (3804.7, 936.9).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Create Node From Asset'
+      <Description>k__BackingField: Class () is created from Class.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Class () is moved to (1555.8, 1255.3).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Class () is moved to (4078.2, 961.4).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Class () is moved to (4802.0, 949.0).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Class () is moved to (5692.5, 977.7).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Class () is moved to (4161.2, 1049.0).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (4201.2, 363.4).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Create new Connection'
+      <Description>k__BackingField: New RelationRegularConnection is created.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (4703.2, 1079.7).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Class () is moved to (4261.2, 536.7).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (4221.6, 1181.8).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Class () is moved to (4646.9, 604.1).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Delete Connection'
+      <Description>k__BackingField: RelationRegularConnection is deleted.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (3950.1, 624.6).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Class () is moved to (4483.7, 1053.1).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Create new Connection'
+      <Description>k__BackingField: New RelationCurvedConnection is created.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Class () is moved to (4440.8, 1430.6).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (3952.2, 538.9).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Class () is moved to (4485.7, 1267.3).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Class () is moved to (4469.4, 1210.2).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Class () is moved to (5417.0, 1192.0).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Create new Connection'
+      <Description>k__BackingField: New InheritanceConnection is created.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Class () is moved to (5184.3, 1718.5).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Class () is moved to (4542.9, 865.3).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Class () is moved to (4735.3, 1379.8).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Class () is moved to (4927.2, 1543.0).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (3795.0, 365.4).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Class () is moved to (5559.4, 1675.3).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Class () is moved to (5288.0, 936.3).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (4685.4, 239.6).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Class () is moved to (5242.9, 1058.9).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Class () is moved to (5265.9, 1794.6).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Class () is moved to (5242.6, 1787.7).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Duplicate Nodes'
+      <Description>k__BackingField: 1 nodes are duplicated.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (5831.7, 265.5).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (5831.7, 264.0).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Create Node'
+      <Description>k__BackingField: New ProjectDashboard is created.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: ProjectDashboard (01bpIwBnkJjXee4u) is moved
+        to (5924.3, 803.0).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: Notepad () is moved to (6018.6, 221.4).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: ProjectDashboard (01bpIwBnkJjXee4u) is moved
+        to (6758.7, 206.3).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: ProjectDashboard (01bpIwBnkJjXee4u) is moved
+        to (6758.7, 216.1).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: ProjectDashboard (01bpIwBnkJjXee4u) is moved
+        to (6652.2, 368.6).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: ProjectDashboard (01bpIwBnkJjXee4u) is moved
+        to (6760.4, 206.3).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+    - <Text>k__BackingField: 'Do Context Action: Move Node'
+      <Description>k__BackingField: ProjectDashboard (01bpIwBnkJjXee4u) is moved
+        to (6760.4, 203.3).
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+  references:
+    version: 1
+    00000000:
+      type: {class: Notepad, ns: ProjectDesigner.Data.Nodes, asm: ProjectDesigner.Data.Nodes}
+      data:
+        _rect:
+          serializedVersion: 2
+          x: 2463.6152
+          y: 82.35278
+          width: 440
+          height: 440
+        _targetSize: {x: 440, y: 440}
+        _members:
+        - id: 16
+        - id: 17
+        _assignees: []
+        _status: 0
+        _scroll: {x: 0, y: 0}
+        _headerText: Nodes
+        _connections:
+          id: 18
+        <Id>k__BackingField: 2x7Iv7lFUMteESJm
+    00000001:
+      type: {class: Notepad, ns: ProjectDesigner.Data.Nodes, asm: ProjectDesigner.Data.Nodes}
+      data:
+        _rect:
+          serializedVersion: 2
+          x: 1702.6344
+          y: 1523.8427
+          width: 440
+          height: 440
+        _targetSize: {x: 440, y: 440}
+        _members:
+        - id: 19
+        _assignees: []
+        _status: 0
+        _scroll: {x: 0, y: 0}
+        _headerText: Note Node
+        _connections:
+          id: 20
+        <Id>k__BackingField: 
+    00000002:
+      type: {class: Notepad, ns: ProjectDesigner.Data.Nodes, asm: ProjectDesigner.Data.Nodes}
+      data:
+        _rect:
+          serializedVersion: 2
+          x: 634.1103
+          y: 2692.0327
+          width: 440
+          height: 440
+        _targetSize: {x: 440, y: 440}
+        _members:
+        - id: 21
+        - id: 22
+        - id: 23
+        _assignees: []
+        _status: 0
+        _scroll: {x: 0, y: 0}
+        _headerText: Image
+        _connections:
+          id: 24
+        <Id>k__BackingField: 
+    00000003:
+      type: {class: Notepad, ns: ProjectDesigner.Data.Nodes, asm: ProjectDesigner.Data.Nodes}
+      data:
+        _rect:
+          serializedVersion: 2
+          x: 1433.0797
+          y: 2871.1177
+          width: 440
+          height: 440
+        _targetSize: {x: 440, y: 440}
+        _members:
+        - id: 25
+        _assignees: []
+        _status: 0
+        _scroll: {x: 0, y: 0}
+        _headerText: Image 2
+        _connections:
+          id: 26
+        <Id>k__BackingField: 
+    00000004:
+      type: {class: Notepad, ns: ProjectDesigner.Data.Nodes, asm: ProjectDesigner.Data.Nodes}
+      data:
+        _rect:
+          serializedVersion: 2
+          x: 2219.7537
+          y: 2926.1199
+          width: 440
+          height: 440
+        _targetSize: {x: 440, y: 440}
+        _members:
+        - id: 27
+        _assignees: []
+        _status: 0
+        _scroll: {x: 0, y: 0}
+        _headerText: Text
+        _connections:
+          id: 28
+        <Id>k__BackingField: 
+    00000005:
+      type: {class: Notepad, ns: ProjectDesigner.Data.Nodes, asm: ProjectDesigner.Data.Nodes}
+      data:
+        _rect:
+          serializedVersion: 2
+          x: 1396.5194
+          y: 72.34912
+          width: 440
+          height: 440
+        _targetSize: {x: 440, y: 440}
+        _members:
+        - id: 29
+        _assignees: []
+        _status: 0
+        _scroll: {x: 0, y: 0}
+        _headerText: Connections
+        _connections:
+          id: 30
+        <Id>k__BackingField: O5rW0M9OR3Nc94MI
+    00000006:
+      type: {class: Task, ns: ProjectDesigner.Data.Nodes, asm: ProjectDesigner.Data.Nodes}
+      data:
+        _rect:
+          serializedVersion: 2
+          x: 3368.71
+          y: 1367.1931
+          width: 400
+          height: 360
+        _targetSize: {x: 400, y: 360}
+        _members:
+        - id: 31
+        - id: 32
+        - id: 33
+        - id: 34
+        _assignees: []
+        _status: 0
+        _scroll: {x: 0, y: 0}
+        _headerText: Task Node
+        _connections:
+          id: 35
+        <Id>k__BackingField: abUTxnmCQnzPZI6H
+    00000007:
+      type: {class: Task, ns: ProjectDesigner.Data.Nodes, asm: ProjectDesigner.Data.Nodes}
+      data:
+        _rect:
+          serializedVersion: 2
+          x: 3325.76
+          y: 2413.5771
+          width: 400
+          height: 360
+        _targetSize: {x: 400, y: 360}
+        _members:
+        - id: 36
+        _assignees:
+        - id: 37
+        - id: 38
+        _status: 1
+        _scroll: {x: 0, y: 0}
+        _headerText: Task Descriptions
+        _connections:
+          id: 39
+        <Id>k__BackingField: 
+    00000008:
+      type: {class: Task, ns: ProjectDesigner.Data.Nodes, asm: ProjectDesigner.Data.Nodes}
+      data:
+        _rect:
+          serializedVersion: 2
+          x: 2653.997
+          y: 2317.134
+          width: 400
+          height: 360
+        _targetSize: {x: 400, y: 360}
+        _members:
+        - id: 40
+        - id: 41
+        _assignees:
+        - id: 37
+        - id: 38
+        _status: 1
+        _scroll: {x: 0, y: 0}
+        _headerText: Task Due Date
+        _connections:
+          id: 42
+        <Id>k__BackingField: 
+    00000009:
+      type: {class: Task, ns: ProjectDesigner.Data.Nodes, asm: ProjectDesigner.Data.Nodes}
+      data:
+        _rect:
+          serializedVersion: 2
+          x: 4104.9805
+          y: 2390.7686
+          width: 400
+          height: 360
+        _targetSize: {x: 400, y: 360}
+        _members:
+        - id: 43
+        - id: 44
+        _assignees:
+        - id: 45
+        - id: 46
+        _status: 0
+        _scroll: {x: 0, y: 0}
+        _headerText: Task Assignees
+        _connections:
+          id: 47
+        <Id>k__BackingField: 3XCmDxkGvlbpOUJX
+    0000000A:
+      type: {class: Task, ns: ProjectDesigner.Data.Nodes, asm: ProjectDesigner.Data.Nodes}
+      data:
+        _rect:
+          serializedVersion: 2
+          x: 4728.495
+          y: 2139.2607
+          width: 400
+          height: 360
+        _targetSize: {x: 400, y: 360}
+        _members:
+        - id: 48
+        - id: 49
+        - id: 50
+        _assignees:
+        - id: 45
+        - id: 46
+        _status: 1
+        _scroll: {x: 0, y: 0}
+        _headerText: Task Status
+        _connections:
+          id: 51
+        <Id>k__BackingField: 
+    0000000B:
+      type: {class: Notepad, ns: ProjectDesigner.Data.Nodes, asm: ProjectDesigner.Data.Nodes}
+      data:
+        _rect:
+          serializedVersion: 2
+          x: 4685.3623
+          y: 239.62186
+          width: 440
+          height: 440
+        _targetSize: {x: 440, y: 440}
+        _members:
+        - id: 52
+        _assignees: []
+        _status: 0
+        _scroll: {x: 0, y: 0}
+        _headerText: Class Node
+        _connections:
+          id: 53
+        <Id>k__BackingField: 
+    0000000C:
+      type: {class: Class, ns: ProjectDesigner.Data.Nodes, asm: ProjectDesigner.Data.Nodes}
+      data:
+        _rect:
+          serializedVersion: 2
+          x: 5242.637
+          y: 1787.6566
+          width: 400
+          height: 400
+        _targetSize: {x: 400, y: 400}
+        _members:
+        - id: 54
+        - id: 55
+        _assignees: []
+        _status: 0
+        _scroll: {x: 0, y: 0}
+        _headerText: NodeBase
+        _connections:
+          id: 56
+        <Id>k__BackingField: 
+    0000000D:
+      type: {class: Class, ns: ProjectDesigner.Data.Nodes, asm: ProjectDesigner.Data.Nodes}
+      data:
+        _rect:
+          serializedVersion: 2
+          x: 5242.8574
+          y: 1058.8546
+          width: 400
+          height: 400
+        _targetSize: {x: 400, y: 400}
+        _members:
+        - id: 57
+        - id: 58
+        _assignees: []
+        _status: 0
+        _scroll: {x: 0, y: 120}
+        _headerText: Class
+        _connections:
+          id: 59
+        <Id>k__BackingField: 
+    0000000E:
+      type: {class: Notepad, ns: ProjectDesigner.Data.Nodes, asm: ProjectDesigner.Data.Nodes}
+      data:
+        _rect:
+          serializedVersion: 2
+          x: 6018.574
+          y: 221.42474
+          width: 440
+          height: 440
+        _targetSize: {x: 440, y: 440}
+        _members:
+        - id: 60
+        _assignees: []
+        _status: 0
+        _scroll: {x: 0, y: 0}
+        _headerText: Project Dashboard Node
+        _connections:
+          id: 61
+        <Id>k__BackingField: 
+    0000000F:
+      type: {class: ProjectDashboard, ns: ProjectDesigner.Data.Nodes, asm: ProjectDesigner.Data.Nodes}
+      data:
+        _rect:
+          serializedVersion: 2
+          x: 6760.371
+          y: 203.27869
+          width: 700
+          height: 500
+        _targetSize: {x: 700, y: 500}
+        _members:
+        - id: 62
+        - id: 63
+        - id: 64
+        _assignees: []
+        _status: 0
+        _scroll: {x: 0, y: 321.40002}
+        _headerText: Project Dashboard
+        _connections:
+          id: 65
+        <Id>k__BackingField: 01bpIwBnkJjXee4u
+    00000010:
+      type: {class: CommentMember, ns: ProjectDesigner.Data.Members, asm: ProjectDesigner.Data.Members}
+      data:
+        <Priority>k__BackingField: 0
+        <Id>k__BackingField: 2x7Iv7lFUMteESJm
+        _text: "<color=orange>Project Designer</color> nodes are versatile, powerful
+          tools that supports infinetely long information in them.\n\nThis means
+          as the texts, images and other data go on, the nodes become scrollable
+          to support easy <color=red>navigation</color>.\n\nTo unlock the <i>edit
+          mode</i> of a node, double click on it first.\n\nMost operations on nodes
+          are done with a <color=cyan>context menu</color> created by a right click.\n\nAnother
+          vital element of a node is <color=#c0c0c0ff>Members</color>. A member is
+          a basic element of a node that performs a single task. Fro example this
+          text we write is possible with a <color=#ffff00ff>Comment member</color>.\n\nWith
+          context menus, one can also add different supporting members. \n\n<color=orange>Project
+          Designer</color> has 4 different built-in  node types.\n\n"
+        _header: 
+    00000011:
+      type: {class: ImageMember, ns: ProjectDesigner.Data.Members, asm: ProjectDesigner.Data.Members}
+      data:
+        <Priority>k__BackingField: 0
+        <Id>k__BackingField: yJSZveNoLRFtGO3K
+        _image: {fileID: 2800000, guid: e293201e4cc19614daa1f624941dd4f1, type: 3}
+        _size: 380
+    00000012:
+      type: {class: SerializableConnectionDictionary, ns: ProjectDesigner.Core, asm: ProjectDesigner.Core}
+      data:
+        _keys:
+        - id: 1
+        - id: 6
+        _values:
+        - id: 66
+        - id: 67
+    00000013:
+      type: {class: CommentMember, ns: ProjectDesigner.Data.Members, asm: ProjectDesigner.Data.Members}
+      data:
+        <Priority>k__BackingField: 0
+        <Id>k__BackingField: 4dFI4pgrh15TrheH
+        _text: 'First one is this, the <i><color=lightblue>Note</color></i> node
+          which acts as... well a notepad.
+
+
+
+          Note nodes also support <color=blue>rich</color>
+          text.'
+        _header: 
+    00000014:
+      type: {class: SerializableConnectionDictionary, ns: ProjectDesigner.Core, asm: ProjectDesigner.Core}
+      data:
+        _keys:
+        - id: 2
+        - id: 3
+        - id: 4
+        _values:
+        - id: 68
+        - id: 69
+        - id: 70
+    00000015:
+      type: {class: CommentMember, ns: ProjectDesigner.Data.Members, asm: ProjectDesigner.Data.Members}
+      data:
+        <Priority>k__BackingField: 0
+        <Id>k__BackingField: i2dxTBoFSeqWjzDg
+        _text: '
+
+          One can also add image attachments to note by right-clicking
+          and selecting an image. '
+        _header: 
+    00000016:
+      type: {class: ImageMember, ns: ProjectDesigner.Data.Members, asm: ProjectDesigner.Data.Members}
+      data:
+        <Priority>k__BackingField: 0
+        <Id>k__BackingField: spZVTOOLIDPWGvQi
+        _image: {fileID: 0}
+        _size: 380
+    00000017:
+      type: {class: CommentMember, ns: ProjectDesigner.Data.Members, asm: ProjectDesigner.Data.Members}
+      data:
+        <Priority>k__BackingField: 0
+        <Id>k__BackingField: LD4GbQFQIkdYVv9A
+        _text: After assigning an image attachment field, double click to <color=orange>expand</color>
+          the node and edit the image field to change the image.
+        _header: 
+    00000018:
+      type: {class: SerializableConnectionDictionary, ns: ProjectDesigner.Core, asm: ProjectDesigner.Core}
+      data:
+        _keys: []
+        _values: []
+    00000019:
+      type: {class: CommentMember, ns: ProjectDesigner.Data.Members, asm: ProjectDesigner.Data.Members}
+      data:
+        <Priority>k__BackingField: 0
+        <Id>k__BackingField: nbrAFrxWMmMDx0Rg
+        _text: You can directly <color=red>drag&drop</color> a Texture in here from
+          the Project View to directly create a <color=lightblue>Note</color> with
+          that image inside.
+        _header: 
+    0000001A:
+      type: {class: SerializableConnectionDictionary, ns: ProjectDesigner.Core, asm: ProjectDesigner.Core}
+      data:
+        _keys: []
+        _values: []
+    0000001B:
+      type: {class: CommentMember, ns: ProjectDesigner.Data.Members, asm: ProjectDesigner.Data.Members}
+      data:
+        <Priority>k__BackingField: 0
+        <Id>k__BackingField: rfDUoC20kHqMqh2k
+        _text: Similarly with images, one can also <color=red>drag&drop</color> text
+          files from Project view to directly create text notes.
+        _header: 
+    0000001C:
+      type: {class: SerializableConnectionDictionary, ns: ProjectDesigner.Core, asm: ProjectDesigner.Core}
+      data:
+        _keys: []
+        _values: []
+    0000001D:
+      type: {class: CommentMember, ns: ProjectDesigner.Data.Members, asm: ProjectDesigner.Data.Members}
+      data:
+        <Priority>k__BackingField: 0
+        <Id>k__BackingField: O5rW0M9OR3Nc94MI
+        _text: 'Nodes can use supported connection types to connect and build relations
+          between them.
+
+
+          This can be done with right-click context menu
+          option <color=blue>New Connection</color>.
+
+
+          Some members also
+          support creating connections directly.'
+        _header: 
+    0000001E:
+      type: {class: SerializableConnectionDictionary, ns: ProjectDesigner.Core, asm: ProjectDesigner.Core}
+      data:
+        _keys:
+        - id: 1
+        _values:
+        - id: 71
+    0000001F:
+      type: {class: TaskStatusMember, ns: ProjectDesigner.Data.Members, asm: ProjectDesigner.Data.Members}
+      data:
+        <Priority>k__BackingField: 15
+        <Id>k__BackingField: wIftBmxDPhmtZcJG
+    00000020:
+      type: {class: DateTimeMember, ns: ProjectDesigner.Data.Members, asm: ProjectDesigner.Data.Members}
+      data:
+        <Priority>k__BackingField: 3
+        <Id>k__BackingField: wIftBmxDPhmtZcJG
+        _day: 29
+        _monthIndex: 3
+        _year: 2024
+        _name: 'Task Due Time: '
+    00000021:
+      type: {class: CommentMember, ns: ProjectDesigner.Data.Members, asm: ProjectDesigner.Data.Members}
+      data:
+        <Priority>k__BackingField: 0
+        <Id>k__BackingField: wIftBmxDPhmtZcJG
+        _text: <color=green>Task</color> nodes are used to effectively manage tasks
+          by assigning tasks to team members, selecting due dates and assigning subtasks.
+        _header: Task Description
+    00000022:
+      type: {class: SubTasksMember, ns: ProjectDesigner.Data.Members, asm: ProjectDesigner.Data.Members}
+      data:
+        <Priority>k__BackingField: 0
+        <Id>k__BackingField: wIftBmxDPhmtZcJG
+        _tasks: []
+    00000023:
+      type: {class: SerializableConnectionDictionary, ns: ProjectDesigner.Core, asm: ProjectDesigner.Core}
+      data:
+        _keys:
+        - id: 7
+        - id: 8
+        - id: 9
+        - id: 10
+        _values:
+        - id: 72
+        - id: 73
+        - id: 74
+        - id: 75
+    00000024:
+      type: {class: CommentMember, ns: ProjectDesigner.Data.Members, asm: ProjectDesigner.Data.Members}
+      data:
+        <Priority>k__BackingField: 0
+        <Id>k__BackingField: 7b0iaLmOnHwAZPZ3
+        _text: Task descriptions can be added to Task nodes to describe the steps
+          necessary to complete the task
+        _header: 
+    00000025:
+      type: {class: TeamMember, ns: ProjectDesigner.Core, asm: ProjectDesigner.Core}
+      data:
+        FullName: Developer 1
+        Role: Developer
+        Image: {fileID: 2800000, guid: e9dd6df6c673a27429884c9615f13445, type: 3}
+    00000026:
+      type: {class: TeamMember, ns: ProjectDesigner.Core, asm: ProjectDesigner.Core}
+      data:
+        FullName: Animator 1
+        Role: Animator
+        Image: {fileID: -3795152337350425143, guid: 0000000000000000d000000000000000, type: 0}
+    00000027:
+      type: {class: SerializableConnectionDictionary, ns: ProjectDesigner.Core, asm: ProjectDesigner.Core}
+      data:
+        _keys: []
+        _values: []
+    00000028:
+      type: {class: DateTimeMember, ns: ProjectDesigner.Data.Members, asm: ProjectDesigner.Data.Members}
+      data:
+        <Priority>k__BackingField: 3
+        <Id>k__BackingField: 36mk5K14Dm3FSYx6
+        _day: 29
+        _monthIndex: 3
+        _year: 2024
+        _name: 'Task Due Time: '
+    00000029:
+      type: {class: CommentMember, ns: ProjectDesigner.Data.Members, asm: ProjectDesigner.Data.Members}
+      data:
+        <Priority>k__BackingField: 0
+        <Id>k__BackingField: DbhbYhKWIOsZN7Ej
+        _text: 'Tasks can be assigned due dates by expanding the task node and selecting
+          the date from the <color=red>DateTime</color> member.
+
+
+          Due date
+          member will have a little dot in red if the due time is passed, and will
+          have a green one if it''s not.'
+        _header: 
+    0000002A:
+      type: {class: SerializableConnectionDictionary, ns: ProjectDesigner.Core, asm: ProjectDesigner.Core}
+      data:
+        _keys: []
+        _values: []
+    0000002B:
+      type: {class: CommentMember, ns: ProjectDesigner.Data.Members, asm: ProjectDesigner.Data.Members}
+      data:
+        <Priority>k__BackingField: 0
+        <Id>k__BackingField: 3XCmDxkGvlbpOUJX
+        _text: 'One can use the <color=orange>Assignee member</color> to assign team
+          members on certain tasks.
+
+
+          To add or change the team members,
+          use <b>Settings</b> button on top right corner of the editor.
+
+
+          Nodes
+          can be filtered using the search field that is also on the top right corner
+          of the editor.'
+        _header: 
+    0000002C:
+      type: {class: AssigneeMember, ns: ProjectDesigner.Data.Members, asm: ProjectDesigner.Data.Members}
+      data:
+        <Priority>k__BackingField: 0
+        <Id>k__BackingField: Eu7xzAG36XZTaSCg
+        _parent:
+          id: 9
+    0000002D:
+      type: {class: TeamMember, ns: ProjectDesigner.Core, asm: ProjectDesigner.Core}
+      data:
+        FullName: Designer 1
+        Role: Designer
+        Image: {fileID: 2800000, guid: a12a8bac10e223849af3f7c344b572c7, type: 3}
+    0000002E:
+      type: {class: TeamMember, ns: ProjectDesigner.Core, asm: ProjectDesigner.Core}
+      data:
+        FullName: Animator 1
+        Role: Animator
+        Image: {fileID: -3795152337350425143, guid: 0000000000000000d000000000000000, type: 0}
+    0000002F:
+      type: {class: SerializableConnectionDictionary, ns: ProjectDesigner.Core, asm: ProjectDesigner.Core}
+      data:
+        _keys: []
+        _values: []
+    00000030:
+      type: {class: TaskStatusMember, ns: ProjectDesigner.Data.Members, asm: ProjectDesigner.Data.Members}
+      data:
+        <Priority>k__BackingField: 15
+        <Id>k__BackingField: 3RBNXx3LFIsrzypw
+    00000031:
+      type: {class: CommentMember, ns: ProjectDesigner.Data.Members, asm: ProjectDesigner.Data.Members}
+      data:
+        <Priority>k__BackingField: 0
+        <Id>k__BackingField: YxUBLygBIZuAHhrD
+        _text: Task status of a node can be using <color=blue>Task status</color>
+          member or by using the context menu.
+        _header: 
+    00000032:
+      type: {class: AssigneeMember, ns: ProjectDesigner.Data.Members, asm: ProjectDesigner.Data.Members}
+      data:
+        <Priority>k__BackingField: 0
+        <Id>k__BackingField: YxUBLygBIZuAHhrD
+        _parent:
+          id: 10
+    00000033:
+      type: {class: SerializableConnectionDictionary, ns: ProjectDesigner.Core, asm: ProjectDesigner.Core}
+      data:
+        _keys: []
+        _values: []
+    00000034:
+      type: {class: CommentMember, ns: ProjectDesigner.Data.Members, asm: ProjectDesigner.Data.Members}
+      data:
+        <Priority>k__BackingField: 0
+        <Id>k__BackingField: ezH0fYWIeBEV7X24
+        _text: '<color=yellow>Class</color> nodes are direct representations of <i>C#</i>
+          classes in your project.
+
+
+          One can either create class nodes
+          from scratch, or <color=red>drag&drop</color> C# scripts from the Project
+          View directly.
+
+
+          Class nodes can assocaite, inherit, depend on
+          and relate to each other with connections.'
+        _header: 
+    00000035:
+      type: {class: SerializableConnectionDictionary, ns: ProjectDesigner.Core, asm: ProjectDesigner.Core}
+      data:
+        _keys:
+        - id: 13
+        _values:
+        - id: 76
+    00000036:
+      type: {class: FieldMember, ns: ProjectDesigner.Data.Members, asm: ProjectDesigner.Data.Members}
+      data:
+        <Priority>k__BackingField: 5
+        <Id>k__BackingField: vVC6ZrDcU1CU7psu
+        _fields:
+        - Name: _rect
+          Type: Rect
+          AccessModifier: 2
+        - Name: _tempPosition
+          Type: Vector2
+          AccessModifier: 2
+        - Name: _targetSize
+          Type: Vector2
+          AccessModifier: 1
+        - Name: _members
+          Type: List`1
+          AccessModifier: 1
+        - Name: _assignees
+          Type: List`1
+          AccessModifier: 1
+        - Name: _status
+          Type: NodeStatus
+          AccessModifier: 1
+        - Name: _scroll
+          Type: Vector2
+          AccessModifier: 1
+        - Name: _headerText
+          Type: String
+          AccessModifier: 2
+        - Name: _connections
+          Type: SerializableConnectionDictionary
+          AccessModifier: 1
+        - Name: OnPositionChangedEvent
+          Type: OnPositionChanged
+          AccessModifier: 0
+    00000037:
+      type: {class: MethodMember, ns: ProjectDesigner.Data.Members, asm: ProjectDesigner.Data.Members}
+      data:
+        <Priority>k__BackingField: 0
+        <Id>k__BackingField: vVC6ZrDcU1CU7psu
+        _methods:
+        - Name: get_NodeSizeUpdateSpeed
+          AccessModifier: 1
+        - Name: get_Rect
+          AccessModifier: 0
+        - Name: get_Members
+          AccessModifier: 0
+        - Name: get_MinSize
+          AccessModifier: 0
+        - Name: get_MaxSize
+          AccessModifier: 0
+        - Name: get_IconKey
+          AccessModifier: 0
+        - Name: get_IconSize
+          AccessModifier: 0
+        - Name: get_HeaderText
+          AccessModifier: 0
+        - Name: set_HeaderText
+          AccessModifier: 2
+        - Name: get_TextureKeyOn
+          AccessModifier: 0
+        - Name: get_TextureKeyOff
+          AccessModifier: 0
+        - Name: get_IsSelected
+          AccessModifier: 0
+        - Name: get_InputPoint
+          AccessModifier: 0
+        - Name: get_OutputPoint
+          AccessModifier: 0
+        - Name: get__isSelected
+          AccessModifier: 2
+        - Name: set__isSelected
+          AccessModifier: 1
+        - Name: get__isHovered
+          AccessModifier: 2
+        - Name: set__isHovered
+          AccessModifier: 1
+        - Name: get_IsExpanded
+          AccessModifier: 0
+        - Name: set_IsExpanded
+          AccessModifier: 1
+        - Name: get_IsDragged
+          AccessModifier: 0
+        - Name: set_IsDragged
+          AccessModifier: 1
+        - Name: get_IsHidden
+          AccessModifier: 0
+        - Name: set_IsHidden
+          AccessModifier: 1
+        - Name: get_ConnectionPointColor
+          AccessModifier: 2
+        - Name: get_ConnectionPointRadius
+          AccessModifier: 2
+        - Name: get_ConnectionPointY
+          AccessModifier: 2
+        - Name: get_HeaderHeight
+          AccessModifier: 2
+        - Name: get_FooterHeight
+          AccessModifier: 2
+        - Name: get_CanBeCopied
+          AccessModifier: 0
+        - Name: get_Id
+          AccessModifier: 0
+        - Name: set_Id
+          AccessModifier: 0
+        - Name: get_NodeSizeUpdateSpeed()
+          AccessModifier: 1
+        - Name: get_Rect()
+          AccessModifier: 0
+        - Name: get_Members()
+          AccessModifier: 0
+        - Name: get_MinSize()
+          AccessModifier: 0
+        - Name: get_MaxSize()
+          AccessModifier: 0
+        - Name: get_IconKey()
+          AccessModifier: 0
+        - Name: get_IconSize()
+          AccessModifier: 0
+        - Name: get_HeaderText()
+          AccessModifier: 0
+        - Name: set_HeaderText(String)
+          AccessModifier: 2
+        - Name: get_TextureKeyOn()
+          AccessModifier: 0
+        - Name: get_TextureKeyOff()
+          AccessModifier: 0
+        - Name: get_IsSelected()
+          AccessModifier: 0
+        - Name: get_InputPoint()
+          AccessModifier: 0
+        - Name: get_OutputPoint()
+          AccessModifier: 0
+        - Name: get__isSelected()
+          AccessModifier: 2
+        - Name: set__isSelected(Boolean)
+          AccessModifier: 1
+        - Name: get__isHovered()
+          AccessModifier: 2
+        - Name: set__isHovered(Boolean)
+          AccessModifier: 1
+        - Name: get_IsExpanded()
+          AccessModifier: 0
+        - Name: set_IsExpanded(Boolean)
+          AccessModifier: 1
+        - Name: get_IsDragged()
+          AccessModifier: 0
+        - Name: set_IsDragged(Boolean)
+          AccessModifier: 1
+        - Name: get_IsHidden()
+          AccessModifier: 0
+        - Name: set_IsHidden(Boolean)
+          AccessModifier: 1
+        - Name: get_ConnectionPointColor()
+          AccessModifier: 2
+        - Name: get_ConnectionPointRadius()
+          AccessModifier: 2
+        - Name: get_ConnectionPointY()
+          AccessModifier: 2
+        - Name: get_HeaderHeight()
+          AccessModifier: 2
+        - Name: get_FooterHeight()
+          AccessModifier: 2
+        - Name: get_CanBeCopied()
+          AccessModifier: 0
+        - Name: get_Id()
+          AccessModifier: 0
+        - Name: set_Id(String)
+          AccessModifier: 0
+        - Name: Copy()
+          AccessModifier: 0
+        - Name: Draw(IEditorContext, Vector2, Vector2)
+          AccessModifier: 0
+        - Name: OnDraw(IEditorContext, Rect, RectOffset)
+          AccessModifier: 2
+        - Name: DrawConnectionPoints(IEditorContext)
+          AccessModifier: 1
+        - Name: DrawFooter(IEditorContext, Rect, RectOffset)
+          AccessModifier: 1
+        - Name: OnDrawFooter(IEditorContext, Rect, RectOffset)
+          AccessModifier: 2
+        - Name: DrawMembers(IEditorContext, Rect, RectOffset, Vector2)
+          AccessModifier: 1
+        - Name: DrawMembersInternal(IEditorContext, Rect, Single, Single, Vector2)
+          AccessModifier: 1
+        - Name: GetMembers()
+          AccessModifier: 2
+        - Name: HasMember()
+          AccessModifier: 0
+        - Name: GetFirstMember()
+          AccessModifier: 0
+        - Name: BeginArea(Rect&)
+          AccessModifier: 2
+        - Name: EndArea()
+          AccessModifier: 2
+        - Name: SetPosition(Vector2)
+          AccessModifier: 0
+        - Name: SetTargetSize(Vector2)
+          AccessModifier: 0
+        - Name: UpdateSize()
+          AccessModifier: 1
+        - Name: AddMember(MemberBase)
+          AccessModifier: 0
+        - Name: AddMember()
+          AccessModifier: 0
+        - Name: SortMembers()
+          AccessModifier: 1
+        - Name: RemoveMember(MemberBase)
+          AccessModifier: 0
+        - Name: ClearMembers()
+          AccessModifier: 0
+        - Name: OnMemberAdded(MemberBase)
+          AccessModifier: 2
+        - Name: AddAssignee(TeamMember)
+          AccessModifier: 0
+        - Name: RemoveAssignee(TeamMember)
+          AccessModifier: 0
+        - Name: HasAssignee(TeamMember)
+          AccessModifier: 0
+        - Name: GetAssignees()
+          AccessModifier: 0
+        - Name: GetAssigneeCount()
+          AccessModifier: 0
+        - Name: ClearAssignees()
+          AccessModifier: 0
+        - Name: SetStatus(NodeStatus)
+          AccessModifier: 0
+        - Name: GetStatus()
+          AccessModifier: 0
+        - Name: GetStyle()
+          AccessModifier: 2
+        - Name: GetLabelStyle()
+          AccessModifier: 2
+        - Name: GetHeaderStyle()
+          AccessModifier: 2
+        - Name: GetImageStyle()
+          AccessModifier: 2
+        - Name: GetNodeIcon()
+          AccessModifier: 2
+        - Name: GetBackground()
+          AccessModifier: 2
+        - Name: ProjectDesigner.Core.IDrawable.OnRemoved(IEditorContext)
+          AccessModifier: 1
+        - Name: OnRemovedInternal(IEditorContext)
+          AccessModifier: 2
+        - Name: ProjectDesigner.Core.IDrawable.OnAdded(IEditorContext, DrawableCreationType)
+          AccessModifier: 1
+        - Name: ProjectDesigner.Core.IDrawable.OnDrawableAdded(IEditorContext, IDrawable)
+          AccessModifier: 1
+        - Name: ProjectDesigner.Core.IDrawable.OnDrawableRemoved(IEditorContext,
+            IDrawable)
+          AccessModifier: 1
+        - Name: OnAddedInternal(IEditorContext, DrawableCreationType)
+          AccessModifier: 2
+        - Name: DrawBackground(Rect&)
+          AccessModifier: 2
+        - Name: DrawHeader(Rect, RectOffset, Int32, Int32)
+          AccessModifier: 2
+        - Name: DrawHorizontalSeperator(IEditorContext, Rect, Color)
+          AccessModifier: 2
+        - Name: ProjectDesigner.Core.ISelectable.OnSelect()
+          AccessModifier: 1
+        - Name: ProjectDesigner.Core.ISelectable.OnDeselect()
+          AccessModifier: 1
+        - Name: ProjectDesigner.Core.ISelectable.OnContextClick(IEditorContext, Vector2,
+            GenericMenu)
+          AccessModifier: 1
+        - Name: ToString()
+          AccessModifier: 0
+        - Name: GetConnections()
+          AccessModifier: 0
+        - Name: GetConnectionTo(NodeBase)
+          AccessModifier: 0
+        - Name: AddConnection(ConnectionBase, NodeBase)
+          AccessModifier: 0
+        - Name: OnConnectionCreated(ConnectionBase)
+          AccessModifier: 2
+        - Name: RemoveConnection(ConnectionBase)
+          AccessModifier: 0
+        - Name: OnConnectionRemoved(ConnectionBase)
+          AccessModifier: 2
+        - Name: ProjectDesigner.Core.ISelectable.OnDoubleClick()
+          AccessModifier: 1
+        - Name: ProjectDesigner.Core.IDraggable.OnStartDragging(IEditorContext, Vector2)
+          AccessModifier: 1
+        - Name: ProjectDesigner.Core.IDraggable.OnBeingDragged(IEditorContext, Vector2)
+          AccessModifier: 1
+        - Name: ProjectDesigner.Core.IDraggable.OnEndDragging(IEditorContext, Vector2,
+            IDrawable, DragAndDropMode, Object)
+          AccessModifier: 1
+        - Name: ProjectDesigner.Core.IHoverable.OnHoverEnter()
+          AccessModifier: 1
+        - Name: ProjectDesigner.Core.IHoverable.OnHoverExit()
+          AccessModifier: 1
+        - Name: OnSelected()
+          AccessModifier: 2
+        - Name: OnDeselected()
+          AccessModifier: 2
+        - Name: OnStartedDragging(IEditorContext, Vector2)
+          AccessModifier: 2
+        - Name: OnDragging(IEditorContext, Vector2)
+          AccessModifier: 2
+        - Name: OnEndedDragging(IEditorContext, Vector2, IDrawable, DragAndDropMode,
+            Object)
+          AccessModifier: 2
+        - Name: OnContextClick(IEditorContext, Vector2, GenericMenu)
+          AccessModifier: 2
+        - Name: OnDoubleClicked()
+          AccessModifier: 2
+        - Name: OnHoverEntered()
+          AccessModifier: 2
+        - Name: OnHoverExited()
+          AccessModifier: 2
+        - Name: SetParent(NodeBase)
+          AccessModifier: 0
+        - Name: StartNewConnection(IEditorContext, NodeBase, Type)
+          AccessModifier: 1
+        - Name: Serialize(List`1)
+          AccessModifier: 0
+        - Name: Deserialize(List`1)
+          AccessModifier: 0
+        - Name: ProjectDesigner.Core.ISelectable.Contains(Vector2)
+          AccessModifier: 1
+        - Name: ProjectDesigner.Core.ISelectable.Contains(Rect)
+          AccessModifier: 1
+        - Name: Hide()
+          AccessModifier: 0
+        - Name: Show()
+          AccessModifier: 0
+        - Name: CanHaveConnectionOfType(NodeBase, Type)
+          AccessModifier: 0
+        - Name: CanHaveConnectionOfType(Type)
+          AccessModifier: 2
+        - Name: CanHaveConnections()
+          AccessModifier: 2
+        - Name: Match(String)
+          AccessModifier: 0
+    00000038:
+      type: {class: SerializableConnectionDictionary, ns: ProjectDesigner.Core, asm: ProjectDesigner.Core}
+      data:
+        _keys: []
+        _values: []
+    00000039:
+      type: {class: FieldMember, ns: ProjectDesigner.Data.Members, asm: ProjectDesigner.Data.Members}
+      data:
+        <Priority>k__BackingField: 5
+        <Id>k__BackingField: yVoyfEvskFXSXdfk
+        _fields: []
+    0000003A:
+      type: {class: MethodMember, ns: ProjectDesigner.Data.Members, asm: ProjectDesigner.Data.Members}
+      data:
+        <Priority>k__BackingField: 0
+        <Id>k__BackingField: yVoyfEvskFXSXdfk
+        _methods:
+        - Name: get_MinSize
+          AccessModifier: 0
+        - Name: get_MaxSize
+          AccessModifier: 0
+        - Name: get_IconKey
+          AccessModifier: 0
+        - Name: get_TextureKeyOff
+          AccessModifier: 0
+        - Name: get_TextureKeyOn
+          AccessModifier: 0
+        - Name: get_CanBeCopied
+          AccessModifier: 0
+        - Name: get_HeaderHeight
+          AccessModifier: 2
+        - Name: get_FooterHeight
+          AccessModifier: 2
+        - Name: get_IconSize
+          AccessModifier: 0
+        - Name: get__summary
+          AccessModifier: 1
+        - Name: get_MinSize()
+          AccessModifier: 0
+        - Name: get_MaxSize()
+          AccessModifier: 0
+        - Name: get_IconKey()
+          AccessModifier: 0
+        - Name: get_TextureKeyOff()
+          AccessModifier: 0
+        - Name: get_TextureKeyOn()
+          AccessModifier: 0
+        - Name: get_CanBeCopied()
+          AccessModifier: 0
+        - Name: get_HeaderHeight()
+          AccessModifier: 2
+        - Name: get_FooterHeight()
+          AccessModifier: 2
+        - Name: get_IconSize()
+          AccessModifier: 0
+        - Name: get__summary()
+          AccessModifier: 1
+        - Name: Copy()
+          AccessModifier: 0
+        - Name: OnContextClick(IEditorContext, Vector2, GenericMenu)
+          AccessModifier: 2
+        - Name: OnAddedInternal(IEditorContext, DrawableCreationType)
+          AccessModifier: 2
+        - Name: CanHaveConnections()
+          AccessModifier: 2
+        - Name: CanHaveConnectionOfType(Type)
+          AccessModifier: 2
+        - Name: CreateClassNodeFromMonoScript(Object)
+          AccessModifier: 1
+        - Name: GetAccessModifiers(FieldInfo)
+          AccessModifier: 1
+        - Name: GetAccessModifiers(MethodInfo)
+          AccessModifier: 1
+    0000003B:
+      type: {class: SerializableConnectionDictionary, ns: ProjectDesigner.Core, asm: ProjectDesigner.Core}
+      data:
+        _keys:
+        - id: 12
+        _values:
+        - id: 77
+    0000003C:
+      type: {class: CommentMember, ns: ProjectDesigner.Data.Members, asm: ProjectDesigner.Data.Members}
+      data:
+        <Priority>k__BackingField: 0
+        <Id>k__BackingField: p4rdtC9JJV9Nwl8Q
+        _text: "<color=red>Project Dashboard</color> node is a special node that
+          shows in-progress tasks, team members, and project action history. \n\nAlthough
+          project dashboard can't have any connections, one can click on the task
+          names to navigate to related tasks."
+        _header: 
+    0000003D:
+      type: {class: SerializableConnectionDictionary, ns: ProjectDesigner.Core, asm: ProjectDesigner.Core}
+      data:
+        _keys: []
+        _values: []
+    0000003E:
+      type: {class: ProjectStatus, ns: ProjectDesigner.Data.Members, asm: ProjectDesigner.Data.Members}
+      data:
+        <Priority>k__BackingField: 0
+        <Id>k__BackingField: 01bpIwBnkJjXee4u
+    0000003F:
+      type: {class: Team, ns: ProjectDesigner.Data.Members, asm: ProjectDesigner.Data.Members}
+      data:
+        <Priority>k__BackingField: 0
+        <Id>k__BackingField: 01bpIwBnkJjXee4u
+    00000040:
+      type: {class: ProjectHistory, ns: ProjectDesigner.Data.Members, asm: ProjectDesigner.Data.Members}
+      data:
+        <Priority>k__BackingField: 0
+        <Id>k__BackingField: 01bpIwBnkJjXee4u
+    00000041:
+      type: {class: SerializableConnectionDictionary, ns: ProjectDesigner.Core, asm: ProjectDesigner.Core}
+      data:
+        _keys: []
+        _values: []
+    00000042:
+      type: {class: RelationRegularConnection, ns: ProjectDesigner.Data.Connections, asm: ProjectDesigner.Data.Connections}
+      data:
+        _to:
+          id: 1
+        _from:
+          id: 0
+        <Id>k__BackingField: 
+    00000043:
+      type: {class: RelationRegularConnection, ns: ProjectDesigner.Data.Connections, asm: ProjectDesigner.Data.Connections}
+      data:
+        _to:
+          id: 6
+        _from:
+          id: 0
+        <Id>k__BackingField: 
+    00000044:
+      type: {class: RelationRegularConnection, ns: ProjectDesigner.Data.Connections, asm: ProjectDesigner.Data.Connections}
+      data:
+        _to:
+          id: 2
+        _from:
+          id: 1
+        <Id>k__BackingField: 
+    00000045:
+      type: {class: RelationRegularConnection, ns: ProjectDesigner.Data.Connections, asm: ProjectDesigner.Data.Connections}
+      data:
+        _to:
+          id: 3
+        _from:
+          id: 1
+        <Id>k__BackingField: 
+    00000046:
+      type: {class: RelationRegularConnection, ns: ProjectDesigner.Data.Connections, asm: ProjectDesigner.Data.Connections}
+      data:
+        _to:
+          id: 4
+        _from:
+          id: 1
+        <Id>k__BackingField: 
+    00000047:
+      type: {class: RelationRegularConnection, ns: ProjectDesigner.Data.Connections, asm: ProjectDesigner.Data.Connections}
+      data:
+        _to:
+          id: 1
+        _from:
+          id: 5
+        <Id>k__BackingField: 
+    00000048:
+      type: {class: SubTaskConnection, ns: ProjectDesigner.Data.Connections, asm: ProjectDesigner.Data.Connections}
+      data:
+        _to:
+          id: 7
+        _from:
+          id: 6
+        <Id>k__BackingField: 
+    00000049:
+      type: {class: SubTaskConnection, ns: ProjectDesigner.Data.Connections, asm: ProjectDesigner.Data.Connections}
+      data:
+        _to:
+          id: 8
+        _from:
+          id: 6
+        <Id>k__BackingField: 
+    0000004A:
+      type: {class: SubTaskConnection, ns: ProjectDesigner.Data.Connections, asm: ProjectDesigner.Data.Connections}
+      data:
+        _to:
+          id: 9
+        _from:
+          id: 6
+        <Id>k__BackingField: 
+    0000004B:
+      type: {class: SubTaskConnection, ns: ProjectDesigner.Data.Connections, asm: ProjectDesigner.Data.Connections}
+      data:
+        _to:
+          id: 10
+        _from:
+          id: 6
+        <Id>k__BackingField: 
+    0000004C:
+      type: {class: RelationCurvedConnection, ns: ProjectDesigner.Data.Connections, asm: ProjectDesigner.Data.Connections}
+      data:
+        _to:
+          id: 13
+        _from:
+          id: 11
+        <Id>k__BackingField: 
+    0000004D:
+      type: {class: InheritanceConnection, ns: ProjectDesigner.Data.Connections, asm: ProjectDesigner.Data.Connections}
+      data:
+        _to:
+          id: 12
+        _from:
+          id: 13
+        <Id>k__BackingField: 
