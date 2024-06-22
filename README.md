@@ -33,9 +33,9 @@
 **Dashboard Node:** Overview of the project.
 
 
-<p float="left">
-  <img src="https://github.com/furkancaglayan/Project-Designer-Plus-Plus/blob/main/images/note.png" width="100" />
-  <img src="https://github.com/furkancaglayan/Project-Designer-Plus-Plus/blob/main/images/task.png" width="100" />
-  <img src="https://github.com/furkancaglayan/Project-Designer-Plus-Plus/blob/main/images/class.png" width="100" />
+<p  align="center">
+  <img src="https://github.com/furkancaglayan/Project-Designer-Plus-Plus/blob/main/images/note.png" width="200" />
+  <img src="https://github.com/furkancaglayan/Project-Designer-Plus-Plus/blob/main/images/task.png" width="200" />
+  <img src="https://github.com/furkancaglayan/Project-Designer-Plus-Plus/blob/main/images/class.png" width="200" />
 </p>
 <p align="center"><img width=100% src="https://github.com/furkancaglayan/Project-Designer-Plus-Plus/blob/main/images/dashboard.png"></p>
