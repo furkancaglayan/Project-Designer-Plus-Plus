@@ -49,16 +49,16 @@
 </p>
 <p align="center"><img alt="Dashboard node" src="https://github.com/furkancaglayan/Project-Designer-Plus-Plus/blob/main/images/dashboard.png" width="400"></p>
 
-<h1>Extension Examples</h1>
+<h1>How to Extend?</h1>
 <h2>How to Add New Node Types?</h2>
 
-The main component of the Project Designer+ is an abstract class called NodeBase. New node types can be overridden by creating a class anywhere in your project and inheriting from NodeBase class.
+The main component of the **Project Designer+** is an abstract class called **NodeBase**. New node types can be overridden by creating a class anywhere in your project and inheriting from NodeBase class.
 NodeBase types are collected with reflection in the project after each domain reload. A new menu option will be available for your type when you right-click on an empty space in the editor.
 This is pretty much all to it, you will be able to drag, select and interact with the new node after creating one with the context menu.
-Here’s an example from one of the built-in node types, "Notepad":
+Here’s an example from one of the built-in node types, **"Notepad"**:
 
-```
-//Make sure to mark your classes as Serializable.
+```c#
+   //Make sure to mark your classes as Serializable.
    [Serializable]
    public class Notepad : NodeBase
    {
@@ -85,5 +85,26 @@ Here’s an example from one of the built-in node types, "Notepad":
            }
        }
    }
+
+```
+
+<h2>How to Add New Connection Types?</h2>
+
+Very similarly to the NodeBase, all connections are created from ConnectionBase abstract class. Defining the class is a simple process:
+
+```c#
+public class InheritanceConnection : ConnectionBase
+ {
+     protected override void DrawConnection(IEditorContext context, Vector2 fromOutputScreenPos, Vector2 toInputScreenPos, Vector2 fromCenterScreenPos, Vector2 toCenterScreenPos, Color color)
+     {
+         Vector2 start = fromOutputScreenPos + (toInputScreenPos - fromOutputScreenPos).normalized * 10;
+         Vector2 end = toInputScreenPos - (toInputScreenPos - fromOutputScreenPos).normalized * 20;
+         GUIUtilities.DrawLine(start, end, color);
+         GUIUtilities.DrawTriangle(end, 15f, color, toInputScreenPos - fromOutputScreenPos, false);
+
+         Vector2 midPoint = (fromOutputScreenPos + toInputScreenPos) / 2;
+         GUI.Label(new Rect(midPoint, new Vector2(60, 18)), "inherits");
+     }
+ }
 
 ```
