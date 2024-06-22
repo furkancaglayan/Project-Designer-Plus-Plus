@@ -18,22 +18,13 @@
 
 <h1>Introduction</h1>
 
-Project Designer+ is an editor tool that lets you plan and design your Unity3D projects beforehand. Create tasks, assign team member, design your process and create class diagrams.
+**Project Designer+** is an editor tool that lets you plan and design your Unity3D projects beforehand. Create tasks, assign team member, design your process and create class diagrams.
 
-Project Designer+ is completely renewed, bringing a whole new concept on Project Management and UML diagrams.
+**Versatile Node Types:** Project Designer boasts four diverse node types tailored to suit various project aspects.
 
-Versatile Node Types: Project Designer boasts four diverse node types tailored to suit various project aspects.
+**Extensibility:** Project Designer is built with modularity in mind, allowing users to extend its capabilities and customize workflows according to project requirements. Add new node types, new connection types, new menu options and much more.
 
-Extensibility: Project Designer is built with modularity in mind, allowing users to extend its capabilities and customize workflows according to project requirements. Add new node types, new connection types, new menu options and much more.
-
-User-Friendly Interface: Navigate Project Designer's intuitive interface with ease. Drag and drop nodes, rearrange layouts, and interact with project elements effortlessly, making project management a breeze for users of all skill levels.
+**User-Friendly Interface:** Navigate Project Designer's intuitive interface with ease. Drag and drop nodes, rearrange layouts, and interact with project elements effortlessly, making project management a breeze for users of all skill levels.
 
 
-What is Project Designer+?
-
-All nodes and connections are fully customizable by code.
-Project planning with saveable nodes, take notes, attach images, create UML diagrams.
-All action are undo-redoable.
-Undo/Redo
-Inheritance, assocation, dependence and relation connections.
-Add team members to your project and assign them to tasks.
+[![project designer intro video](https://img.youtube.com/vi/yz0z8tl5nVU/0.jpg)](https://www.youtube.com/watch?v=yz0z8tl5nVU)
