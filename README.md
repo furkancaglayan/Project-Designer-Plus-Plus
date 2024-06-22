@@ -144,3 +144,7 @@ A member is the smallest part of the Node that accomplishes a simple task or vis
 
 
 ```
+
+<h1>Documentation</h1>
+
+* Documentation and the rest of the coding guides can be found [here](https://github.com/furkancaglayan/Project-Designer-Plus-Plus/blob/main/Assets/ProjectDesigner%2B/Documentation/dev_documentation.pdf).
