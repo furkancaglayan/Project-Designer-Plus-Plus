@@ -108,3 +108,39 @@ public class InheritanceConnection : ConnectionBase
  }
 
 ```
+
+<h2>How to Add New Member Types?</h2>
+
+A member is the smallest part of the Node that accomplishes a simple task or visualizes basic data about the node or the project. The class defining the members is... yes MemberBase class. MemberBases are created the same way as NodeBase and ConnectionBase.
+
+```c#
+[Serializable]
+  public class CommentMember : MemberBase
+  {
+      // Save the text.
+      [SerializeField]
+      private string _text;
+      [SerializeField]
+      private string _header;
+
+      public override void Draw(IEditorContext context, NodeBase parent, float width)
+      {
+          // Enable text area when the node is expanded.
+          if (parent.IsExpanded)
+          {
+              _text = CustomGUILayout.TextArea(_text, Id, LabelStyle);
+          }
+          // And just show the label when it's not.
+          else
+          {
+              CustomGUILayout.Label(_text, LabelWithRichTextStyle);
+          }
+      }
+
+      public override MemberBase Copy(NodeBase parent)
+      {
+          return new CommentMember(this);
+      }
+
+
+```
