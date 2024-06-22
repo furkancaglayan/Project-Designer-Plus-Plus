@@ -4,12 +4,11 @@
     </a>
 </h1>
 
-<p align="center">
+<div align="center">
     [![Release](https://img.shields.io/github/v/release/furkancaglayan/Project-Designer-Plus-Plus)](https://choosealicense.com/licenses/mit/)
     [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
     [![GitHub Issues](https://img.shields.io/github/issues/anfederico/clairvoyant.svg)](https://github.com/anfederico/clairvoyant/issues)
-</p>
-
+</div>
 
 <h1 align="center">
     <a href="project_designer_screen_0">
