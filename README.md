@@ -25,4 +25,4 @@
   <video src="" width="500px"></video>
 </p>
 
-[![Watch the video](https://github.com/furkancaglayan/Project-Designer-Plus-Plus/blob/main/images/project_designer_cover.png)](https://github.com/furkancaglayan/Project-Designer-Plus-Plus/blob/main/images/project_designer_intro.gif)
+<p align="center"><img width=100% src="https://github.com/furkancaglayan/Project-Designer-Plus-Plus/blob/main/images/project_designer_intro.gif"></p>
