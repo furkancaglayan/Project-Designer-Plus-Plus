@@ -38,4 +38,4 @@
   <img alt="Task node" src="https://github.com/furkancaglayan/Project-Designer-Plus-Plus/blob/main/images/task.png" width="200" height="200"/>
   <img alt="Class node" src="https://github.com/furkancaglayan/Project-Designer-Plus-Plus/blob/main/images/class.png" width="200" height="200"/>
 </p>
-<p align="center"><img alt="Dashboard node" src="https://github.com/furkancaglayan/Project-Designer-Plus-Plus/blob/main/images/dashboard.png" width="%50" height="%50"></p>
+<p align="center"><img alt="Dashboard node" src="https://github.com/furkancaglayan/Project-Designer-Plus-Plus/blob/main/images/dashboard.png" width="400"></p>
