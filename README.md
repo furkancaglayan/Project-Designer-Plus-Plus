@@ -24,13 +24,22 @@
 [![Watch the video](https://raw.githubusercontent.com/furkancaglayan/Project-Designer-Plus-Plus/main/images/project_designer_cover.png)](https://raw.githubusercontent.com/furkancaglayan/Project-Designer-Plus-Plus/main/images/project_designer_intro.mp4)
 
 
+<h1>Features</h1>
+
+* Framework is completely extensible, one can add new node types, new connection types new menu items and even completely unrelated IDrawables.
+* Fully supports undo-redo, including newly added items.
+* Has inheritance, assocation, dependence and relation connections.
+* Project planning with saveable nodes, take notes, attach images, create UML diagrams.
+* Add team members to your project and assign them to tasks.
+* Allows creating nodes from assets.
+* Supports versions from 2020.3 and higher.
 
 <h1>Node Types</h1>
 
-**Notepad Node:** Lets you write notes, and attach images. Useful for keeping track of information in your projects.
-**Task Node:** Creates a task that has due time, explanation, assignees and subtasks.
-**Class Node:** Useful for creating UML diagrams. Can be created directly from scripts.
-**Dashboard Node:** Overview of the project.
+**Notepad Node:** Lets you write notes, and attach images. Useful for keeping track of information in your projects.<br>
+**Task Node:** Creates a task that has due time, explanation, assignees and subtasks.<br>
+**Class Node:** Useful for creating UML diagrams. Can be created directly from scripts.<br>
+**Dashboard Node:** Overview of the project.<br>
 
 
 <p  align="center">
@@ -39,3 +48,42 @@
   <img alt="Class node" src="https://github.com/furkancaglayan/Project-Designer-Plus-Plus/blob/main/images/class.png" width="200" height="200"/>
 </p>
 <p align="center"><img alt="Dashboard node" src="https://github.com/furkancaglayan/Project-Designer-Plus-Plus/blob/main/images/dashboard.png" width="400"></p>
+
+<h1>Extension Examples</h1>
+<h2>How to Add New Node Types?</h2>
+
+The main component of the Project Designer+ is an abstract class called NodeBase. New node types can be overridden by creating a class anywhere in your project and inheriting from NodeBase class.
+NodeBase types are collected with reflection in the project after each domain reload. A new menu option will be available for your type when you right-click on an empty space in the editor.
+This is pretty much all to it, you will be able to drag, select and interact with the new node after creating one with the context menu.
+Here’s an example from one of the built-in node types, "Notepad":
+
+```
+//Make sure to mark your classes as Serializable.
+   [Serializable]
+   public class Notepad : NodeBase
+   {
+       // override node size
+       public override Vector2 MinSize => new Vector2(440, 440);
+       public override Vector2 MaxSize =>  new Vector2(440, 720);
+       //override icon asset name
+       public override string IconKey => "note";
+       public override bool CanBeCopied => true;
+
+       protected override int FooterHeight => 10;
+
+       public Notepad(string header) : base()
+       {
+           HeaderText = header;
+       }
+
+       // virtual functions can be overriden to do something when the node is created.
+       protected override void OnAddedInternal(IEditorContext context, DrawableCreationType drawableCreationType)
+       {
+           if (drawableCreationType == DrawableCreationType.Default)
+           {
+               AddMember<CommentMember>();
+           }
+       }
+   }
+
+```
