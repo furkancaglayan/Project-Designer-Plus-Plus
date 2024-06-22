@@ -8,12 +8,7 @@
 
 </div>
 
-
-<h1 align="center">
-    <a href="project_designer_screen_0">
-    <img src="https://github.com/furkancaglayan/Project-Designer-Plus-Plus/blob/main/images/screen_0.png">
-    </a>
-</h1>
+<p align="center"><img width=60% src="https://github.com/furkancaglayan/Project-Designer-Plus-Plus/blob/main/images/project_designer_cover.png"></p>
 
 
 <h1>Introduction</h1>
@@ -26,4 +21,5 @@
 
 **User-Friendly Interface:** Navigate Project Designer's intuitive interface with ease. Drag and drop nodes, rearrange layouts, and interact with project elements effortlessly, making project management a breeze for users of all skill levels.
 
-[![project designer intro video](https://i.sstatic.net/Vp2cE.png)](https://youtu.be/yz0z8tl5nVU)
+
+[![project designer intro video](https://img.youtube.com/vi/yz0z8tl5nVU/0.jpg)](https://www.youtube.com/watch?v=yz0z8tl5nVU)
