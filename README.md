@@ -34,8 +34,8 @@
 
 
 <p  align="center">
-  <img src="https://github.com/furkancaglayan/Project-Designer-Plus-Plus/blob/main/images/note.png" width="200" />
-  <img src="https://github.com/furkancaglayan/Project-Designer-Plus-Plus/blob/main/images/task.png" width="200" />
-  <img src="https://github.com/furkancaglayan/Project-Designer-Plus-Plus/blob/main/images/class.png" width="200" />
+  <img src="https://github.com/furkancaglayan/Project-Designer-Plus-Plus/blob/main/images/note.png" width="200" height="200" />
+  <img src="https://github.com/furkancaglayan/Project-Designer-Plus-Plus/blob/main/images/task.png" width="200" height="200"/>
+  <img src="https://github.com/furkancaglayan/Project-Designer-Plus-Plus/blob/main/images/class.png" width="200" height="200"/>
 </p>
 <p align="center"><img width=100% src="https://github.com/furkancaglayan/Project-Designer-Plus-Plus/blob/main/images/dashboard.png"></p>
