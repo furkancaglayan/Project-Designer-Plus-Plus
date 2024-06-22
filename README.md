@@ -21,7 +21,7 @@
 
 **User-Friendly Interface:** Navigate Project Designer's intuitive interface with ease. Drag and drop nodes, rearrange layouts, and interact with project elements effortlessly, making project management a breeze for users of all skill levels.
 
-[![Project Designer Intro](https://github.com/furkancaglayan/Project-Designer-Plus-Plus/blob/main/images/project_designer_cover.png)](https://www.youtube.com/watch?v=yz0z8tl5nVU)
+[![Project Designer Intro](hhttps://img.youtube.com/vi/yz0z8tl5nVU/0.jpg)](https://www.youtube.com/watch?v=yz0z8tl5nVU)
 
 <h1>Features</h1>
 
