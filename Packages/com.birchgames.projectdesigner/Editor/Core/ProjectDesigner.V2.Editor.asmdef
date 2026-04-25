@@ -1,0 +1,19 @@
+{
+    "name": "ProjectDesigner.V2.Editor",
+    "rootNamespace": "ProjectDesigner.V2.Editor",
+    "references": [
+        "ProjectDesigner.V2.Data",
+        "ProjectDesigner.V2.BuiltIn"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

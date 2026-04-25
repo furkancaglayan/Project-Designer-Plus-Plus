@@ -1,0 +1,27 @@
+{
+  "name": "com.birchgames.projectdesigner",
+  "displayName": "Project Designer+",
+  "version": "2.0.0-pre.1",
+  "unity": "2022.3",
+  "description": "A node-based pre-production planner for indie Unity teams with built-in planning workflows, reference capture, technical design support, and public extension hooks.",
+  "keywords": [
+    "unity",
+    "editor",
+    "planning",
+    "preproduction",
+    "tooling",
+    "nodes"
+  ],
+  "author": {
+    "name": "Birch Games"
+  },
+  "license": "MIT",
+  "documentationUrl": "https://github.com/furkancaglayan/Project-Designer-Plus-Plus/tree/main/Packages/com.birchgames.projectdesigner/Documentation~",
+  "samples": [
+    {
+      "displayName": "Status Report Extension",
+      "description": "A sample custom node, inspector, and asset importer built on top of the Project Designer+ registry.",
+      "path": "Samples~/StatusReportExtension"
+    }
+  ]
+}

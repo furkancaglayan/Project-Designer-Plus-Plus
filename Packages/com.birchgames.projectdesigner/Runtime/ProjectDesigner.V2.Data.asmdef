@@ -1,0 +1,14 @@
+{
+    "name": "ProjectDesigner.V2.Data",
+    "rootNamespace": "ProjectDesigner.V2.Data",
+    "references": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -1,0 +1,224 @@
+.pd-workspace {
+    flex-grow: 1;
+    background-color: rgb(24, 28, 34);
+    color: rgb(236, 239, 244);
+}
+
+.pd-toolbar {
+    min-height: 34px;
+    padding-left: 10px;
+    padding-right: 10px;
+    background-color: rgb(18, 22, 28);
+}
+
+.pd-toolbar-title {
+    -unity-font-style: bold;
+    margin-right: 8px;
+}
+
+.pd-workspace-body {
+    flex-grow: 1;
+    flex-direction: row;
+}
+
+.pd-sidebar {
+    width: 240px;
+    padding: 10px;
+    background-color: rgb(20, 24, 31);
+    border-right-width: 1px;
+    border-right-color: rgba(255, 255, 255, 0.08);
+}
+
+.pd-center-column {
+    flex-grow: 1;
+    flex-direction: column;
+}
+
+.pd-inspector {
+    width: 320px;
+    padding: 10px;
+    background-color: rgb(20, 24, 31);
+    border-left-width: 1px;
+    border-left-color: rgba(255, 255, 255, 0.08);
+}
+
+.pd-section-title {
+    margin-top: 4px;
+    margin-bottom: 8px;
+    -unity-font-style: bold;
+    font-size: 14px;
+}
+
+.pd-subsection-title {
+    margin-top: 10px;
+    margin-bottom: 6px;
+    color: rgb(154, 168, 189);
+    -unity-font-style: bold;
+}
+
+.pd-node-library-button {
+    margin-bottom: 4px;
+    min-height: 26px;
+}
+
+.pd-filter-list {
+    flex-direction: column;
+}
+
+.pd-filter-button {
+    margin-bottom: 4px;
+}
+
+.pd-canvas {
+    flex-grow: 1;
+    background-color: rgb(24, 28, 34);
+}
+
+.pd-node {
+    padding: 12px;
+    background-color: rgb(34, 40, 49);
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-top-color: rgba(255, 255, 255, 0.08);
+    border-right-color: rgba(255, 255, 255, 0.08);
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+.pd-node-selected {
+    border-top-width: 2px;
+    border-right-width: 2px;
+    border-bottom-width: 2px;
+    border-top-color: rgb(245, 229, 120);
+    border-right-color: rgb(245, 229, 120);
+    border-bottom-color: rgb(245, 229, 120);
+}
+
+.pd-node-category {
+    color: rgb(154, 168, 189);
+    font-size: 11px;
+}
+
+.pd-node-title {
+    margin-top: 4px;
+    margin-bottom: 6px;
+    -unity-font-style: bold;
+    font-size: 14px;
+}
+
+.pd-node-preview {
+    flex-grow: 1;
+    white-space: normal;
+    color: rgb(225, 229, 236);
+    margin-bottom: 6px;
+}
+
+.pd-node-tags {
+    color: rgb(120, 187, 214);
+    font-size: 11px;
+}
+
+.pd-overview {
+    flex-direction: row;
+    min-height: 88px;
+    padding: 10px;
+    background-color: rgb(18, 22, 28);
+    border-top-width: 1px;
+    border-top-color: rgba(255, 255, 255, 0.08);
+}
+
+.pd-overview-card {
+    width: 120px;
+    margin-right: 8px;
+    padding: 8px;
+    background-color: rgb(31, 37, 45);
+    border-radius: 8px;
+}
+
+.pd-overview-value {
+    font-size: 22px;
+    -unity-font-style: bold;
+}
+
+.pd-overview-label {
+    color: rgb(154, 168, 189);
+}
+
+.pd-inspector-title {
+    margin-bottom: 10px;
+    font-size: 16px;
+    -unity-font-style: bold;
+}
+
+.pd-edge-row {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+
+.pd-primary-button {
+    margin-top: 8px;
+    margin-bottom: 4px;
+}
+
+.pd-secondary-button {
+    margin-top: 6px;
+}
+
+.pd-welcome {
+    flex-grow: 1;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(24, 28, 34);
+}
+
+.pd-welcome-card {
+    width: 620px;
+    padding: 24px;
+    background-color: rgb(28, 34, 42);
+    border-radius: 12px;
+}
+
+.pd-welcome-eyebrow {
+    color: rgb(103, 195, 255);
+    -unity-font-style: bold;
+    margin-bottom: 8px;
+}
+
+.pd-welcome-title {
+    font-size: 22px;
+    -unity-font-style: bold;
+    margin-bottom: 10px;
+    white-space: normal;
+}
+
+.pd-welcome-body {
+    white-space: normal;
+    color: rgb(210, 216, 224);
+    margin-bottom: 12px;
+}
+
+.pd-welcome-preset {
+    margin-top: 8px;
+    margin-bottom: 8px;
+    padding: 12px;
+    background-color: rgb(34, 40, 49);
+    border-radius: 8px;
+}
+
+.pd-welcome-preset-title {
+    -unity-font-style: bold;
+}
+
+.pd-welcome-preset-description {
+    margin-top: 4px;
+    margin-bottom: 8px;
+    color: rgb(177, 186, 199);
+    white-space: normal;
+}

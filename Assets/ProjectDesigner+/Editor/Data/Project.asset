@@ -1,0 +1,70 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e059683c4067734e8a84115539c117a, type: 3}
+  m_Name: Project
+  m_EditorClassIdentifier: 
+  SerializedObjects:
+  - rid: 4671173477041438720
+  _logHistory:
+    _logs:
+    - <Text>k__BackingField: 'Do Context Action: Create Node'
+      <Description>k__BackingField: New Class is created.
+      <Type>k__BackingField: 3
+      <IsContextAction>k__BackingField: 0
+  references:
+    version: 2
+    RefIds:
+    - rid: 4671173477041438720
+      type: {class: Class, ns: ProjectDesigner.Data.Nodes, asm: ProjectDesigner.Data.Nodes}
+      data:
+        _rect:
+          serializedVersion: 2
+          x: 520
+          y: 309.4
+          width: 480
+          height: 480
+        _targetSize: {x: 480, y: 480}
+        _members:
+        - rid: 4671173477041438721
+        - rid: 4671173477041438722
+        _assignees: []
+        _status: 0
+        _scroll: {x: 0, y: 0}
+        _headerText: Class
+        _connections:
+          rid: 4671173477041438723
+        <Id>k__BackingField: UAxXNcBB4tR1cdL1
+    - rid: 4671173477041438721
+      type: {class: FieldMember, ns: ProjectDesigner.Data.Members, asm: ProjectDesigner.Data.Members}
+      data:
+        <Priority>k__BackingField: 5
+        <Id>k__BackingField: Z1ZRNzCNpdeh4Z8C
+        _fields: []
+    - rid: 4671173477041438722
+      type: {class: MethodMember, ns: ProjectDesigner.Data.Members, asm: ProjectDesigner.Data.Members}
+      data:
+        <Priority>k__BackingField: 0
+        <Id>k__BackingField: xd4mxI23uRyYT2bS
+        _methods:
+        - Name: foo
+          AccessModifier: 0
+        - Name: foo
+          AccessModifier: 0
+        - Name: foo
+          AccessModifier: 0
+        - Name: foo
+          AccessModifier: 0
+    - rid: 4671173477041438723
+      type: {class: SerializableConnectionDictionary, ns: ProjectDesigner.Core, asm: ProjectDesigner.Core}
+      data:
+        _keys: []
+        _values: []
