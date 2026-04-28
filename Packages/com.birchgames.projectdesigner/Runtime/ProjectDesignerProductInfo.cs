@@ -4,6 +4,7 @@ namespace ProjectDesigner.V2.Data
     {
         public const string ProductName = "Project Designer+";
         public const string PlannerName = "Planner";
+        public const string ProjectFinderName = "Project Finder";
         public const string PlanningBoardName = "Planning Board";
         public const string PlanningBoardsName = "Planning Boards";
         public const string DefaultBoardName = "Planning Board";
@@ -15,6 +16,7 @@ namespace ProjectDesigner.V2.Data
         public const string ResearchReferenceBoardName = "Research & Reference Board";
         public const string StakeholderReviewBoardName = "Stakeholder Review Board";
         public const string PlannerWindowTitle = ProductName + " Planner";
+        public const string ProjectFinderWindowTitle = ProductName + " " + ProjectFinderName;
         public const string PlanningBoardsWindowTitle = ProductName + " " + PlanningBoardsName;
         public const string ProjectBriefTitle = "Project Brief";
         public const string CreateAssetMenuPath = ProductName + "/" + PlanningBoardName;

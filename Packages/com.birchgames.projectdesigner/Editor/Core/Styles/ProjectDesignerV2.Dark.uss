@@ -190,3 +190,30 @@
 .pd-board-browser-card .pd-muted-body {
     color: rgb(177, 186, 199);
 }
+
+.pd-board-browser-badge {
+    color: rgb(210, 226, 255);
+    background-color: rgba(103, 195, 255, 0.12);
+    border-top-color: rgba(103, 195, 255, 0.2);
+    border-right-color: rgba(103, 195, 255, 0.2);
+    border-bottom-color: rgba(103, 195, 255, 0.2);
+    border-left-color: rgba(103, 195, 255, 0.2);
+}
+
+.pd-board-browser-badge-pinned {
+    color: rgb(248, 232, 160);
+    background-color: rgba(245, 196, 81, 0.18);
+    border-top-color: rgba(245, 196, 81, 0.24);
+    border-right-color: rgba(245, 196, 81, 0.24);
+    border-bottom-color: rgba(245, 196, 81, 0.24);
+    border-left-color: rgba(245, 196, 81, 0.24);
+}
+
+.pd-board-browser-badge-recent {
+    color: rgb(176, 230, 196);
+    background-color: rgba(94, 194, 127, 0.18);
+    border-top-color: rgba(94, 194, 127, 0.24);
+    border-right-color: rgba(94, 194, 127, 0.24);
+    border-bottom-color: rgba(94, 194, 127, 0.24);
+    border-left-color: rgba(94, 194, 127, 0.24);
+}

@@ -18,6 +18,12 @@ namespace ProjectDesigner.V2.Editor
             window.titleContent = new GUIContent(ProjectDesignerProductInfo.PlannerWindowTitle);
             if (board != null)
             {
+                string assetPath = AssetDatabase.GetAssetPath(board);
+                if (!string.IsNullOrEmpty(assetPath))
+                {
+                    ProjectDesignerSettings.instance.MarkBoardOpened(AssetDatabase.AssetPathToGUID(assetPath));
+                    ProjectDesignerBoardBrowserWindow.RefreshOpenBrowsers();
+                }
                 window._boardAsset = board;
             }
 

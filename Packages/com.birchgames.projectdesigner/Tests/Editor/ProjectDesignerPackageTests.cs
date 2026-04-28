@@ -662,6 +662,62 @@ namespace ProjectDesigner.V2.Tests
         }
 
         [Test]
+        public void BoardCatalog_SearchAndSortRespectsQueryAndFinderMode()
+        {
+            var entries = new List<ProjectDesignerBoardCatalogEntry>
+            {
+                new ProjectDesignerBoardCatalogEntry
+                {
+                    BoardName = "Alpha Board",
+                    Summary = "Pitch planning board",
+                    AssetPath = "Assets/Boards/Alpha.asset",
+                    TeamSnapshot = "Producer, Designer",
+                    NodeCount = 4,
+                    EdgeCount = 2,
+                    InProgressCount = 1,
+                    IsPinned = false,
+                    RecentIndex = 2
+                },
+                new ProjectDesignerBoardCatalogEntry
+                {
+                    BoardName = "Bravo Board",
+                    Summary = "Roadmap and slice planning",
+                    AssetPath = "Assets/Boards/Bravo.asset",
+                    TeamSnapshot = "Engineer, Artist",
+                    NodeCount = 12,
+                    EdgeCount = 6,
+                    InProgressCount = 5,
+                    IsPinned = true,
+                    RecentIndex = 5
+                },
+                new ProjectDesignerBoardCatalogEntry
+                {
+                    BoardName = "Charlie Board",
+                    Summary = "Research and references",
+                    AssetPath = "Assets/Boards/Charlie.asset",
+                    TeamSnapshot = "Research Lead",
+                    NodeCount = 8,
+                    EdgeCount = 1,
+                    InProgressCount = 0,
+                    IsPinned = false,
+                    RecentIndex = 0
+                }
+            };
+
+            IReadOnlyList<ProjectDesignerBoardCatalogEntry> searchResults = ProjectDesignerBoardCatalog.SearchAndSort(entries, "research", ProjectDesignerBoardFinderSortMode.BoardName);
+            Assert.AreEqual(1, searchResults.Count);
+            Assert.AreEqual("Charlie Board", searchResults[0].BoardName);
+
+            IReadOnlyList<ProjectDesignerBoardCatalogEntry> recentResults = ProjectDesignerBoardCatalog.SearchAndSort(entries, string.Empty, ProjectDesignerBoardFinderSortMode.RecentlyOpened);
+            Assert.AreEqual("Bravo Board", recentResults[0].BoardName);
+            Assert.AreEqual("Charlie Board", recentResults[1].BoardName);
+
+            IReadOnlyList<ProjectDesignerBoardCatalogEntry> activityResults = ProjectDesignerBoardCatalog.SearchAndSort(entries, string.Empty, ProjectDesignerBoardFinderSortMode.MostActiveWork);
+            Assert.AreEqual("Bravo Board", activityResults[0].BoardName);
+            Assert.AreEqual("Alpha Board", activityResults[1].BoardName);
+        }
+
+        [Test]
         public void Package_DeclaresStatusReportSampleAndDemoBoard()
         {
             string packageJsonPath = "Packages/com.birchgames.projectdesigner/package.json";

@@ -5,8 +5,15 @@ Project Designer+ opens as a planning-first Unity editor package for pre-product
 ## Open The Planner
 
 1. Open Unity with `Packages/com.birchgames.projectdesigner` available.
-2. Use `Tools/Project Designer/Open Planning Boards` if you want the board browser, or `Tools/Project Designer/Open Planner` if you already have a board selected.
+2. Use `Tools/Project Designer/Project Finder` if you want the board browser, or `Tools/Project Designer/Open Planner` if you already have a board selected.
 3. Create a new planning board from `Tools/Project Designer` or `Assets/Create/Project Designer`.
+
+## Use The Project Finder
+
+- Search by board name, summary, path, or board team snapshot.
+- Pin the boards you revisit most.
+- Reopen recent boards without hunting through the Project window.
+- Start a fresh board from a workflow preset.
 
 ## Pick A Starting Point
 

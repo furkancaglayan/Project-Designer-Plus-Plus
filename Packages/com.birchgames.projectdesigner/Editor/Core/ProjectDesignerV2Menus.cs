@@ -251,6 +251,10 @@ namespace ProjectDesigner.V2.Editor
         public static ProjectBoardAsset CreateBoard(string presetId, string boardName)
         {
             ProjectBoardAsset asset = ProjectDesignerBoardUtility.CreateBoardAsset(presetId, boardName);
+            string assetPath = AssetDatabase.GetAssetPath(asset);
+            string boardGuid = AssetDatabase.AssetPathToGUID(assetPath);
+            ProjectDesignerSettings.instance.MarkBoardOpened(boardGuid);
+            ProjectDesignerBoardBrowserWindow.RefreshOpenBrowsers();
             if (ProjectDesignerSettings.instance.AutoOpenWorkspaceAfterBoardCreation)
             {
                 ProjectDesignerV2Window.Open(asset);

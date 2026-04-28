@@ -13,7 +13,7 @@ Build milestone-driven planning boards, track tasks with assignees and estimates
 The package includes:
 
 - a UI Toolkit planner with a custom board canvas
-- a dedicated `Planning Boards` browser for opening and creating boards
+- a dedicated `Project Finder` for searching, pinning, reopening, and creating boards
 - built-in planning cards for tasks, milestones, notes, references, and technical class cards
 - workflow presets for pitch, roadmap, research, and stakeholder review
 - richer showcase boards for solo, small-team, and technical planning scenarios
@@ -44,7 +44,7 @@ The package includes:
 - Screenshot: `Small Team Board` with cross-discipline planning density
 - Screenshot: asset drag-drop creating reference and class cards
 - Screenshot: right-side inspector and valid-link workflow
-- Screenshot: `Planning Boards` browser window
+- Screenshot: `Project Finder` window
 - Short GIF/video: create board, drag asset, link task to milestone, apply saved view
 
 ## Messaging Notes

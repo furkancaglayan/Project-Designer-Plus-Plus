@@ -540,10 +540,62 @@
     border-left-color: rgba(27, 39, 51, 0.08);
 }
 
+.pd-board-browser-header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .pd-board-browser-title {
     font-size: 16px;
     -unity-font-style: bold;
     color: rgb(31, 40, 52);
+    flex-grow: 1;
+    margin-right: 10px;
+}
+
+.pd-board-browser-badges {
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.pd-board-browser-badge {
+    margin-left: 6px;
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    font-size: 10px;
+    -unity-font-style: bold;
+    color: rgb(51, 76, 120);
+    background-color: rgba(76, 122, 255, 0.1);
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    border-top-color: rgba(76, 122, 255, 0.18);
+    border-right-color: rgba(76, 122, 255, 0.18);
+    border-bottom-color: rgba(76, 122, 255, 0.18);
+    border-left-color: rgba(76, 122, 255, 0.18);
+    border-radius: 6px;
+}
+
+.pd-board-browser-badge-pinned {
+    color: rgb(114, 81, 14);
+    background-color: rgba(245, 196, 81, 0.16);
+    border-top-color: rgba(245, 196, 81, 0.28);
+    border-right-color: rgba(245, 196, 81, 0.28);
+    border-bottom-color: rgba(245, 196, 81, 0.28);
+    border-left-color: rgba(245, 196, 81, 0.28);
+}
+
+.pd-board-browser-badge-recent {
+    color: rgb(35, 102, 72);
+    background-color: rgba(94, 194, 127, 0.14);
+    border-top-color: rgba(94, 194, 127, 0.24);
+    border-right-color: rgba(94, 194, 127, 0.24);
+    border-bottom-color: rgba(94, 194, 127, 0.24);
+    border-left-color: rgba(94, 194, 127, 0.24);
 }
 
 .pd-board-browser-path {
@@ -568,6 +620,26 @@
 }
 
 .pd-board-browser-actions > * {
+    margin-right: 8px;
+}
+
+.pd-browser-toolbar {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+.pd-browser-search {
+    flex-grow: 1;
+    min-width: 280px;
+    margin-right: 8px;
+    min-height: 30px;
+}
+
+.pd-browser-sort {
+    min-width: 190px;
     margin-right: 8px;
 }
 

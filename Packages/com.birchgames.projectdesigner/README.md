@@ -7,7 +7,7 @@ It ships as a UPM-friendly editor package with a custom UI Toolkit planner, type
 ## Highlights
 
 - Plan tasks, milestones, notes, references, project context, and technical design in one board.
-- Open a dedicated `Planning Boards` browser to create or reopen boards quickly.
+- Open a dedicated `Project Finder` to search, pin, reopen, and create boards quickly.
 - Start from showcase boards and workflow presets, not just empty templates.
 - Drag Unity assets into the planner to generate reference or class cards.
 - Extend the package with your own cards, links, inspectors, and importers.
@@ -32,7 +32,7 @@ It ships as a UPM-friendly editor package with a custom UI Toolkit planner, type
 ## Entry Points
 
 - `Tools/Project Designer/Open Planner`
-- `Tools/Project Designer/Open Planning Boards`
+- `Tools/Project Designer/Project Finder`
 - `Tools/Project Designer/New Board`
 - `Tools/Project Designer/New Solo Indie Board`
 - `Tools/Project Designer/New Small Team Board`

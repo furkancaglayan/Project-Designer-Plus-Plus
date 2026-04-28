@@ -1,13 +1,14 @@
 # First 10 Minutes
 
-## 1. Open The Board Browser
+## 1. Open The Project Finder
 
-Start with `Tools/Project Designer/Open Planning Boards`.
+Start with `Tools/Project Designer/Project Finder`.
 
 That window is the fastest way to:
 
 - create a board from a preset
 - reopen an existing planning board
+- pin the boards you come back to most often
 - compare showcase boards versus workflow presets
 
 ## 2. Choose The Right Starter

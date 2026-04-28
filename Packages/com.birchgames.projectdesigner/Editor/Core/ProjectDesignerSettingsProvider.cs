@@ -87,6 +87,11 @@ namespace ProjectDesigner.V2.Editor
             DrawRosterPreview(ProjectDesignerSettings.instance.DefaultTeamRoster);
 
             EditorGUILayout.Space(10f);
+            EditorGUILayout.LabelField("Project Finder", EditorStyles.boldLabel);
+            EditorGUILayout.PropertyField(_settingsObject.FindProperty("_projectFinderSortMode"), new GUIContent("Preferred Sort"));
+            EditorGUILayout.HelpBox("The Project Finder remembers pinned boards, recently opened boards, and this default sort preference for the current Unity project.", MessageType.None);
+
+            EditorGUILayout.Space(10f);
             EditorGUILayout.LabelField("Appearance", EditorStyles.boldLabel);
             using (new EditorGUI.DisabledScope(!ProjectDesignerThemeConfig.SupportsDarkTheme))
             {
@@ -124,7 +129,7 @@ namespace ProjectDesigner.V2.Editor
                 ProjectDesignerV2Menus.OpenQuickStartGuide();
             }
 
-            if (GUILayout.Button("Open Planning Boards"))
+            if (GUILayout.Button("Open Project Finder"))
             {
                 ProjectDesignerBoardBrowserWindow.Open();
             }
@@ -146,6 +151,10 @@ namespace ProjectDesigner.V2.Editor
             foreach (ProjectBoardAsset board in boards)
             {
                 string path = AssetDatabase.GetAssetPath(board);
+                string guid = AssetDatabase.AssetPathToGUID(path);
+                bool isPinned = ProjectDesignerSettings.instance.IsBoardPinned(guid);
+                bool isRecent = ProjectDesignerSettings.instance.RecentBoardGuids.Any(existingGuid => string.Equals(existingGuid, guid, System.StringComparison.OrdinalIgnoreCase));
+
                 EditorGUILayout.BeginVertical(EditorStyles.helpBox);
                 using (new EditorGUI.DisabledScope(true))
                 {
@@ -153,8 +162,18 @@ namespace ProjectDesigner.V2.Editor
                 }
                 EditorGUILayout.LabelField("Board Name", board.Document.BoardName);
                 EditorGUILayout.LabelField(path, EditorStyles.miniLabel);
+                EditorGUILayout.LabelField(
+                    (isPinned ? "Pinned" : "Not pinned") +
+                    (isRecent ? " | Recent" : string.Empty),
+                    EditorStyles.miniLabel);
 
                 EditorGUILayout.BeginHorizontal();
+                if (GUILayout.Button(isPinned ? "Unpin" : "Pin"))
+                {
+                    ProjectDesignerSettings.instance.TogglePinnedBoard(guid);
+                    ProjectDesignerBoardBrowserWindow.RefreshOpenBrowsers();
+                }
+
                 if (GUILayout.Button("Select"))
                 {
                     Selection.activeObject = board;
