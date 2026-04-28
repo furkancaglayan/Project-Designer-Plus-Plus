@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -9,6 +10,7 @@ namespace ProjectDesigner.V2.Editor
     {
         [SerializeField]
         private ProjectBoardAsset _boardAsset;
+        private ProjectDesignerWorkspaceView _workspaceView;
 
         public static void Open(ProjectBoardAsset board = null)
         {
@@ -39,6 +41,7 @@ namespace ProjectDesigner.V2.Editor
 
             ProjectDesignerThemeConfig.ApplyTheme(rootVisualElement);
             rootVisualElement.Clear();
+            _workspaceView = null;
 
             if (_boardAsset == null)
             {
@@ -51,7 +54,8 @@ namespace ProjectDesigner.V2.Editor
             }
             else
             {
-                rootVisualElement.Add(new ProjectDesignerWorkspaceView(_boardAsset, SetBoard));
+                _workspaceView = new ProjectDesignerWorkspaceView(_boardAsset, SetBoard);
+                rootVisualElement.Add(_workspaceView);
             }
         }
 
@@ -81,6 +85,26 @@ namespace ProjectDesigner.V2.Editor
             }
 
             SetBoard(selectedBoard);
+        }
+
+        internal ProjectDesignerWorkspaceView GetWorkspaceView()
+        {
+            return _workspaceView;
+        }
+
+        internal static ProjectDesignerWorkspaceView TryGetOpenWorkspace()
+        {
+            ProjectDesignerV2Window[] windows = Resources.FindObjectsOfTypeAll<ProjectDesignerV2Window>();
+            ProjectDesignerV2Window window = windows.FirstOrDefault(candidate => candidate != null && candidate.hasFocus && candidate._workspaceView != null);
+            if (window != null)
+            {
+                return window._workspaceView;
+            }
+
+            return windows
+                .Where(candidate => candidate != null)
+                .Select(candidate => candidate._workspaceView)
+                .FirstOrDefault(workspace => workspace != null);
         }
     }
 }

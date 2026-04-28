@@ -19,5 +19,6 @@ namespace ProjectDesigner.V2.Data
         public const string ProjectBriefTitle = "Project Brief";
         public const string CreateAssetMenuPath = ProductName + "/" + PlanningBoardName;
         public const float ToolbarButtonWidth = 96f;
+        public const float GridSize = 24f;
     }
 }

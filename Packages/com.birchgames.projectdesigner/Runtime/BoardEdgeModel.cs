@@ -75,6 +75,11 @@ namespace ProjectDesigner.V2.Data
             return clone;
         }
 
+        public void RegenerateId()
+        {
+            _id = Guid.NewGuid().ToString("N");
+        }
+
         private void EnsureId()
         {
             if (string.IsNullOrEmpty(_id))

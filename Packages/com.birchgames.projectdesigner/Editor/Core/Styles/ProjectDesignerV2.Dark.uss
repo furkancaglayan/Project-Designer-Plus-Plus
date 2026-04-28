@@ -81,10 +81,6 @@
     color: rgb(225, 229, 236);
 }
 
-.pd-node-tags {
-    color: rgb(120, 187, 214);
-}
-
 .pd-overview {
     background-color: rgb(18, 22, 28);
     border-top-color: rgba(255, 255, 255, 0.08);
@@ -101,21 +97,18 @@
 .pd-overview-value,
 .pd-inspector-title,
 .pd-welcome-title,
-.pd-welcome-preset-title {
+.pd-welcome-preset-title,
+.pd-board-browser-title {
     color: rgb(236, 239, 244);
-}
-
-.pd-overview-label,
-.pd-muted-body,
-.pd-onboarding-meta,
-.pd-welcome-preset-description,
-.pd-welcome-body {
-    color: rgb(177, 186, 199);
 }
 
 .pd-primary-button {
     background-color: rgb(76, 122, 255);
     color: rgb(255, 255, 255);
+    border-top-color: rgba(76, 122, 255, 0.9);
+    border-right-color: rgba(76, 122, 255, 0.9);
+    border-bottom-color: rgba(76, 122, 255, 0.9);
+    border-left-color: rgba(76, 122, 255, 0.9);
 }
 
 .pd-welcome,
@@ -148,4 +141,30 @@
     border-right-color: rgba(255, 255, 255, 0.08);
     border-bottom-color: rgba(255, 255, 255, 0.08);
     border-left-color: rgba(255, 255, 255, 0.08);
+}
+
+.pd-marquee {
+    border-top-color: rgba(103, 195, 255, 0.86);
+    border-right-color: rgba(103, 195, 255, 0.86);
+    border-bottom-color: rgba(103, 195, 255, 0.86);
+    border-left-color: rgba(103, 195, 255, 0.86);
+    background-color: rgba(103, 195, 255, 0.12);
+}
+
+.pd-overview-label,
+.pd-welcome-body,
+.pd-welcome-preset-description,
+.pd-onboarding-meta,
+.pd-board-browser-path,
+.pd-board-browser-stats,
+.pd-board-browser-summary,
+.pd-inline-link-menu-body {
+    color: rgb(177, 186, 199);
+}
+
+.pd-foldout .pd-muted-body,
+.pd-welcome-card .pd-muted-body,
+.pd-onboarding-footer .pd-muted-body,
+.pd-board-browser-card .pd-muted-body {
+    color: rgb(177, 186, 199);
 }

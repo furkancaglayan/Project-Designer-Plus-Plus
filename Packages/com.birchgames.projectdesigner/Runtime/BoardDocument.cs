@@ -90,6 +90,7 @@ namespace ProjectDesigner.V2.Data
             _savedFilters = _savedFilters ?? new List<BoardSavedFilter>();
             _templates = _templates ?? new List<BoardTemplateDefinition>();
             _viewState = _viewState ?? new BoardViewState();
+            _viewState.SetSelection(_viewState.SelectedNodeIds, _viewState.SelectedNodeId);
         }
 
         public BoardNodeModel GetNode(string nodeId)
@@ -142,10 +143,7 @@ namespace ProjectDesigner.V2.Data
         {
             _nodes.RemoveAll(node => node != null && node.Id == nodeId);
             _edges.RemoveAll(edge => edge.SourceNodeId == nodeId || edge.TargetNodeId == nodeId);
-            if (ViewState.SelectedNodeId == nodeId)
-            {
-                ViewState.SelectedNodeId = string.Empty;
-            }
+            ViewState.Deselect(nodeId);
         }
 
         public void AddEdge(BoardEdgeModel edge)

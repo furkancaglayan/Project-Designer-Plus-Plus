@@ -22,6 +22,7 @@ namespace ProjectDesigner.V2.Editor
         private readonly ProjectDesignerOverviewView _overviewView;
         private readonly ToolbarSearchField _searchField;
         private readonly PopupField<string> _categoryField;
+        private readonly ToolbarButton _snapButton;
         private Label _toolbarTitle;
         private int _createSequence;
 
@@ -33,6 +34,7 @@ namespace ProjectDesigner.V2.Editor
             ProjectDesignerBuiltInRegistration.Register();
             _commandStack = new ProjectDesignerCommandStack(_boardAsset, PersistBoard);
             _commandStack.Changed += RefreshAll;
+            _snapButton = CreateToolbarButton("Snap Off", ToggleSnapToGrid);
 
             AddToClassList("pd-workspace");
 
@@ -66,8 +68,16 @@ namespace ProjectDesigner.V2.Editor
             _savedFiltersContainer.AddToClassList("pd-filter-list");
 
             _searchField = new ToolbarSearchField();
+            _searchField.AddToClassList("pd-toolbar-search");
             _searchField.value = _boardAsset.Document.ViewState.SearchQuery;
             _searchField.tooltip = "Search titles, previews, and tags across the current board.";
+            _searchField.style.width = 340f;
+            _searchField.style.minHeight = 28f;
+            _searchField.style.height = 28f;
+            _searchField.style.maxHeight = 28f;
+            _searchField.style.marginTop = 5f;
+            _searchField.style.marginBottom = 5f;
+            _searchField.style.alignSelf = Align.Center;
             _searchField.RegisterValueChangedCallback(evt =>
             {
                 _boardAsset.Document.ViewState.SearchQuery = evt.newValue;
@@ -82,7 +92,16 @@ namespace ProjectDesigner.V2.Editor
                 BoardNodeCategories.Reference,
                 BoardNodeCategories.TechnicalDesign
             }, _boardAsset.Document.ViewState.Category);
+            _categoryField.AddToClassList("pd-toolbar-category");
             _categoryField.tooltip = "Focus the board on a specific category.";
+            _categoryField.style.width = 150f;
+            _categoryField.style.minHeight = 28f;
+            _categoryField.style.height = 28f;
+            _categoryField.style.maxHeight = 28f;
+            _categoryField.style.marginTop = 5f;
+            _categoryField.style.marginBottom = 5f;
+            _categoryField.style.marginLeft = 6f;
+            _categoryField.style.alignSelf = Align.Center;
             _categoryField.RegisterValueChangedCallback(evt =>
             {
                 _boardAsset.Document.ViewState.Category = evt.newValue;
@@ -110,14 +129,11 @@ namespace ProjectDesigner.V2.Editor
 
             toolbar.Add(CreateToolbarButton("Undo", () => _commandStack.Undo()));
             toolbar.Add(CreateToolbarButton("Redo", () => _commandStack.Redo()));
-            toolbar.Add(CreateToolbarButton("Frame", () =>
-            {
-                if (_canvasView != null)
-                {
-                    _canvasView.FrameAll();
-                }
-            }));
+            toolbar.Add(CreateToolbarButton("Duplicate", DuplicateSelection));
+            toolbar.Add(CreateToolbarButton("Frame Sel", FrameSelection));
             toolbar.Add(CreateToolbarButton("Delete", DeleteSelectedNode));
+            toolbar.Add(CreateArrangeMenu());
+            toolbar.Add(_snapButton);
             toolbar.Add(CreateToolbarButton("Save View", SaveCurrentFilter));
             toolbar.Add(CreateToolbarButton("Clear View", ClearCurrentFilter));
             toolbar.Add(CreateToolbarButton("All Boards", () => _setBoard(null)));
@@ -127,6 +143,7 @@ namespace ProjectDesigner.V2.Editor
         private void RefreshAll()
         {
             _toolbarTitle.text = _boardAsset.Document.BoardName;
+            _snapButton.text = _boardAsset.Document.ViewState.SnapToGrid ? "Snap On" : "Snap Off";
             RefreshLibrary();
             RefreshInspector();
             _canvasView.Refresh();
@@ -171,13 +188,20 @@ namespace ProjectDesigner.V2.Editor
         {
             _inspectorView.Clear();
 
-            string selectedNodeId = _boardAsset.Document.ViewState.SelectedNodeId;
-            BoardNodeModel selectedNode = _boardAsset.Document.GetNode(selectedNodeId);
-            if (selectedNode == null)
+            List<BoardNodeModel> selectedNodes = GetSelectedNodes();
+            if (selectedNodes.Count == 0)
             {
                 BuildBoardInspector();
                 return;
             }
+
+            if (selectedNodes.Count > 1)
+            {
+                BuildMultiSelectionInspector(selectedNodes);
+                return;
+            }
+
+            BoardNodeModel selectedNode = selectedNodes[0];
 
             Label title = new Label(selectedNode.Title);
             title.AddToClassList("pd-inspector-title");
@@ -259,6 +283,38 @@ namespace ProjectDesigner.V2.Editor
             }
 
             _inspectorView.Add(templatesFoldout);
+        }
+
+        private void BuildMultiSelectionInspector(List<BoardNodeModel> selectedNodes)
+        {
+            Label title = new Label(selectedNodes.Count + " Cards Selected");
+            title.AddToClassList("pd-inspector-title");
+            _inspectorView.Add(title);
+
+            string categories = string.Join(", ", selectedNodes
+                .Select(node => node.Category)
+                .Distinct()
+                .OrderBy(category => category));
+            _inspectorView.Add(CreateMutedBodyLabel("Categories: " + categories));
+            _inspectorView.Add(CreateMutedBodyLabel("Primary card: " + (_boardAsset.Document.ViewState.SelectedNodeId ?? string.Empty)));
+
+            VisualElement firstRow = CreateActionRow();
+            firstRow.Add(CreateInspectorButton("Duplicate", DuplicateSelection));
+            firstRow.Add(CreateInspectorButton("Delete", DeleteSelectedNode));
+            firstRow.Add(CreateInspectorButton("Frame", FrameSelection));
+            _inspectorView.Add(firstRow);
+
+            VisualElement secondRow = CreateActionRow();
+            secondRow.Add(CreateInspectorButton("Align Left", () => ArrangeSelection(BoardArrangeMode.AlignLeft)));
+            secondRow.Add(CreateInspectorButton("Align Top", () => ArrangeSelection(BoardArrangeMode.AlignTop)));
+            secondRow.Add(CreateInspectorButton("Distribute H", () => ArrangeSelection(BoardArrangeMode.DistributeHorizontal)));
+            _inspectorView.Add(secondRow);
+
+            VisualElement thirdRow = CreateActionRow();
+            thirdRow.Add(CreateInspectorButton("Align Center", () => ArrangeSelection(BoardArrangeMode.AlignCenter)));
+            thirdRow.Add(CreateInspectorButton("Align Middle", () => ArrangeSelection(BoardArrangeMode.AlignMiddle)));
+            thirdRow.Add(CreateInspectorButton("Distribute V", () => ArrangeSelection(BoardArrangeMode.DistributeVertical)));
+            _inspectorView.Add(thirdRow);
         }
 
         private void BuildConnectionsInspector(BoardNodeModel selectedNode)
@@ -368,27 +424,35 @@ namespace ProjectDesigner.V2.Editor
                 _createSequence++);
             BoardNodeModel node = definition.CreateDefaultNode(spawnPosition);
             _commandStack.Execute(new CreateNodeCommand(_boardAsset, node));
-            OnSelectionChanged(node.Id);
-        }
-
-        private void OnSelectionChanged(string nodeId)
-        {
-            _boardAsset.Document.ViewState.SelectedNodeId = nodeId ?? string.Empty;
+            _boardAsset.Document.ViewState.SelectSingle(node.Id);
             PersistBoard();
             RefreshInspector();
             _canvasView.RefreshSelection();
         }
 
-        private void DeleteSelectedNode()
+        private void OnSelectionChanged()
         {
-            if (string.IsNullOrEmpty(_boardAsset.Document.ViewState.SelectedNodeId))
+            PersistBoard();
+            RefreshInspector();
+            _canvasView.RefreshSelection();
+        }
+
+        internal void DeleteSelectedNode()
+        {
+            List<string> selectedNodeIds = _boardAsset.Document.ViewState.SelectedNodeIds.ToList();
+            if (selectedNodeIds.Count == 0)
             {
                 return;
             }
 
-            string selectedNodeId = _boardAsset.Document.ViewState.SelectedNodeId;
-            _boardAsset.Document.ViewState.SelectedNodeId = string.Empty;
-            _commandStack.Execute(new DeleteNodeCommand(_boardAsset, selectedNodeId));
+            _boardAsset.Document.ViewState.ClearSelection();
+            if (selectedNodeIds.Count == 1)
+            {
+                _commandStack.Execute(new DeleteNodeCommand(_boardAsset, selectedNodeIds[0]));
+                return;
+            }
+
+            _commandStack.Execute(new DeleteNodesCommand(_boardAsset, selectedNodeIds));
         }
 
         private void SaveCurrentFilter()
@@ -454,6 +518,13 @@ namespace ProjectDesigner.V2.Editor
                 return;
             }
 
+            if (evt.ctrlKey && evt.keyCode == KeyCode.D)
+            {
+                DuplicateSelection();
+                evt.StopPropagation();
+                return;
+            }
+
             if ((evt.ctrlKey && evt.keyCode == KeyCode.Y) || (evt.ctrlKey && evt.shiftKey && evt.keyCode == KeyCode.Z))
             {
                 _commandStack.Redo();
@@ -461,9 +532,26 @@ namespace ProjectDesigner.V2.Editor
                 return;
             }
 
+            if (!evt.ctrlKey && evt.keyCode == KeyCode.F)
+            {
+                FrameSelection();
+                evt.StopPropagation();
+                return;
+            }
+
             if (evt.keyCode == KeyCode.Delete || evt.keyCode == KeyCode.Backspace)
             {
                 DeleteSelectedNode();
+                evt.StopPropagation();
+                return;
+            }
+
+            if (evt.keyCode == KeyCode.Escape && _boardAsset.Document.ViewState.SelectedNodeIds.Count > 0)
+            {
+                _boardAsset.Document.ViewState.ClearSelection();
+                PersistBoard();
+                RefreshInspector();
+                _canvasView.RefreshSelection();
                 evt.StopPropagation();
             }
         }
@@ -536,6 +624,114 @@ namespace ProjectDesigner.V2.Editor
             };
             button.AddToClassList("pd-toolbar-button");
             button.style.width = ProjectDesignerProductInfo.ToolbarButtonWidth;
+            button.style.minHeight = 28f;
+            button.style.height = 28f;
+            button.style.maxHeight = 28f;
+            button.style.marginTop = 5f;
+            button.style.marginBottom = 5f;
+            button.style.alignSelf = Align.Center;
+            return button;
+        }
+
+        private ToolbarMenu CreateArrangeMenu()
+        {
+            var menu = new ToolbarMenu
+            {
+                text = "Arrange"
+            };
+            menu.AddToClassList("pd-toolbar-button");
+            menu.AddToClassList("pd-toolbar-menu");
+            menu.style.width = ProjectDesignerProductInfo.ToolbarButtonWidth;
+            menu.style.minHeight = 28f;
+            menu.style.height = 28f;
+            menu.style.maxHeight = 28f;
+            menu.style.marginTop = 5f;
+            menu.style.marginBottom = 5f;
+            menu.style.alignSelf = Align.Center;
+
+            menu.menu.AppendAction("Align Left", _ => ArrangeSelection(BoardArrangeMode.AlignLeft));
+            menu.menu.AppendAction("Align Center", _ => ArrangeSelection(BoardArrangeMode.AlignCenter));
+            menu.menu.AppendAction("Align Right", _ => ArrangeSelection(BoardArrangeMode.AlignRight));
+            menu.menu.AppendSeparator();
+            menu.menu.AppendAction("Align Top", _ => ArrangeSelection(BoardArrangeMode.AlignTop));
+            menu.menu.AppendAction("Align Middle", _ => ArrangeSelection(BoardArrangeMode.AlignMiddle));
+            menu.menu.AppendAction("Align Bottom", _ => ArrangeSelection(BoardArrangeMode.AlignBottom));
+            menu.menu.AppendSeparator();
+            menu.menu.AppendAction("Distribute Horizontal", _ => ArrangeSelection(BoardArrangeMode.DistributeHorizontal));
+            menu.menu.AppendAction("Distribute Vertical", _ => ArrangeSelection(BoardArrangeMode.DistributeVertical));
+            menu.menu.AppendSeparator();
+            menu.menu.AppendAction("Frame All", _ => _canvasView.FrameAll());
+            return menu;
+        }
+
+        private List<BoardNodeModel> GetSelectedNodes()
+        {
+            return _boardAsset.Document.ViewState.SelectedNodeIds
+                .Select(_boardAsset.Document.GetNode)
+                .Where(node => node != null)
+                .ToList();
+        }
+
+        internal bool HasSelection()
+        {
+            return _boardAsset.Document.ViewState.SelectedNodeIds.Count > 0;
+        }
+
+        internal void DuplicateSelection()
+        {
+            List<string> selectedIds = _boardAsset.Document.ViewState.SelectedNodeIds.ToList();
+            if (selectedIds.Count == 0)
+            {
+                return;
+            }
+
+            Vector2 offset = new Vector2(48f, 40f);
+            _commandStack.Execute(new DuplicateNodesCommand(_boardAsset, selectedIds, offset, _boardAsset.Document.ViewState.SnapToGrid));
+        }
+
+        internal void FrameSelection()
+        {
+            if (_boardAsset.Document.ViewState.SelectedNodeIds.Count == 0)
+            {
+                _canvasView.FrameAll();
+                return;
+            }
+
+            _canvasView.FrameSelection();
+        }
+
+        internal void ArrangeSelection(BoardArrangeMode arrangeMode)
+        {
+            List<string> selectedIds = _boardAsset.Document.ViewState.SelectedNodeIds.ToList();
+            if (selectedIds.Count < 2)
+            {
+                return;
+            }
+
+            _commandStack.Execute(new ArrangeNodesCommand(_boardAsset, selectedIds, arrangeMode));
+        }
+
+        internal void ToggleSnapToGrid()
+        {
+            _boardAsset.Document.ViewState.SnapToGrid = !_boardAsset.Document.ViewState.SnapToGrid;
+            PersistBoard();
+            RefreshAll();
+        }
+
+        private static VisualElement CreateActionRow()
+        {
+            var row = new VisualElement();
+            row.AddToClassList("pd-action-row");
+            return row;
+        }
+
+        private static Button CreateInspectorButton(string text, Action onClick)
+        {
+            var button = new Button(onClick)
+            {
+                text = text
+            };
+            button.AddToClassList("pd-secondary-button");
             return button;
         }
     }

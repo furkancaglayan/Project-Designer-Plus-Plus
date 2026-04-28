@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbd713b080e10714e86c6bae3a47d8d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _showOnboardingOnStartup: 0
+  _showOnboardingOnStartup: 1
   _showOnboardingForPackageUpdates: 1
   _autoOpenWorkspaceAfterBoardCreation: 1
   _defaultBoardFolder: Assets/Project Designer

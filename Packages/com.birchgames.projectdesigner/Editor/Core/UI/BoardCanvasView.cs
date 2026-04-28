@@ -124,7 +124,7 @@ namespace ProjectDesigner.V2.Editor
             }
         }
 
-        private const string DefaultHintText = "Drag cards to arrange them. Drag empty space to pan. Drag from Link to create relationships.";
+        private const string DefaultHintText = "Drag cards to arrange them. Shift-drag empty space to multi-select. Drag empty space to pan. Drag from Link to create relationships.";
 
         private readonly ProjectBoardAsset _boardAsset;
         private readonly IBoardCommandDispatcher _dispatcher;
@@ -132,15 +132,15 @@ namespace ProjectDesigner.V2.Editor
         private readonly EdgeLayerElement _edgeLayer;
         private readonly VisualElement _nodeLayer;
         private readonly Label _hintLabel;
+        private readonly VisualElement _marqueeElement;
         private readonly Dictionary<string, BoardNodeView> _nodeViews = new Dictionary<string, BoardNodeView>();
         private readonly Dictionary<string, Vector2> _previewNodePositions = new Dictionary<string, Vector2>();
+        private readonly Dictionary<string, Vector2> _dragStartNodePositions = new Dictionary<string, Vector2>();
         private Dictionary<string, List<ProjectDesignerLinkOption>> _connectionTargetOptions = new Dictionary<string, List<ProjectDesignerLinkOption>>();
 
-        private string _draggingNodeId = string.Empty;
         private int _dragPointerId = -1;
         private Vector2 _dragStartMousePosition;
-        private Vector2 _dragStartNodePosition;
-        private Vector2 _dragCurrentNodePosition;
+        private readonly List<string> _draggingNodeIds = new List<string>();
 
         private string _connectingNodeId = string.Empty;
         private int _connectPointerId = -1;
@@ -151,8 +151,13 @@ namespace ProjectDesigner.V2.Editor
         private bool _panning;
         private Vector2 _panStartMousePosition;
         private Vector2 _panStartOffset;
+        private bool _marqueeSelecting;
+        private int _marqueePointerId = -1;
+        private Vector2 _marqueeStartCanvasPosition;
+        private Vector2 _marqueeCurrentCanvasPosition;
+        private List<string> _marqueeBaseSelection = new List<string>();
 
-        public event Action<string> SelectionChanged;
+        public event Action SelectionChanged;
 
         public BoardCanvasView(ProjectBoardAsset boardAsset, IBoardCommandDispatcher dispatcher)
         {
@@ -195,6 +200,12 @@ namespace ProjectDesigner.V2.Editor
             _hintLabel.pickingMode = PickingMode.Ignore;
             Add(_hintLabel);
 
+            _marqueeElement = new VisualElement();
+            _marqueeElement.AddToClassList("pd-marquee");
+            _marqueeElement.pickingMode = PickingMode.Ignore;
+            _marqueeElement.style.display = DisplayStyle.None;
+            Add(_marqueeElement);
+
             RegisterCallback<PointerDownEvent>(OnPointerDown);
             RegisterCallback<PointerMoveEvent>(OnPointerMove);
             RegisterCallback<PointerUpEvent>(OnPointerUp);
@@ -209,6 +220,7 @@ namespace ProjectDesigner.V2.Editor
         {
             HideConnectionMenu();
             CancelConnectionPreview();
+            CancelMarqueeSelection();
             UpdateTransform();
             RebuildNodes();
             _edgeLayer.MarkDirtyRepaint();
@@ -217,14 +229,14 @@ namespace ProjectDesigner.V2.Editor
 
         public void RefreshSelection()
         {
-            string selectedNodeId = _boardAsset.Document.ViewState.SelectedNodeId;
+            HashSet<string> selectedNodeIds = new HashSet<string>(_boardAsset.Document.ViewState.SelectedNodeIds);
             foreach (BoardNodeView nodeView in _nodeLayer.Children().OfType<BoardNodeView>())
             {
-                nodeView.SetSelected(nodeView.NodeId == selectedNodeId);
+                nodeView.SetSelected(selectedNodeIds.Contains(nodeView.NodeId));
             }
 
             UpdateConnectionHighlights();
-            BringNodeToFront(selectedNodeId);
+            BringSelectionToFront();
             _edgeLayer.MarkDirtyRepaint();
             MarkDirtyRepaint();
         }
@@ -236,12 +248,26 @@ namespace ProjectDesigner.V2.Editor
                 return new Vector2(220f, 180f);
             }
 
-            return ScreenToBoard(new Vector2(layout.width * 0.35f, layout.height * 0.35f));
+            return CanvasToBoard(new Vector2(layout.width * 0.35f, layout.height * 0.35f));
         }
 
         public void FrameAll()
         {
             List<BoardNodeModel> nodes = _boardAsset.Document.Nodes.Where(node => node != null).ToList();
+            FrameNodes(nodes);
+        }
+
+        public void FrameSelection()
+        {
+            List<BoardNodeModel> nodes = _boardAsset.Document.ViewState.SelectedNodeIds
+                .Select(_boardAsset.Document.GetNode)
+                .Where(node => node != null)
+                .ToList();
+            FrameNodes(nodes);
+        }
+
+        private void FrameNodes(List<BoardNodeModel> nodes)
+        {
             if (nodes.Count == 0 || layout.width <= 0f || layout.height <= 0f)
             {
                 return;
@@ -274,9 +300,9 @@ namespace ProjectDesigner.V2.Editor
             _previewNodePositions.Clear();
             HashSet<string> visibleIds = new HashSet<string>(BoardInsights.GetVisibleNodes(_boardAsset.Document).Select(node => node.Id));
             _edgeLayer.VisibleNodeIds = visibleIds;
-            string selectedNodeId = _boardAsset.Document.ViewState.SelectedNodeId;
+            HashSet<string> selectedNodeIds = new HashSet<string>(_boardAsset.Document.ViewState.SelectedNodeIds);
 
-            foreach (BoardNodeModel node in _boardAsset.Document.Nodes.OrderBy(node => node != null && node.Id == selectedNodeId ? 1 : 0))
+            foreach (BoardNodeModel node in _boardAsset.Document.Nodes.OrderBy(node => node != null && selectedNodeIds.Contains(node.Id) ? 1 : 0))
             {
                 if (node == null || !visibleIds.Contains(node.Id))
                 {
@@ -285,7 +311,7 @@ namespace ProjectDesigner.V2.Editor
 
                 IProjectDesignerNodeDefinition definition = ProjectDesignerRegistry.GetNodeDefinition(node.TypeId);
                 var nodeView = new BoardNodeView(node, definition, _boardAsset.Document);
-                nodeView.Refresh(_boardAsset.Document, selectedNodeId == node.Id);
+                nodeView.Refresh(_boardAsset.Document, selectedNodeIds.Contains(node.Id));
                 nodeView.Selected += OnNodeSelected;
                 nodeView.DragStarted += OnNodeDragStarted;
                 nodeView.ConnectionStarted += OnNodeConnectionStarted;
@@ -296,19 +322,20 @@ namespace ProjectDesigner.V2.Editor
             UpdateConnectionHighlights();
         }
 
-        private void OnNodeSelected(string nodeId)
+        private void OnNodeSelected(BoardNodeSelectionRequest request)
         {
             HideConnectionMenu();
-            BringNodeToFront(nodeId);
+            ApplyNodeSelection(request);
+            BringSelectionToFront();
             if (SelectionChanged != null)
             {
-                SelectionChanged.Invoke(nodeId);
+                SelectionChanged.Invoke();
             }
         }
 
         private void OnNodeDragStarted(string nodeId, Vector2 mousePosition, int pointerId)
         {
-            if (!string.IsNullOrEmpty(_connectingNodeId))
+            if (IsDraggingNodes || !string.IsNullOrEmpty(_connectingNodeId))
             {
                 return;
             }
@@ -321,19 +348,40 @@ namespace ProjectDesigner.V2.Editor
                 return;
             }
 
-            _draggingNodeId = nodeId;
             _dragPointerId = pointerId;
-            _dragStartMousePosition = mousePosition;
-            _dragStartNodePosition = node.Position;
-            _dragCurrentNodePosition = node.Position;
+            _dragStartMousePosition = PanelToCanvas(mousePosition);
+            _dragStartNodePositions.Clear();
+            _draggingNodeIds.Clear();
+
+            List<string> selectedIds = _boardAsset.Document.ViewState.SelectedNodeIds.ToList();
+            if (selectedIds.Count > 1 && selectedIds.Contains(nodeId))
+            {
+                foreach (string selectedId in selectedIds)
+                {
+                    BoardNodeModel selectedNode = _boardAsset.Document.GetNode(selectedId);
+                    if (selectedNode == null)
+                    {
+                        continue;
+                    }
+
+                    _draggingNodeIds.Add(selectedId);
+                    _dragStartNodePositions[selectedId] = selectedNode.Position;
+                }
+            }
+            else
+            {
+                _draggingNodeIds.Add(nodeId);
+                _dragStartNodePositions[nodeId] = node.Position;
+            }
+
             PointerCaptureHelper.CapturePointer(this, pointerId);
-            BringNodeToFront(nodeId);
+            BringSelectionToFront();
             Focus();
         }
 
         private void OnNodeConnectionStarted(string nodeId, Vector2 mousePosition, int pointerId)
         {
-            if (!string.IsNullOrEmpty(_draggingNodeId))
+            if (IsDraggingNodes)
             {
                 return;
             }
@@ -355,7 +403,7 @@ namespace ProjectDesigner.V2.Editor
 
             _connectingNodeId = nodeId;
             _connectPointerId = pointerId;
-            _connectPreviewPosition = ScreenToBoard(mousePosition);
+            _connectPreviewPosition = PanelToBoard(mousePosition);
             _hoveredConnectionTargetId = string.Empty;
             _edgeLayer.PreviewConnection = new ConnectionPreviewData
             {
@@ -383,20 +431,30 @@ namespace ProjectDesigner.V2.Editor
 
             HideConnectionMenu();
 
-            if (!string.IsNullOrEmpty(_draggingNodeId) || !string.IsNullOrEmpty(_connectingNodeId) || evt.button != 0 || !IsEmptyTarget(evt.target))
+            if (IsDraggingNodes || !string.IsNullOrEmpty(_connectingNodeId) || evt.button != 0 || !IsEmptyTarget(evt.target))
             {
                 return;
             }
 
+            if (evt.shiftKey)
+            {
+                _marqueeSelecting = true;
+                _marqueePointerId = evt.pointerId;
+                _marqueeStartCanvasPosition = PanelToCanvas(GetEventPosition(evt.position));
+                _marqueeCurrentCanvasPosition = _marqueeStartCanvasPosition;
+                _marqueeBaseSelection = _boardAsset.Document.ViewState.SelectedNodeIds.ToList();
+                UpdateMarqueeElement();
+                PointerCaptureHelper.CapturePointer(this, evt.pointerId);
+                Focus();
+                evt.StopPropagation();
+                return;
+            }
+
             _panning = true;
-            _panStartMousePosition = GetEventPosition(evt.position);
+            _panStartMousePosition = PanelToCanvas(GetEventPosition(evt.position));
             _panStartOffset = _boardAsset.Document.ViewState.PanOffset;
             PointerCaptureHelper.CapturePointer(this, evt.pointerId);
-
-            if (SelectionChanged != null)
-            {
-                SelectionChanged.Invoke(string.Empty);
-            }
+            ClearSelection();
 
             Focus();
             evt.StopPropagation();
@@ -411,7 +469,7 @@ namespace ProjectDesigner.V2.Editor
                     return;
                 }
 
-                Vector2 boardPosition = ScreenToBoard(GetEventPosition(evt.position));
+                Vector2 boardPosition = PanelToBoard(GetEventPosition(evt.position));
                 _connectPreviewPosition = boardPosition;
                 UpdateHoveredConnectionTarget(boardPosition);
                 UpdateConnectionPreview();
@@ -423,7 +481,7 @@ namespace ProjectDesigner.V2.Editor
                 return;
             }
 
-            if (!string.IsNullOrEmpty(_draggingNodeId))
+            if (IsDraggingNodes)
             {
                 if (evt.pointerId != _dragPointerId)
                 {
@@ -431,17 +489,38 @@ namespace ProjectDesigner.V2.Editor
                 }
 
                 float zoom = Mathf.Max(0.01f, _boardAsset.Document.ViewState.Zoom);
-                Vector2 deltaX = (GetEventPosition(evt.position) - _dragStartMousePosition) / zoom;
-                _dragCurrentNodePosition = _dragStartNodePosition + deltaX;
-                _previewNodePositions[_draggingNodeId] = _dragCurrentNodePosition;
-
-                if (_nodeViews.TryGetValue(_draggingNodeId, out BoardNodeView nodeView))
+                Vector2 deltaX = (PanelToCanvas(GetEventPosition(evt.position)) - _dragStartMousePosition) / zoom;
+                foreach (KeyValuePair<string, Vector2> pair in _dragStartNodePositions)
                 {
-                    nodeView.SetPreviewPosition(_dragCurrentNodePosition);
+                    Vector2 previewPosition = pair.Value + deltaX;
+                    if (_boardAsset.Document.ViewState.SnapToGrid)
+                    {
+                        previewPosition = BoardLayoutUtility.SnapPosition(previewPosition);
+                    }
+
+                    _previewNodePositions[pair.Key] = previewPosition;
+                    if (_nodeViews.TryGetValue(pair.Key, out BoardNodeView nodeView))
+                    {
+                        nodeView.SetPreviewPosition(previewPosition);
+                    }
                 }
 
                 _edgeLayer.MarkDirtyRepaint();
                 MarkDirtyRepaint();
+                evt.StopPropagation();
+                return;
+            }
+
+            if (_marqueeSelecting)
+            {
+                if (evt.pointerId != _marqueePointerId)
+                {
+                    return;
+                }
+
+                _marqueeCurrentCanvasPosition = PanelToCanvas(GetEventPosition(evt.position));
+                UpdateMarqueeElement();
+                ApplyMarqueeSelection();
                 evt.StopPropagation();
                 return;
             }
@@ -451,7 +530,7 @@ namespace ProjectDesigner.V2.Editor
                 return;
             }
 
-            Vector2 delta = GetEventPosition(evt.position) - _panStartMousePosition;
+            Vector2 delta = PanelToCanvas(GetEventPosition(evt.position)) - _panStartMousePosition;
             _boardAsset.Document.ViewState.PanOffset = _panStartOffset + delta;
             ProjectDesignerBoardUtility.MarkDirty(_boardAsset);
             UpdateTransform();
@@ -469,8 +548,9 @@ namespace ProjectDesigner.V2.Editor
                 }
 
                 int connectPointerId = _connectPointerId;
-                Vector2 boardPosition = ScreenToBoard(GetEventPosition(evt.position));
-                CompleteConnectionDrag(boardPosition, GetEventPosition(evt.position));
+                Vector2 panelPosition = GetEventPosition(evt.position);
+                Vector2 boardPosition = PanelToBoard(panelPosition);
+                CompleteConnectionDrag(boardPosition, PanelToCanvas(panelPosition));
                 if (connectPointerId >= 0 && PointerCaptureHelper.HasPointerCapture(this, connectPointerId))
                 {
                     PointerCaptureHelper.ReleasePointer(this, connectPointerId);
@@ -479,7 +559,7 @@ namespace ProjectDesigner.V2.Editor
                 return;
             }
 
-            if (!string.IsNullOrEmpty(_draggingNodeId))
+            if (IsDraggingNodes)
             {
                 if (evt.pointerId != _dragPointerId)
                 {
@@ -491,6 +571,22 @@ namespace ProjectDesigner.V2.Editor
                 if (dragPointerId >= 0 && PointerCaptureHelper.HasPointerCapture(this, dragPointerId))
                 {
                     PointerCaptureHelper.ReleasePointer(this, dragPointerId);
+                }
+                evt.StopPropagation();
+                return;
+            }
+
+            if (_marqueeSelecting)
+            {
+                if (evt.pointerId != _marqueePointerId)
+                {
+                    return;
+                }
+
+                CompleteMarqueeSelection();
+                if (_marqueePointerId >= 0 && PointerCaptureHelper.HasPointerCapture(this, _marqueePointerId))
+                {
+                    PointerCaptureHelper.ReleasePointer(this, _marqueePointerId);
                 }
                 evt.StopPropagation();
                 return;
@@ -510,6 +606,7 @@ namespace ProjectDesigner.V2.Editor
         {
             CancelNodeDragPreview();
             CancelConnectionPreview();
+            CancelMarqueeSelection();
             _panning = false;
         }
 
@@ -517,7 +614,7 @@ namespace ProjectDesigner.V2.Editor
         {
             HideConnectionMenu();
 
-            Vector2 boardPositionBefore = ScreenToBoard(evt.localMousePosition);
+            Vector2 boardPositionBefore = CanvasToBoard(evt.localMousePosition);
             float oldZoom = _boardAsset.Document.ViewState.Zoom;
             float newZoom = Mathf.Clamp(oldZoom * (evt.delta.y > 0f ? 0.92f : 1.08f), 0.35f, 2.5f);
             _boardAsset.Document.ViewState.Zoom = newZoom;
@@ -547,7 +644,7 @@ namespace ProjectDesigner.V2.Editor
 
             HideConnectionMenu();
             DragAndDrop.AcceptDrag();
-            Vector2 startPosition = ScreenToBoard(evt.localMousePosition);
+            Vector2 startPosition = CanvasToBoard(evt.localMousePosition);
             Vector2 offset = Vector2.zero;
 
             foreach (UnityEngine.Object asset in DragAndDrop.objectReferences)
@@ -579,6 +676,18 @@ namespace ProjectDesigner.V2.Editor
             bool hadConnectionState = !string.IsNullOrEmpty(_connectingNodeId) || _connectionMenu != null;
             HideConnectionMenu();
             CancelConnectionPreview();
+            if (_marqueeSelecting)
+            {
+                CancelMarqueeSelection();
+            }
+
+            if (!hadConnectionState && _boardAsset.Document.ViewState.SelectedNodeIds.Count > 0)
+            {
+                ClearSelection();
+                evt.StopPropagation();
+                return;
+            }
+
             if (hadConnectionState)
             {
                 evt.StopPropagation();
@@ -593,10 +702,20 @@ namespace ProjectDesigner.V2.Editor
             _contentLayer.transform.scale = new Vector3(zoom, zoom, 1f);
         }
 
-        private Vector2 ScreenToBoard(Vector2 screenPosition)
+        private Vector2 CanvasToBoard(Vector2 canvasPosition)
         {
             float zoom = Mathf.Max(0.01f, _boardAsset.Document.ViewState.Zoom);
-            return (screenPosition - _boardAsset.Document.ViewState.PanOffset) / zoom;
+            return (canvasPosition - _boardAsset.Document.ViewState.PanOffset) / zoom;
+        }
+
+        private Vector2 PanelToBoard(Vector2 panelPosition)
+        {
+            return CanvasToBoard(PanelToCanvas(panelPosition));
+        }
+
+        private Vector2 PanelToCanvas(Vector2 panelPosition)
+        {
+            return this.WorldToLocal(panelPosition);
         }
 
         private void OnGenerateGrid(MeshGenerationContext context)
@@ -651,20 +770,10 @@ namespace ProjectDesigner.V2.Editor
                 return;
             }
 
-            Vector2 endPosition = _connectPreviewPosition;
-            if (!string.IsNullOrEmpty(_hoveredConnectionTargetId))
-            {
-                BoardNodeModel targetNode = _boardAsset.Document.GetNode(_hoveredConnectionTargetId);
-                if (targetNode != null)
-                {
-                    endPosition = new Vector2(targetNode.Position.x, targetNode.Position.y + targetNode.Size.y * 0.5f);
-                }
-            }
-
             _edgeLayer.PreviewConnection = new ConnectionPreviewData
             {
                 SourceNodeId = _connectingNodeId,
-                EndPosition = endPosition,
+                EndPosition = _connectPreviewPosition,
                 AccentColor = GetConnectionPreviewColor(_hoveredConnectionTargetId)
             };
         }
@@ -908,6 +1017,11 @@ namespace ProjectDesigner.V2.Editor
             return new Vector2(position.x, position.y);
         }
 
+        private bool IsDraggingNodes
+        {
+            get { return _draggingNodeIds.Count > 0; }
+        }
+
         private void BringNodeToFront(string nodeId)
         {
             if (string.IsNullOrEmpty(nodeId))
@@ -921,55 +1035,84 @@ namespace ProjectDesigner.V2.Editor
             }
         }
 
+        private void BringSelectionToFront()
+        {
+            foreach (string nodeId in _boardAsset.Document.ViewState.SelectedNodeIds)
+            {
+                BringNodeToFront(nodeId);
+            }
+        }
+
         private void CompleteNodeDrag()
         {
-            string draggingNodeId = _draggingNodeId;
-            _draggingNodeId = string.Empty;
+            List<string> draggingNodeIds = _draggingNodeIds.ToList();
             _dragPointerId = -1;
+            _draggingNodeIds.Clear();
 
-            BoardNodeModel node = _boardAsset.Document.GetNode(draggingNodeId);
-            _previewNodePositions.Remove(draggingNodeId);
-
-            if (node == null)
+            var newPositions = new Dictionary<string, Vector2>();
+            foreach (string draggingNodeId in draggingNodeIds)
             {
-                _edgeLayer.MarkDirtyRepaint();
-                MarkDirtyRepaint();
-                return;
-            }
+                BoardNodeModel node = _boardAsset.Document.GetNode(draggingNodeId);
+                if (node == null)
+                {
+                    _previewNodePositions.Remove(draggingNodeId);
+                    continue;
+                }
 
-            if ((_dragCurrentNodePosition - node.Position).sqrMagnitude <= 0.01f)
-            {
-                if (_nodeViews.TryGetValue(draggingNodeId, out BoardNodeView nodeView))
+                Vector2 previewPosition = _previewNodePositions.TryGetValue(draggingNodeId, out Vector2 value)
+                    ? value
+                    : node.Position;
+                _previewNodePositions.Remove(draggingNodeId);
+                if ((previewPosition - node.Position).sqrMagnitude > 0.01f)
+                {
+                    newPositions[draggingNodeId] = previewPosition;
+                }
+                else if (_nodeViews.TryGetValue(draggingNodeId, out BoardNodeView nodeView))
                 {
                     nodeView.SetPreviewPosition(node.Position);
                 }
+            }
 
-                _edgeLayer.MarkDirtyRepaint();
-                MarkDirtyRepaint();
+            _dragStartNodePositions.Clear();
+            if (newPositions.Count == 1)
+            {
+                KeyValuePair<string, Vector2> onlyMove = newPositions.First();
+                _dispatcher.Execute(new MoveNodeCommand(_boardAsset, onlyMove.Key, onlyMove.Value));
                 return;
             }
 
-            _dispatcher.Execute(new MoveNodeCommand(_boardAsset, draggingNodeId, _dragCurrentNodePosition));
+            if (newPositions.Count > 1)
+            {
+                _dispatcher.Execute(new MoveNodesCommand(_boardAsset, newPositions));
+                return;
+            }
+
+            _edgeLayer.MarkDirtyRepaint();
+            MarkDirtyRepaint();
         }
 
         private void CancelNodeDragPreview()
         {
-            if (string.IsNullOrEmpty(_draggingNodeId))
+            if (!IsDraggingNodes)
             {
                 return;
             }
 
-            string draggingNodeId = _draggingNodeId;
             int dragPointerId = _dragPointerId;
-            _draggingNodeId = string.Empty;
             _dragPointerId = -1;
-            _previewNodePositions.Remove(draggingNodeId);
-
-            BoardNodeModel node = _boardAsset.Document.GetNode(draggingNodeId);
-            if (node != null && _nodeViews.TryGetValue(draggingNodeId, out BoardNodeView nodeView))
+            foreach (string draggingNodeId in _draggingNodeIds.ToList())
             {
-                nodeView.SetPreviewPosition(node.Position);
+                _previewNodePositions.Remove(draggingNodeId);
+
+                BoardNodeModel node = _boardAsset.Document.GetNode(draggingNodeId);
+                if (node != null && _nodeViews.TryGetValue(draggingNodeId, out BoardNodeView nodeView))
+                {
+                    nodeView.SetPreviewPosition(node.Position);
+                }
             }
+
+            _draggingNodeIds.Clear();
+            _dragStartNodePositions.Clear();
 
             if (dragPointerId >= 0 && PointerCaptureHelper.HasPointerCapture(this, dragPointerId))
             {
@@ -1003,6 +1146,122 @@ namespace ProjectDesigner.V2.Editor
             UpdateHintLabel();
             _edgeLayer.MarkDirtyRepaint();
             MarkDirtyRepaint();
+        }
+
+        private void ApplyNodeSelection(BoardNodeSelectionRequest request)
+        {
+            if (string.IsNullOrEmpty(request.NodeId))
+            {
+                return;
+            }
+
+            BoardViewState viewState = _boardAsset.Document.ViewState;
+            if (request.Toggle)
+            {
+                viewState.ToggleSelection(request.NodeId);
+                ProjectDesignerBoardUtility.MarkDirty(_boardAsset);
+                return;
+            }
+
+            List<string> selection = viewState.SelectedNodeIds.ToList();
+            if (selection.Count > 1 && selection.Contains(request.NodeId))
+            {
+                viewState.SetSelection(selection, request.NodeId);
+                ProjectDesignerBoardUtility.MarkDirty(_boardAsset);
+                return;
+            }
+
+            viewState.SelectSingle(request.NodeId);
+            ProjectDesignerBoardUtility.MarkDirty(_boardAsset);
+        }
+
+        private void ClearSelection()
+        {
+            if (_boardAsset.Document.ViewState.SelectedNodeIds.Count == 0)
+            {
+                return;
+            }
+
+            _boardAsset.Document.ViewState.ClearSelection();
+            ProjectDesignerBoardUtility.MarkDirty(_boardAsset);
+            if (SelectionChanged != null)
+            {
+                SelectionChanged.Invoke();
+            }
+        }
+
+        private void UpdateMarqueeElement()
+        {
+            Rect rect = GetMarqueeRect();
+            _marqueeElement.style.display = DisplayStyle.Flex;
+            _marqueeElement.style.left = rect.xMin;
+            _marqueeElement.style.top = rect.yMin;
+            _marqueeElement.style.width = rect.width;
+            _marqueeElement.style.height = rect.height;
+        }
+
+        private Rect GetMarqueeRect()
+        {
+            Vector2 min = Vector2.Min(_marqueeStartCanvasPosition, _marqueeCurrentCanvasPosition);
+            Vector2 max = Vector2.Max(_marqueeStartCanvasPosition, _marqueeCurrentCanvasPosition);
+            return Rect.MinMaxRect(min.x, min.y, max.x, max.y);
+        }
+
+        private void ApplyMarqueeSelection()
+        {
+            Rect marqueeRect = GetMarqueeRect();
+            Vector2 boardMin = CanvasToBoard(marqueeRect.min);
+            Vector2 boardMax = CanvasToBoard(marqueeRect.max);
+            Rect boardRect = Rect.MinMaxRect(
+                Mathf.Min(boardMin.x, boardMax.x),
+                Mathf.Min(boardMin.y, boardMax.y),
+                Mathf.Max(boardMin.x, boardMax.x),
+                Mathf.Max(boardMin.y, boardMax.y));
+            List<string> selectedIds = _marqueeBaseSelection.ToList();
+
+            foreach (string nodeId in GetVisibleNodeIdsWithin(boardRect))
+            {
+                if (!selectedIds.Contains(nodeId))
+                {
+                    selectedIds.Add(nodeId);
+                }
+            }
+
+            _boardAsset.Document.ViewState.SetSelection(selectedIds, selectedIds.FirstOrDefault());
+            ProjectDesignerBoardUtility.MarkDirty(_boardAsset);
+            RefreshSelection();
+            if (SelectionChanged != null)
+            {
+                SelectionChanged.Invoke();
+            }
+        }
+
+        private IEnumerable<string> GetVisibleNodeIdsWithin(Rect boardRect)
+        {
+            foreach (BoardNodeModel node in BoardInsights.GetVisibleNodes(_boardAsset.Document))
+            {
+                Rect nodeRect = new Rect(node.Position, node.Size);
+                if (boardRect.Overlaps(nodeRect, true))
+                {
+                    yield return node.Id;
+                }
+            }
+        }
+
+        private void CompleteMarqueeSelection()
+        {
+            _marqueeSelecting = false;
+            _marqueePointerId = -1;
+            _marqueeElement.style.display = DisplayStyle.None;
+            _marqueeBaseSelection = new List<string>();
+        }
+
+        private void CancelMarqueeSelection()
+        {
+            _marqueeSelecting = false;
+            _marqueePointerId = -1;
+            _marqueeElement.style.display = DisplayStyle.None;
+            _marqueeBaseSelection = new List<string>();
         }
     }
 }

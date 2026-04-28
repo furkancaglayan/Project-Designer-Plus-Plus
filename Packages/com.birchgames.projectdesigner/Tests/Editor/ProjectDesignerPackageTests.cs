@@ -200,6 +200,27 @@ namespace ProjectDesigner.V2.Tests
         }
 
         [Test]
+        public void BoardViewState_SupportsPrimaryAndMultiSelection()
+        {
+            var viewState = new BoardViewState();
+            viewState.SelectSingle("alpha");
+            Assert.AreEqual("alpha", viewState.SelectedNodeId);
+            CollectionAssert.AreEqual(new[] { "alpha" }, viewState.SelectedNodeIds);
+
+            viewState.ToggleSelection("beta");
+            Assert.AreEqual("beta", viewState.SelectedNodeId);
+            CollectionAssert.AreEqual(new[] { "alpha", "beta" }, viewState.SelectedNodeIds);
+
+            viewState.Deselect("beta");
+            Assert.AreEqual("alpha", viewState.SelectedNodeId);
+            CollectionAssert.AreEqual(new[] { "alpha" }, viewState.SelectedNodeIds);
+
+            viewState.ClearSelection();
+            Assert.IsEmpty(viewState.SelectedNodeIds);
+            Assert.AreEqual(string.Empty, viewState.SelectedNodeId);
+        }
+
+        [Test]
         public void SavedFilter_MatchesNodesByCategoryAndSearchQuery()
         {
             BoardDocument document = BoardPresetFactory.CreateEmpty("Filter Test");
@@ -385,6 +406,86 @@ namespace ProjectDesigner.V2.Tests
             var selected = new TaskNodeModel { Position = new Vector2(120f, 220f) };
             Vector2 fromSelection = ProjectDesignerSpawnUtility.GetCreatePosition(center, selected, 99);
             Assert.AreEqual(new Vector2(166f, 258f), fromSelection);
+        }
+
+        [Test]
+        public void DuplicateNodesCommand_RecreatesOnlyInternalEdgesAndSelectsCopies()
+        {
+            ProjectBoardAsset board = ProjectBoardAsset.CreateTransient(BoardPresetFactory.CreateEmpty("Duplicate"));
+            var taskA = new TaskNodeModel { Title = "Task A", Position = new Vector2(100f, 100f) };
+            var taskB = new TaskNodeModel { Title = "Task B", Position = new Vector2(320f, 100f) };
+            var milestone = new MilestoneNodeModel { Title = "Milestone", Position = new Vector2(560f, 120f) };
+            board.Document.AddNode(taskA);
+            board.Document.AddNode(taskB);
+            board.Document.AddNode(milestone);
+            board.Document.AddEdge(new BoardEdgeModel(BoardEdgeTypeIds.Dependency, taskA.Id, taskB.Id));
+            board.Document.AddEdge(new BoardEdgeModel(BoardEdgeTypeIds.Milestone, taskB.Id, milestone.Id));
+
+            var command = new DuplicateNodesCommand(board, new[] { taskA.Id, taskB.Id }, new Vector2(48f, 40f), false);
+            command.Execute(board);
+
+            Assert.AreEqual(5, board.Document.Nodes.Count);
+            Assert.AreEqual(3, board.Document.Edges.Count);
+            Assert.AreEqual(2, board.Document.ViewState.SelectedNodeIds.Count);
+
+            List<BoardNodeModel> duplicatedTasks = board.Document.ViewState.SelectedNodeIds
+                .Select(board.Document.GetNode)
+                .Where(node => node != null)
+                .ToList();
+            Assert.AreEqual(2, duplicatedTasks.Count);
+            Assert.IsTrue(duplicatedTasks.All(node => node.Position.x >= 148f));
+
+            List<BoardEdgeModel> internalEdges = board.Document.Edges
+                .Where(edge => duplicatedTasks.Any(node => node.Id == edge.SourceNodeId) && duplicatedTasks.Any(node => node.Id == edge.TargetNodeId))
+                .ToList();
+            Assert.AreEqual(1, internalEdges.Count);
+            Assert.AreEqual(BoardEdgeTypeIds.Dependency, internalEdges[0].TypeId);
+
+            Assert.IsFalse(board.Document.Edges.Any(edge => duplicatedTasks.Any(node => node.Id == edge.SourceNodeId) && edge.TargetNodeId == milestone.Id));
+        }
+
+        [Test]
+        public void ArrangeNodesCommand_AlignsAndDistributesSelection()
+        {
+            ProjectBoardAsset board = ProjectBoardAsset.CreateTransient(BoardPresetFactory.CreateEmpty("Arrange"));
+            var first = new TaskNodeModel { Title = "First", Position = new Vector2(100f, 150f) };
+            var second = new TaskNodeModel { Title = "Second", Position = new Vector2(300f, 220f) };
+            var third = new TaskNodeModel { Title = "Third", Position = new Vector2(560f, 300f) };
+            board.Document.AddNode(first);
+            board.Document.AddNode(second);
+            board.Document.AddNode(third);
+
+            new ArrangeNodesCommand(board, new[] { first.Id, second.Id, third.Id }, BoardArrangeMode.AlignTop).Execute(board);
+            Assert.AreEqual(150f, board.Document.GetNode(first.Id).Position.y);
+            Assert.AreEqual(150f, board.Document.GetNode(second.Id).Position.y);
+            Assert.AreEqual(150f, board.Document.GetNode(third.Id).Position.y);
+
+            new ArrangeNodesCommand(board, new[] { first.Id, second.Id, third.Id }, BoardArrangeMode.DistributeHorizontal).Execute(board);
+            float firstX = board.Document.GetNode(first.Id).Position.x;
+            float secondX = board.Document.GetNode(second.Id).Position.x;
+            float thirdX = board.Document.GetNode(third.Id).Position.x;
+            Assert.Less(firstX, secondX);
+            Assert.Less(secondX, thirdX);
+        }
+
+        [Test]
+        public void MoveAndArrangeCommands_RespectSnapToGrid()
+        {
+            ProjectBoardAsset board = ProjectBoardAsset.CreateTransient(BoardPresetFactory.CreateEmpty("Snap"));
+            board.Document.ViewState.SnapToGrid = true;
+
+            var first = new TaskNodeModel { Title = "First", Position = new Vector2(101f, 117f) };
+            var second = new TaskNodeModel { Title = "Second", Position = new Vector2(297f, 139f) };
+            board.Document.AddNode(first);
+            board.Document.AddNode(second);
+
+            new DuplicateNodesCommand(board, new[] { first.Id }, new Vector2(11f, 19f), true).Execute(board);
+            BoardNodeModel duplicate = board.Document.Nodes.Last();
+            Assert.AreEqual(BoardLayoutUtility.SnapPosition(new Vector2(112f, 136f)), duplicate.Position);
+
+            new ArrangeNodesCommand(board, new[] { first.Id, second.Id }, BoardArrangeMode.AlignLeft).Execute(board);
+            Assert.AreEqual(96f, board.Document.GetNode(first.Id).Position.x);
+            Assert.AreEqual(96f, board.Document.GetNode(second.Id).Position.x);
         }
 
         [Test]

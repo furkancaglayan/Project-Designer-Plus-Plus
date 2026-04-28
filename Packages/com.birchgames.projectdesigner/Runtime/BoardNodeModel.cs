@@ -128,6 +128,11 @@ namespace ProjectDesigner.V2.Data
 
         public abstract BoardNodeModel Clone();
 
+        public void RegenerateId()
+        {
+            _id = Guid.NewGuid().ToString("N");
+        }
+
         private void EnsureId()
         {
             if (string.IsNullOrEmpty(_id))

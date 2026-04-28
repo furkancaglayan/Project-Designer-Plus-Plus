@@ -5,6 +5,18 @@ using UnityEngine.UIElements;
 
 namespace ProjectDesigner.V2.Editor
 {
+    internal readonly struct BoardNodeSelectionRequest
+    {
+        public string NodeId { get; }
+        public bool Toggle { get; }
+
+        public BoardNodeSelectionRequest(string nodeId, bool toggle)
+        {
+            NodeId = nodeId ?? string.Empty;
+            Toggle = toggle;
+        }
+    }
+
     internal sealed class BoardNodeView : VisualElement
     {
         private readonly BoardNodeModel _node;
@@ -14,11 +26,11 @@ namespace ProjectDesigner.V2.Editor
         private readonly Label _titleLabel;
         private readonly Label _categoryLabel;
         private readonly Label _previewLabel;
-        private readonly Label _tagsLabel;
+        private readonly VisualElement _tagsContainer;
         private readonly Label _connectHandle;
         private readonly Color _accentColor;
 
-        public event Action<string> Selected;
+        public event Action<BoardNodeSelectionRequest> Selected;
         public event Action<string, Vector2, int> DragStarted;
         public event Action<string, Vector2, int> ConnectionStarted;
 
@@ -94,11 +106,12 @@ namespace ProjectDesigner.V2.Editor
             _previewLabel.pickingMode = PickingMode.Ignore;
             Add(_previewLabel);
 
-            _tagsLabel = new Label(_node.GetTagsCsv());
-            _tagsLabel.AddToClassList("pd-node-tags");
-            _tagsLabel.pickingMode = PickingMode.Ignore;
-            _tagsLabel.style.color = ProjectDesignerColorUtility.Blend(_accentColor, new Color(0.18f, 0.22f, 0.26f), 0.2f);
-            Add(_tagsLabel);
+            _tagsContainer = new VisualElement();
+            _tagsContainer.AddToClassList("pd-node-tag-row");
+            _tagsContainer.pickingMode = PickingMode.Ignore;
+            Add(_tagsContainer);
+
+            RefreshTagChips();
 
             RegisterCallback<PointerDownEvent>(OnPointerDown);
         }
@@ -108,7 +121,7 @@ namespace ProjectDesigner.V2.Editor
             _titleLabel.text = _node.Title;
             _categoryLabel.text = _node.Category;
             _previewLabel.text = _definition == null ? string.Empty : _definition.GetPreview(_node, document);
-            _tagsLabel.text = _node.GetTagsCsv();
+            RefreshTagChips();
 
             style.left = _node.Position.x;
             style.top = _node.Position.y;
@@ -168,7 +181,13 @@ namespace ProjectDesigner.V2.Editor
 
             if (Selected != null)
             {
-                Selected.Invoke(_node.Id);
+                Selected.Invoke(new BoardNodeSelectionRequest(_node.Id, evt.shiftKey));
+            }
+
+            if (evt.shiftKey)
+            {
+                evt.StopPropagation();
+                return;
             }
 
             if (DragStarted != null)
@@ -188,7 +207,7 @@ namespace ProjectDesigner.V2.Editor
 
             if (Selected != null)
             {
-                Selected.Invoke(_node.Id);
+                Selected.Invoke(new BoardNodeSelectionRequest(_node.Id, false));
             }
 
             if (ConnectionStarted != null)
@@ -202,6 +221,37 @@ namespace ProjectDesigner.V2.Editor
         private static Vector2 GetEventPosition(Vector3 position)
         {
             return new Vector2(position.x, position.y);
+        }
+
+        private void RefreshTagChips()
+        {
+            _tagsContainer.Clear();
+
+            if (_node.Tags == null || _node.Tags.Count == 0)
+            {
+                _tagsContainer.style.display = DisplayStyle.None;
+                return;
+            }
+
+            _tagsContainer.style.display = DisplayStyle.Flex;
+            foreach (string tag in _node.Tags)
+            {
+                if (string.IsNullOrWhiteSpace(tag))
+                {
+                    continue;
+                }
+
+                var chip = new Label(tag.Trim());
+                chip.AddToClassList("pd-node-tag-chip");
+                chip.style.backgroundColor = ProjectDesignerColorUtility.WithAlpha(_accentColor, 0.1f);
+                chip.style.borderTopColor = ProjectDesignerColorUtility.WithAlpha(_accentColor, 0.18f);
+                chip.style.borderRightColor = ProjectDesignerColorUtility.WithAlpha(_accentColor, 0.18f);
+                chip.style.borderBottomColor = ProjectDesignerColorUtility.WithAlpha(_accentColor, 0.18f);
+                chip.style.borderLeftColor = ProjectDesignerColorUtility.WithAlpha(_accentColor, 0.18f);
+                chip.style.color = ProjectDesignerColorUtility.Blend(_accentColor, new Color(0.18f, 0.22f, 0.26f), 0.28f);
+                chip.pickingMode = PickingMode.Ignore;
+                _tagsContainer.Add(chip);
+            }
         }
     }
 }

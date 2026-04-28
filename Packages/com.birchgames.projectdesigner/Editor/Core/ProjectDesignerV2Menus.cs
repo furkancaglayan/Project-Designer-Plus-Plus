@@ -95,6 +95,78 @@ namespace ProjectDesigner.V2.Editor
             SettingsService.OpenProjectSettings(ProjectDesignerPackageInfo.SettingsPath);
         }
 
+        [MenuItem("Tools/Project Designer/Board Operations/Duplicate Selected", priority = 20)]
+        public static void DuplicateSelected()
+        {
+            RunWorkspaceAction(workspace => workspace.DuplicateSelection());
+        }
+
+        [MenuItem("Tools/Project Designer/Board Operations/Frame Selected", priority = 21)]
+        public static void FrameSelected()
+        {
+            RunWorkspaceAction(workspace => workspace.FrameSelection());
+        }
+
+        [MenuItem("Tools/Project Designer/Board Operations/Delete Selected", priority = 22)]
+        public static void DeleteSelected()
+        {
+            RunWorkspaceAction(workspace => workspace.DeleteSelectedNode());
+        }
+
+        [MenuItem("Tools/Project Designer/Board Operations/Toggle Snap To Grid", priority = 23)]
+        public static void ToggleSnapToGrid()
+        {
+            RunWorkspaceAction(workspace => workspace.ToggleSnapToGrid());
+        }
+
+        [MenuItem("Tools/Project Designer/Board Operations/Arrange/Align Left", priority = 24)]
+        public static void AlignLeft()
+        {
+            RunWorkspaceAction(workspace => workspace.ArrangeSelection(BoardArrangeMode.AlignLeft));
+        }
+
+        [MenuItem("Tools/Project Designer/Board Operations/Arrange/Align Center", priority = 25)]
+        public static void AlignCenter()
+        {
+            RunWorkspaceAction(workspace => workspace.ArrangeSelection(BoardArrangeMode.AlignCenter));
+        }
+
+        [MenuItem("Tools/Project Designer/Board Operations/Arrange/Align Right", priority = 26)]
+        public static void AlignRight()
+        {
+            RunWorkspaceAction(workspace => workspace.ArrangeSelection(BoardArrangeMode.AlignRight));
+        }
+
+        [MenuItem("Tools/Project Designer/Board Operations/Arrange/Align Top", priority = 27)]
+        public static void AlignTop()
+        {
+            RunWorkspaceAction(workspace => workspace.ArrangeSelection(BoardArrangeMode.AlignTop));
+        }
+
+        [MenuItem("Tools/Project Designer/Board Operations/Arrange/Align Middle", priority = 28)]
+        public static void AlignMiddle()
+        {
+            RunWorkspaceAction(workspace => workspace.ArrangeSelection(BoardArrangeMode.AlignMiddle));
+        }
+
+        [MenuItem("Tools/Project Designer/Board Operations/Arrange/Align Bottom", priority = 29)]
+        public static void AlignBottom()
+        {
+            RunWorkspaceAction(workspace => workspace.ArrangeSelection(BoardArrangeMode.AlignBottom));
+        }
+
+        [MenuItem("Tools/Project Designer/Board Operations/Arrange/Distribute Horizontal", priority = 30)]
+        public static void DistributeHorizontal()
+        {
+            RunWorkspaceAction(workspace => workspace.ArrangeSelection(BoardArrangeMode.DistributeHorizontal));
+        }
+
+        [MenuItem("Tools/Project Designer/Board Operations/Arrange/Distribute Vertical", priority = 31)]
+        public static void DistributeVertical()
+        {
+            RunWorkspaceAction(workspace => workspace.ArrangeSelection(BoardArrangeMode.DistributeVertical));
+        }
+
         [MenuItem("Assets/Create/Project Designer/Empty Board", priority = 310)]
         public static void CreateEmptyBoardFromAssetsMenu()
         {
@@ -152,6 +224,21 @@ namespace ProjectDesigner.V2.Editor
             }
 
             return asset;
+        }
+
+        private static void RunWorkspaceAction(System.Action<ProjectDesignerWorkspaceView> action)
+        {
+            ProjectDesignerWorkspaceView workspace = ProjectDesignerV2Window.TryGetOpenWorkspace();
+            if (workspace == null)
+            {
+                EditorUtility.DisplayDialog(ProjectDesignerProductInfo.ProductName, "Open a planner window with a planning board first.", "OK");
+                return;
+            }
+
+            if (action != null)
+            {
+                action.Invoke(workspace);
+            }
         }
     }
 }

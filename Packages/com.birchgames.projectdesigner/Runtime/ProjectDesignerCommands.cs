@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace ProjectDesigner.V2.Data
@@ -99,6 +101,25 @@ namespace ProjectDesigner.V2.Data
         }
     }
 
+    public sealed class DeleteNodesCommand : ProjectDesignerSnapshotCommand
+    {
+        public DeleteNodesCommand(ProjectBoardAsset board, IEnumerable<string> nodeIds)
+            : base("Delete Cards", board.Document, BuildAfter(board.Document, nodeIds))
+        {
+        }
+
+        private static BoardDocument BuildAfter(BoardDocument document, IEnumerable<string> nodeIds)
+        {
+            BoardDocument after = document.DeepClone();
+            foreach (string nodeId in (nodeIds ?? Enumerable.Empty<string>()).Where(id => !string.IsNullOrEmpty(id)).Distinct())
+            {
+                after.RemoveNode(nodeId);
+            }
+
+            return after;
+        }
+    }
+
     public sealed class MoveNodeCommand : ProjectDesignerSnapshotCommand
     {
         public MoveNodeCommand(ProjectBoardAsset board, string nodeId, Vector2 newPosition)
@@ -113,6 +134,34 @@ namespace ProjectDesigner.V2.Data
             if (node != null)
             {
                 node.Position = newPosition;
+            }
+
+            return after;
+        }
+    }
+
+    public sealed class MoveNodesCommand : ProjectDesignerSnapshotCommand
+    {
+        public MoveNodesCommand(ProjectBoardAsset board, IDictionary<string, Vector2> newPositions)
+            : base("Move Cards", board.Document, BuildAfter(board.Document, newPositions))
+        {
+        }
+
+        private static BoardDocument BuildAfter(BoardDocument document, IDictionary<string, Vector2> newPositions)
+        {
+            BoardDocument after = document.DeepClone();
+            if (newPositions == null)
+            {
+                return after;
+            }
+
+            foreach (KeyValuePair<string, Vector2> pair in newPositions)
+            {
+                BoardNodeModel node = after.GetNode(pair.Key);
+                if (node != null)
+                {
+                    node.Position = pair.Value;
+                }
             }
 
             return after;
@@ -175,6 +224,96 @@ namespace ProjectDesigner.V2.Data
         {
             BoardDocument after = document.DeepClone();
             after.UpsertFilter(filter == null ? null : filter.Clone());
+            return after;
+        }
+    }
+
+    public sealed class DuplicateNodesCommand : ProjectDesignerSnapshotCommand
+    {
+        public DuplicateNodesCommand(ProjectBoardAsset board, IEnumerable<string> nodeIds, Vector2 offset, bool snapToGrid)
+            : base("Duplicate Cards", board.Document, BuildAfter(board.Document, nodeIds, offset, snapToGrid))
+        {
+        }
+
+        private static BoardDocument BuildAfter(BoardDocument document, IEnumerable<string> nodeIds, Vector2 offset, bool snapToGrid)
+        {
+            BoardDocument after = document.DeepClone();
+            List<string> orderedIds = (nodeIds ?? Enumerable.Empty<string>())
+                .Where(id => !string.IsNullOrEmpty(id))
+                .Distinct()
+                .ToList();
+
+            List<BoardNodeModel> originalNodes = orderedIds
+                .Select(after.GetNode)
+                .Where(node => node != null)
+                .ToList();
+
+            if (originalNodes.Count == 0)
+            {
+                return after;
+            }
+
+            var idMap = new Dictionary<string, string>();
+            var duplicatedIds = new List<string>();
+            foreach (BoardNodeModel originalNode in originalNodes)
+            {
+                BoardNodeModel duplicate = originalNode.Clone();
+                duplicate.RegenerateId();
+                duplicate.Position = snapToGrid
+                    ? BoardLayoutUtility.SnapPosition(originalNode.Position + offset)
+                    : originalNode.Position + offset;
+                after.AddNode(duplicate);
+                idMap[originalNode.Id] = duplicate.Id;
+                duplicatedIds.Add(duplicate.Id);
+            }
+
+            List<BoardEdgeModel> duplicatedEdges = after.Edges
+                .Where(edge => edge != null && idMap.ContainsKey(edge.SourceNodeId) && idMap.ContainsKey(edge.TargetNodeId))
+                .Select(edge =>
+                {
+                    BoardEdgeModel duplicate = edge.Clone();
+                    duplicate.RegenerateId();
+                    duplicate.SourceNodeId = idMap[edge.SourceNodeId];
+                    duplicate.TargetNodeId = idMap[edge.TargetNodeId];
+                    return duplicate;
+                })
+                .ToList();
+
+            foreach (BoardEdgeModel duplicatedEdge in duplicatedEdges)
+            {
+                after.AddEdge(duplicatedEdge);
+            }
+
+            after.ViewState.SetSelection(duplicatedIds, duplicatedIds[0]);
+            return after;
+        }
+    }
+
+    public sealed class ArrangeNodesCommand : ProjectDesignerSnapshotCommand
+    {
+        public ArrangeNodesCommand(ProjectBoardAsset board, IEnumerable<string> nodeIds, BoardArrangeMode arrangeMode)
+            : base("Arrange Cards", board.Document, BuildAfter(board.Document, nodeIds, arrangeMode))
+        {
+        }
+
+        private static BoardDocument BuildAfter(BoardDocument document, IEnumerable<string> nodeIds, BoardArrangeMode arrangeMode)
+        {
+            BoardDocument after = document.DeepClone();
+            List<BoardNodeModel> nodes = (nodeIds ?? Enumerable.Empty<string>())
+                .Select(after.GetNode)
+                .Where(node => node != null)
+                .ToList();
+
+            Dictionary<string, Vector2> positions = BoardLayoutUtility.Arrange(nodes, arrangeMode, after.ViewState.SnapToGrid);
+            foreach (KeyValuePair<string, Vector2> pair in positions)
+            {
+                BoardNodeModel node = after.GetNode(pair.Key);
+                if (node != null)
+                {
+                    node.Position = pair.Value;
+                }
+            }
+
             return after;
         }
     }
