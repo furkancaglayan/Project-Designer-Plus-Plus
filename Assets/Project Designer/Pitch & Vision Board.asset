@@ -22,13 +22,13 @@ MonoBehaviour:
     - Producer
     - Brand / Comms
     _viewState:
-      _panOffset: {x: 0, y: 0}
-      _zoom: 1
+      _panOffset: {x: -162.73499, y: -8.175232}
+      _zoom: 0.7492611
       _searchQuery: 
       _category: All
-      _selectedNodeId: 6e884c8a571a48babbb0e8088ce6fbfe
+      _selectedNodeId: 1dfa0829762d42e8bb8353541b9b4d1e
       _selectedNodeIds:
-      - 6e884c8a571a48babbb0e8088ce6fbfe
+      - 1dfa0829762d42e8bb8353541b9b4d1e
       _activeFilterId: 
       _quickFilterId: 
       _snapToGrid: 0
@@ -152,25 +152,27 @@ MonoBehaviour:
       _targetNodeId: 5201bcbc8fba4d16848f9eead02fa995
       _label: 
     _nodes:
-    - rid: 4671173548504776745
-    - rid: 4671173548504776746
-    - rid: 4671173548504776747
-    - rid: 4671173548504776748
-    - rid: 4671173548504776749
-    - rid: 4671173548504776750
-    - rid: 4671173548504776751
-    - rid: 4671173548504776752
-    - rid: 4671173548504776753
+    - rid: 4671173548504777128
+    - rid: 4671173548504777129
+    - rid: 4671173548504777130
+    - rid: 4671173548504777131
+    - rid: 4671173548504777132
+    - rid: 4671173548504777133
+    - rid: 4671173548504777134
+    - rid: 4671173548504777135
+    - rid: 4671173548504777136
+    - rid: 4671173548504777137
+    - rid: 4671173548504777138
   references:
     version: 2
     RefIds:
-    - rid: 4671173548504776745
+    - rid: 4671173548504777128
       type: {class: ProjectBriefNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
       data:
         _id: 6e884c8a571a48babbb0e8088ce6fbfe
         _typeId: project-designer.project-brief
         _title: Project Brief
-        _position: {x: 120, y: 100}
+        _position: {x: 94.63104, y: 120.75644}
         _size: {x: 360, y: 280}
         _tags:
         - overview
@@ -182,7 +184,7 @@ MonoBehaviour:
         _teamSnapshot: Creative Director, Producer, Brand / Comms
         _projectKnowledge: 'Answer the core pitch questions first: who is this for,
           what emotion are we promising, and what should never be in the pitch?'
-    - rid: 4671173548504776746
+    - rid: 4671173548504777129
       type: {class: MilestoneNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
       data:
         _id: 5e4b99926cb244eaacea4e3a4687c7fe
@@ -197,13 +199,13 @@ MonoBehaviour:
         _summary: The one-pager, mood direction, and target audience framing are
           ready to circulate.
         _targetDateIso: 2026-05-16
-    - rid: 4671173548504776747
+    - rid: 4671173548504777130
       type: {class: TaskNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
       data:
         _id: 02a120fc23eb41b082ad59ffe084b486
         _typeId: project-designer.task
         _title: Define player fantasy
-        _position: {x: 120, y: 380}
+        _position: {x: 31.90039, y: 441.30072}
         _size: {x: 320, y: 220}
         _tags:
         - pitch
@@ -218,13 +220,13 @@ MonoBehaviour:
         _dueDateIso: 2026-05-02
         _acceptanceCriteria: The pitch can be explained in under 20 seconds without
           extra context.
-    - rid: 4671173548504776748
+    - rid: 4671173548504777131
       type: {class: TaskNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
       data:
         _id: 1dfa0829762d42e8bb8353541b9b4d1e
         _typeId: project-designer.task
         _title: Describe target audience
-        _position: {x: 460, y: 380}
+        _position: {x: 608.4778, y: 540.5627}
         _size: {x: 320, y: 220}
         _tags:
         - audience
@@ -239,13 +241,13 @@ MonoBehaviour:
         _dueDateIso: 2026-05-06
         _acceptanceCriteria: Audience framing includes taste, expectations, and rejection
           criteria.
-    - rid: 4671173548504776749
+    - rid: 4671173548504777132
       type: {class: TaskNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
       data:
         _id: 5201bcbc8fba4d16848f9eead02fa995
         _typeId: project-designer.task
         _title: Draft pitch one-pager
-        _position: {x: 800, y: 380}
+        _position: {x: 968.8114, y: 380.89798}
         _size: {x: 320, y: 220}
         _tags:
         - pitch
@@ -253,20 +255,20 @@ MonoBehaviour:
         _isPinned: 0
         _description: Turn the fantasy, audience, and scope into a tight one-page
           narrative.
-        _status: 0
+        _status: 1
         _priority: 2
         _estimatePoints: 3
         _assignee: Brand / Comms
         _dueDateIso: 2026-05-09
         _acceptanceCriteria: One-pager is short enough for review and strong enough
           to reuse elsewhere.
-    - rid: 4671173548504776750
+    - rid: 4671173548504777133
       type: {class: TaskNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
       data:
         _id: 1f48c5bc2ccb404da025a856c13e171c
         _typeId: project-designer.task
         _title: Choose visual hook
-        _position: {x: 1140, y: 380}
+        _position: {x: 1140, y: 378.93912}
         _size: {x: 320, y: 220}
         _tags:
         - vision
@@ -281,7 +283,7 @@ MonoBehaviour:
         _dueDateIso: 2026-05-10
         _acceptanceCriteria: The hook is recognizable and aligned with realistic
           production scope.
-    - rid: 4671173548504776751
+    - rid: 4671173548504777134
       type: {class: NoteNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
       data:
         _id: b2e2475bdf18419981891e8435b90656
@@ -301,7 +303,7 @@ MonoBehaviour:
           - Keep the deck focused on one
           clear emotional hook.'
         _accentHex: '#E58C4A'
-    - rid: 4671173548504776752
+    - rid: 4671173548504777135
       type: {class: ReferenceNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
       data:
         _id: 96a3ca0492d4446586e94ace86537d07
@@ -319,13 +321,13 @@ MonoBehaviour:
         _imageAssetPath: 
         _textReference: Collect references that communicate tone before mechanics.
         _externalUrl: 
-    - rid: 4671173548504776753
+    - rid: 4671173548504777136
       type: {class: ReferenceNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
       data:
         _id: d7027b2882ef49cfaf43ba974108b2ec
         _typeId: project-designer.reference
         _title: Audience Benchmark Notes
-        _position: {x: 1460, y: 580}
+        _position: {x: 1427.1125, y: 639.40955}
         _size: {x: 320, y: 220}
         _tags:
         - audience
@@ -337,3 +339,30 @@ MonoBehaviour:
         _imageAssetPath: 
         _textReference: Tag the benchmarks by fantasy, tone, and production expectation.
         _externalUrl: 
+    - rid: 4671173548504777137
+      type: {class: StatusReportNodeModel, ns: ProjectDesigner.V2.SampleExtension, asm: ProjectDesigner.V2.SampleExtension}
+      data:
+        _id: 1bf1234509524f81b307305893d93d41
+        _typeId: project-designer.sample.status-report
+        _title: Status Report
+        _position: {x: 600.78784, y: 81.3613}
+        _size: {x: 320, y: 220}
+        _tags: []
+        _isPinned: 0
+        _updateSummary: Weekly delivery summary.
+        _risks: List blockers, unknowns, and asks.
+        _health: 0
+    - rid: 4671173548504777138
+      type: {class: ProjectBriefNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
+      data:
+        _id: 2316ad2927154027ba86eeed1163cd94
+        _typeId: project-designer.project-brief
+        _title: Project Brief
+        _position: {x: 129.66309, y: -185.42468}
+        _size: {x: 360, y: 280}
+        _tags: []
+        _isPinned: 1
+        _overview: Use this card for the pitch, player promise, and current planning
+          focus.
+        _teamSnapshot: Capture the team roles and ownership here.
+        _projectKnowledge: Track constraints, shared vocabulary, and important references.

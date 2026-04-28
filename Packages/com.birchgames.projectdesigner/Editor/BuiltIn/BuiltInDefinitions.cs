@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace ProjectDesigner.V2.BuiltIn
 {
-    internal sealed class TaskNodeDefinition : IProjectDesignerNodeDefinition
+    public sealed class TaskNodeDefinition : IProjectDesignerNodeDefinition
     {
         public string TypeId { get { return BoardNodeTypeIds.Task; } }
         public string DisplayName { get { return "Task"; } }
@@ -28,19 +28,17 @@ namespace ProjectDesigner.V2.BuiltIn
                 return string.Empty;
             }
 
-            string assignee = string.IsNullOrEmpty(task.Assignee) ? "Unassigned" : task.Assignee;
-            string dueLabel = string.Empty;
-            if (BoardInsights.IsTaskOverdue(task))
+            if (!string.IsNullOrWhiteSpace(task.Description))
             {
-                dueLabel = " | Overdue";
-            }
-            else if (BoardInsights.IsTaskDueSoon(task))
-            {
-                dueLabel = " | Due Soon";
+                return task.Description.Trim();
             }
 
-            string blockedLabel = BoardInsights.IsTaskBlocked(document, task) ? " | Blocked" : string.Empty;
-            return task.Status + " | " + task.Priority + " | " + assignee + dueLabel + blockedLabel;
+            if (!string.IsNullOrWhiteSpace(task.AcceptanceCriteria))
+            {
+                return task.AcceptanceCriteria.Trim();
+            }
+
+            return "Describe the user value and acceptance criteria.";
         }
     }
 

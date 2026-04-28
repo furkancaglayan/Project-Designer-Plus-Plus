@@ -588,6 +588,24 @@ namespace ProjectDesigner.V2.Tests
         }
 
         [Test]
+        public void TaskDefinition_PreviewUsesDescriptionBeforePlannerMetadata()
+        {
+            var definition = new TaskNodeDefinition();
+            var task = new TaskNodeModel
+            {
+                Title = "Audience",
+                Description = "Clarify who the vertical slice is meant to impress.",
+                Assignee = "Producer",
+                Status = TaskNodeStatus.InProgress,
+                Priority = TaskNodePriority.High
+            };
+
+            string preview = definition.GetPreview(task, BoardPresetFactory.CreateEmpty("Preview"));
+
+            Assert.AreEqual("Clarify who the vertical slice is meant to impress.", preview);
+        }
+
+        [Test]
         public void BoardCatalog_FindsAllProjectBoardAssets()
         {
             const string rootFolder = "Assets/__ProjectDesignerTemp";
