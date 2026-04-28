@@ -115,6 +115,7 @@
 
 .pd-node {
     padding: 12px;
+    padding-right: 64px;
     background-color: rgb(255, 255, 255);
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
@@ -155,6 +156,70 @@
     border-top-right-radius: 8px;
     border-bottom-left-radius: 8px;
     border-bottom-right-radius: 8px;
+}
+
+.pd-node-link-frame {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    border-top-width: 2px;
+    border-right-width: 2px;
+    border-bottom-width: 2px;
+    border-left-width: 2px;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+.pd-node-link-valid {
+    border-top-color: rgba(77, 184, 115, 0.7);
+    border-right-color: rgba(77, 184, 115, 0.7);
+    border-bottom-color: rgba(77, 184, 115, 0.7);
+    border-left-color: rgba(77, 184, 115, 0.7);
+    background-color: rgba(77, 184, 115, 0.04);
+}
+
+.pd-node-link-hover {
+    border-top-color: rgb(76, 122, 255);
+    border-right-color: rgb(76, 122, 255);
+    border-bottom-color: rgb(76, 122, 255);
+    border-left-color: rgb(76, 122, 255);
+    background-color: rgba(76, 122, 255, 0.07);
+}
+
+.pd-node-connector {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    min-width: 38px;
+    min-height: 20px;
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    font-size: 10px;
+    -unity-font-style: bold;
+    text-align: center;
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    border-top-left-radius: 999px;
+    border-top-right-radius: 999px;
+    border-bottom-left-radius: 999px;
+    border-bottom-right-radius: 999px;
+}
+
+.pd-node-connector-active {
+    background-color: rgb(76, 122, 255);
+    border-top-color: rgb(76, 122, 255);
+    border-right-color: rgb(76, 122, 255);
+    border-bottom-color: rgb(76, 122, 255);
+    border-left-color: rgb(76, 122, 255);
+    color: rgb(255, 255, 255);
 }
 
 .pd-node-category {
@@ -440,4 +505,35 @@
     border-right-color: rgba(27, 39, 51, 0.08);
     border-bottom-color: rgba(27, 39, 51, 0.08);
     border-left-color: rgba(27, 39, 51, 0.08);
+}
+
+.pd-inline-link-menu {
+    position: absolute;
+    width: 260px;
+    padding: 14px;
+    background-color: rgba(255, 255, 255, 0.98);
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    border-top-color: rgba(27, 39, 51, 0.12);
+    border-right-color: rgba(27, 39, 51, 0.12);
+    border-bottom-color: rgba(27, 39, 51, 0.12);
+    border-left-color: rgba(27, 39, 51, 0.12);
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.pd-inline-link-menu-title {
+    -unity-font-style: bold;
+    color: rgb(31, 40, 52);
+}
+
+.pd-inline-link-menu-body {
+    margin-top: 6px;
+    margin-bottom: 10px;
+    color: rgb(95, 109, 126);
+    white-space: normal;
 }

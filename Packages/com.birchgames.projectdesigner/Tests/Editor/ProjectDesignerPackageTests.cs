@@ -345,6 +345,33 @@ namespace ProjectDesigner.V2.Tests
         }
 
         [Test]
+        public void LinkUtility_GroupsMultipleValidLinkTypesPerTarget()
+        {
+            BoardDocument document = BoardPresetFactory.CreateEmpty("Inline Links");
+            var sourceTask = new TaskNodeModel { Title = "Source Task" };
+            var targetTask = new TaskNodeModel { Title = "Target Task" };
+            var milestone = new MilestoneNodeModel { Title = "Target Milestone" };
+
+            document.AddNode(sourceTask);
+            document.AddNode(targetTask);
+            document.AddNode(milestone);
+
+            Dictionary<string, List<ProjectDesignerLinkOption>> byTarget = ProjectDesignerLinkUtility.GetLinkOptionsByTarget(document, sourceTask);
+            List<ProjectDesignerLinkOption> taskOptions = byTarget[targetTask.Id];
+            List<ProjectDesignerLinkOption> milestoneOptions = byTarget[milestone.Id];
+
+            Assert.AreEqual(2, taskOptions.Count);
+            CollectionAssert.AreEquivalent(
+                new[] { BoardEdgeTypeIds.Dependency, BoardEdgeTypeIds.Reference },
+                taskOptions.Select(option => option.Definition.TypeId).ToArray());
+
+            Assert.AreEqual(2, milestoneOptions.Count);
+            CollectionAssert.AreEquivalent(
+                new[] { BoardEdgeTypeIds.Milestone, BoardEdgeTypeIds.Reference },
+                milestoneOptions.Select(option => option.Definition.TypeId).ToArray());
+        }
+
+        [Test]
         public void SpawnUtility_StaggersRepeatedManualCreatePositions()
         {
             Vector2 center = new Vector2(640f, 360f);

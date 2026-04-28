@@ -78,6 +78,41 @@ namespace ProjectDesigner.V2.Editor
             return options;
         }
 
+        public static Dictionary<string, List<ProjectDesignerLinkOption>> GetLinkOptionsByTarget(BoardDocument document, BoardNodeModel selectedNode)
+        {
+            return GetLinkOptions(document, selectedNode)
+                .GroupBy(option => option.OtherNode.Id)
+                .ToDictionary(group => group.Key, group => group.ToList());
+        }
+
+        public static List<ProjectDesignerLinkOption> GetLinkOptionsForTarget(BoardDocument document, BoardNodeModel selectedNode, BoardNodeModel targetNode)
+        {
+            if (targetNode == null)
+            {
+                return new List<ProjectDesignerLinkOption>();
+            }
+
+            Dictionary<string, List<ProjectDesignerLinkOption>> byTarget = GetLinkOptionsByTarget(document, selectedNode);
+            if (byTarget.TryGetValue(targetNode.Id, out List<ProjectDesignerLinkOption> options))
+            {
+                return options;
+            }
+
+            return new List<ProjectDesignerLinkOption>();
+        }
+
+        public static string GetInlineActionLabel(ProjectDesignerLinkOption option)
+        {
+            if (option == null || option.Definition == null)
+            {
+                return "Create Link";
+            }
+
+            return option.SelectedNodeIsSource
+                ? option.Definition.DisplayName
+                : option.Definition.DisplayName + " (incoming)";
+        }
+
         private static string GetBaseLabel(ProjectDesignerLinkOption option)
         {
             if (option == null || option.OtherNode == null)

@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6c9b53d589047b34cb69ecbee4544dd4, type: 3}
-  m_Name: Technical Design Board 1
+  m_Name: Technical Design Board
   m_EditorClassIdentifier: 
   _schemaVersion: 2.0.0-preview
   _document:
-    _boardName: Technical Design Board 1
+    _boardName: Technical Design Board
     _summary: A denser technical-design board that demonstrates architecture mapping,
       service relationships, and implementation notes.
     _teamMembers:
@@ -22,44 +22,44 @@ MonoBehaviour:
     - Technical Designer
     - Pipeline Engineer
     _viewState:
-      _panOffset: {x: -154.90015, y: -22.825165}
-      _zoom: 0.6548635
+      _panOffset: {x: -310.2221, y: -440.27325}
+      _zoom: 0.9746449
       _searchQuery: 
       _category: Technical Design
-      _selectedNodeId: 
+      _selectedNodeId: 57c928deb7414aa7a37c7ae773a685ce
       _activeFilterId: 
     _savedFilters:
-    - _id: 6137c5e0e2e74efcb32b5074d583146c
+    - _id: 764e24a207294f0b91fb9ee901a18c61
       _name: Planning
       _searchQuery: 
       _category: Planning
       _requiredTag: 
       _includeTechnicalDesign: 0
-    - _id: 9b51a5b372ea4f46856c61a3f6cc63cc
+    - _id: c5b9ef56f6fa44879d5939f59d818209
       _name: References
       _searchQuery: 
       _category: Reference
       _requiredTag: 
       _includeTechnicalDesign: 0
-    - _id: ff1921b766cd43b4b0401323ba047053
+    - _id: 4a8ef5ceb244416d8a9e515356d67f99
       _name: Technical
       _searchQuery: 
       _category: Technical Design
       _requiredTag: 
       _includeTechnicalDesign: 1
-    - _id: 29a4613240574112b8520264c3d197a1
+    - _id: 0e222ef4feb249e6847200565de47027
       _name: Architecture
       _searchQuery: 
       _category: Technical Design
       _requiredTag: 
       _includeTechnicalDesign: 1
-    - _id: 91853e51634841ec8ab8b1f7dade87c4
+    - _id: 51d70ab182f445199a051be1b833e352
       _name: Importers
       _searchQuery: 
       _category: Technical Design
       _requiredTag: importer
       _includeTechnicalDesign: 1
-    - _id: e889aad4c36048538086eacf98364855
+    - _id: f3850b890bfb4fad93965e32a535d69c
       _name: Risks
       _searchQuery: 
       _category: All
@@ -82,77 +82,101 @@ MonoBehaviour:
       _name: Technical Design
       _description: A richer architecture sample with multiple class relationships,
         notes, and package-thinking.
+    - _id: project-designer.preset.pitch-vision
+      _name: Pitch & Vision
+      _description: Workflow preset for player promise, target audience, and pitch
+        framing.
+    - _id: project-designer.preset.milestone-roadmap
+      _name: Milestone Roadmap
+      _description: Workflow preset for shaping checkpoints, dependencies, and scope.
+    - _id: project-designer.preset.research-reference
+      _name: Research & Reference
+      _description: Workflow preset for reference capture, synthesis, and research
+        tasks.
+    - _id: project-designer.preset.stakeholder-review
+      _name: Stakeholder Review
+      _description: Workflow preset for demo prep, review asks, and risk framing.
     _edges:
-    - _id: cf2d157a704b4b76a1ab341b485adbee
+    - _id: f302c0f2814644e98425e302a5a6fab4
       _typeId: project-designer.edge.technical
-      _sourceNodeId: 5bac8354eeef4f7196f793aa396e88cf
-      _targetNodeId: 4546f466e3ea4013934f436127c9f0a7
+      _sourceNodeId: 57c928deb7414aa7a37c7ae773a685ce
+      _targetNodeId: ed797114a9b446f092b2057aadcb920e
       _label: 
-    - _id: 88a3ce3dc09241fab9e13451e28890ee
+    - _id: 3cc13817712240fe97cd0a260463c135
       _typeId: project-designer.edge.technical
-      _sourceNodeId: 5bac8354eeef4f7196f793aa396e88cf
-      _targetNodeId: 9e0fbc86d9e049e2809efe08ee7a6dbb
+      _sourceNodeId: 57c928deb7414aa7a37c7ae773a685ce
+      _targetNodeId: ec7d914c4264416d8c39e98fcd778a9a
       _label: 
-    - _id: d65bb2ee09dd438db0d8035729706ccc
+    - _id: d288660e853c4da984539f198b63620d
       _typeId: project-designer.edge.technical
-      _sourceNodeId: 8a3ca03a46ea4568b29cf1d511cccfab
-      _targetNodeId: 5bac8354eeef4f7196f793aa396e88cf
+      _sourceNodeId: 37c5b1eb050048d894beb2cc353741ea
+      _targetNodeId: 57c928deb7414aa7a37c7ae773a685ce
       _label: 
-    - _id: 9eb92e4e3f164fda83f802074b7d9e4d
+    - _id: 0ee4b13f93504df6b787fb12ee748f5f
       _typeId: project-designer.edge.technical
-      _sourceNodeId: 77cbeda0433e4b94aa48fcbc89b86f89
-      _targetNodeId: e53aee7ef81740f98588a29dca460d78
+      _sourceNodeId: 19e20169528043679bb288859cd14c68
+      _targetNodeId: 3b9e0b3dfb244dc399b7844525aa4430
       _label: 
-    - _id: 1921c6473c3147049572e601bd743bc0
+    - _id: 22dcc7dd2002423695ec4cefb4bccfe3
       _typeId: project-designer.edge.technical
-      _sourceNodeId: 2bed711eb1d7479eac493efb67b2b124
-      _targetNodeId: 9e0fbc86d9e049e2809efe08ee7a6dbb
+      _sourceNodeId: 0ca6414901fb4203b43082c97e510e85
+      _targetNodeId: ec7d914c4264416d8c39e98fcd778a9a
       _label: 
-    - _id: baf0be54a06246eebe3400c52a12b39b
+    - _id: 97e6adddc0cd4161872d64e5c46d25e8
       _typeId: project-designer.edge.technical
-      _sourceNodeId: e53aee7ef81740f98588a29dca460d78
-      _targetNodeId: 4546f466e3ea4013934f436127c9f0a7
+      _sourceNodeId: 3b9e0b3dfb244dc399b7844525aa4430
+      _targetNodeId: ed797114a9b446f092b2057aadcb920e
       _label: 
-    - _id: e210e63652ee4141a41fc0ce4dbd3e52
+    - _id: 7e95059c072840b2aa5a83a0bde5b09d
       _typeId: project-designer.edge.reference
-      _sourceNodeId: ae1d9bb739524c69b7cca3957ac563d6
-      _targetNodeId: 4546f466e3ea4013934f436127c9f0a7
+      _sourceNodeId: 1912f216e29942428c0e4fcdaa6c9fd0
+      _targetNodeId: ed797114a9b446f092b2057aadcb920e
       _label: 
-    - _id: dff7e650d3864741bd582e193daa6aba
+    - _id: 2f33a3eeef194a34993fabb4a10ad297
       _typeId: project-designer.edge.reference
-      _sourceNodeId: 14112181ed774e4eae055e5ec990cb38
-      _targetNodeId: 5bac8354eeef4f7196f793aa396e88cf
+      _sourceNodeId: 7b3aaec237624f73a674740da2186d77
+      _targetNodeId: 57c928deb7414aa7a37c7ae773a685ce
       _label: 
-    - _id: 7f04abf1b9d549399316e4a7aa0c9b21
+    - _id: c44daff85dc34288b1b9eb37e727e639
       _typeId: project-designer.edge.reference
-      _sourceNodeId: c763ef95ec5c44fc95f2383f974a9548
-      _targetNodeId: 5bac8354eeef4f7196f793aa396e88cf
+      _sourceNodeId: 827bf6cab99648deb1ffe555346444a9
+      _targetNodeId: 57c928deb7414aa7a37c7ae773a685ce
       _label: 
-    - _id: 7c8d238324f04869a9a7ca21990b9512
+    - _id: d46d25e19e514128be93aa21765521f6
       _typeId: project-designer.edge.reference
-      _sourceNodeId: 26ceeb67a0f149acb2e314390d107959
-      _targetNodeId: e53aee7ef81740f98588a29dca460d78
+      _sourceNodeId: b2c9ab33d4f0435db32478816e7f1049
+      _targetNodeId: 3b9e0b3dfb244dc399b7844525aa4430
       _label: 
+    - _id: e7cf6366828d486fa50d79687c7349a2
+      _typeId: project-designer.edge.reference
+      _sourceNodeId: 0ca6414901fb4203b43082c97e510e85
+      _targetNodeId: 3b9e0b3dfb244dc399b7844525aa4430
+      _label: references
+    - _id: a230bb975921457d8d3a2da1cd704465
+      _typeId: project-designer.edge.technical
+      _sourceNodeId: 19e20169528043679bb288859cd14c68
+      _targetNodeId: 57c928deb7414aa7a37c7ae773a685ce
+      _label: relates to
     _nodes:
-    - rid: 4671173538647376176
-    - rid: 4671173538647376177
-    - rid: 4671173538647376178
-    - rid: 4671173538647376179
-    - rid: 4671173538647376180
-    - rid: 4671173538647376181
-    - rid: 4671173538647376182
-    - rid: 4671173538647376183
-    - rid: 4671173538647376184
-    - rid: 4671173538647376185
-    - rid: 4671173538647376186
-    - rid: 4671173538647376187
+    - rid: 4671173541606195862
+    - rid: 4671173541606195863
+    - rid: 4671173541606195864
+    - rid: 4671173541606195865
+    - rid: 4671173541606195866
+    - rid: 4671173541606195867
+    - rid: 4671173541606195868
+    - rid: 4671173541606195869
+    - rid: 4671173541606195870
+    - rid: 4671173541606195871
+    - rid: 4671173541606195872
+    - rid: 4671173541606195873
   references:
     version: 2
     RefIds:
-    - rid: 4671173538647376176
+    - rid: 4671173541606195862
       type: {class: ProjectBriefNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
       data:
-        _id: f41257e92eb742c3ab266cd398e6c758
+        _id: 9d81895ed71f4154a2127d0eb9bda2ad
         _typeId: project-designer.project-brief
         _title: Project Brief
         _position: {x: 120, y: 100}
@@ -168,13 +192,13 @@ MonoBehaviour:
         _projectKnowledge: 'Keep the product surface simple, but keep the internals
           modular: board data, editor shell, drag interactions, and importers should
           evolve independently.'
-    - rid: 4671173538647376177
+    - rid: 4671173541606195863
       type: {class: ClassNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
       data:
-        _id: 4546f466e3ea4013934f436127c9f0a7
+        _id: ed797114a9b446f092b2057aadcb920e
         _typeId: project-designer.class
         _title: PlannerBootstrapper
-        _position: {x: 120, y: 360}
+        _position: {x: -56.439507, y: 390.151}
         _size: {x: 340, y: 260}
         _tags:
         - entry
@@ -193,13 +217,13 @@ MonoBehaviour:
           _visibility: public
         - _signature: OpenBoard(ProjectBoardAsset board)
           _visibility: public
-    - rid: 4671173538647376178
+    - rid: 4671173541606195864
       type: {class: ClassNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
       data:
-        _id: 9e0fbc86d9e049e2809efe08ee7a6dbb
+        _id: ec7d914c4264416d8c39e98fcd778a9a
         _typeId: project-designer.class
         _title: BoardDocumentRepository
-        _position: {x: 500, y: 360}
+        _position: {x: 306.81, y: 299.69788}
         _size: {x: 340, y: 260}
         _tags:
         - persistence
@@ -218,13 +242,13 @@ MonoBehaviour:
           _visibility: public
         - _signature: Save(BoardDocument document)
           _visibility: public
-    - rid: 4671173538647376179
+    - rid: 4671173541606195865
       type: {class: ClassNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
       data:
-        _id: 5bac8354eeef4f7196f793aa396e88cf
+        _id: 57c928deb7414aa7a37c7ae773a685ce
         _typeId: project-designer.class
         _title: PlannerCanvasController
-        _position: {x: 880, y: 360}
+        _position: {x: 637.67487, y: 490.65454}
         _size: {x: 340, y: 260}
         _tags:
         - interaction
@@ -245,13 +269,13 @@ MonoBehaviour:
           _visibility: public
         - _signature: FrameAll()
           _visibility: public
-    - rid: 4671173538647376180
+    - rid: 4671173541606195866
       type: {class: ClassNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
       data:
-        _id: 8a3ca03a46ea4568b29cf1d511cccfab
+        _id: 37c5b1eb050048d894beb2cc353741ea
         _typeId: project-designer.class
         _title: LinkValidationService
-        _position: {x: 1260, y: 360}
+        _position: {x: 1254.4165, y: 358.88327}
         _size: {x: 340, y: 260}
         _tags:
         - links
@@ -268,13 +292,13 @@ MonoBehaviour:
           _visibility: public
         - _signature: CreateEdge(BoardNodeModel source, BoardNodeModel target)
           _visibility: public
-    - rid: 4671173538647376181
+    - rid: 4671173541606195867
       type: {class: ClassNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
       data:
-        _id: 77cbeda0433e4b94aa48fcbc89b86f89
+        _id: 19e20169528043679bb288859cd14c68
         _typeId: project-designer.class
         _title: AssetImportPipeline
-        _position: {x: 500, y: 700}
+        _position: {x: -108.60454, y: 959.0757}
         _size: {x: 340, y: 260}
         _tags:
         - importer
@@ -291,13 +315,13 @@ MonoBehaviour:
           _visibility: public
         - _signature: Import(Object asset, Vector2 position)
           _visibility: public
-    - rid: 4671173538647376182
+    - rid: 4671173541606195868
       type: {class: ClassNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
       data:
-        _id: 2bed711eb1d7479eac493efb67b2b124
+        _id: 0ca6414901fb4203b43082c97e510e85
         _typeId: project-designer.class
         _title: OverviewMetricsService
-        _position: {x: 880, y: 700}
+        _position: {x: 595.24005, y: 1117.648}
         _size: {x: 340, y: 260}
         _tags:
         - metrics
@@ -314,13 +338,13 @@ MonoBehaviour:
           _visibility: public
         - _signature: CalculateMilestoneCompletion(MilestoneNodeModel milestone)
           _visibility: public
-    - rid: 4671173538647376183
+    - rid: 4671173541606195869
       type: {class: ClassNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
       data:
-        _id: e53aee7ef81740f98588a29dca460d78
+        _id: 3b9e0b3dfb244dc399b7844525aa4430
         _typeId: project-designer.class
         _title: ExtensionRegistryFacade
-        _position: {x: 1260, y: 700}
+        _position: {x: 1132.6954, y: 717.8673}
         _size: {x: 340, y: 260}
         _tags:
         - extensibility
@@ -337,10 +361,10 @@ MonoBehaviour:
           _visibility: public
         - _signature: RegisterImporter(IProjectDesignerAssetImporter importer)
           _visibility: public
-    - rid: 4671173538647376184
+    - rid: 4671173541606195870
       type: {class: NoteNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
       data:
-        _id: ae1d9bb739524c69b7cca3957ac563d6
+        _id: 1912f216e29942428c0e4fcdaa6c9fd0
         _typeId: project-designer.note
         _title: Migration Constraints
         _position: {x: 120, y: 980}
@@ -357,10 +381,10 @@ MonoBehaviour:
           - Preserve extension
           points even when the default UX gets simplified.'
         _accentHex: '#4C7AFF'
-    - rid: 4671173538647376185
+    - rid: 4671173541606195871
       type: {class: NoteNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
       data:
-        _id: 14112181ed774e4eae055e5ec990cb38
+        _id: 7b3aaec237624f73a674740da2186d77
         _typeId: project-designer.note
         _title: Technical Risks
         _position: {x: 500, y: 980}
@@ -377,10 +401,10 @@ MonoBehaviour:
           -
           Importer ordering needs tests before more samples ship.'
         _accentHex: '#E58C4A'
-    - rid: 4671173538647376186
+    - rid: 4671173541606195872
       type: {class: ReferenceNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
       data:
-        _id: c763ef95ec5c44fc95f2383f974a9548
+        _id: 827bf6cab99648deb1ffe555346444a9
         _typeId: project-designer.reference
         _title: UI Toolkit Notes
         _position: {x: 1260, y: 980}
@@ -396,10 +420,10 @@ MonoBehaviour:
         _textReference: Useful when validating drag and selection behaviors in custom
           canvas controls.
         _externalUrl: https://docs.unity3d.com/Manual/UIElements.html
-    - rid: 4671173538647376187
+    - rid: 4671173541606195873
       type: {class: ReferenceNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
       data:
-        _id: 26ceeb67a0f149acb2e314390d107959
+        _id: b2c9ab33d4f0435db32478816e7f1049
         _typeId: project-designer.reference
         _title: UPM Packaging Checklist
         _position: {x: 1640, y: 980}

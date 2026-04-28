@@ -10,12 +10,20 @@ namespace ProjectDesigner.V2.Editor
 {
     internal sealed class BoardCanvasView : VisualElement
     {
+        private sealed class ConnectionPreviewData
+        {
+            public string SourceNodeId;
+            public Vector2 EndPosition;
+            public Color AccentColor;
+        }
+
         private sealed class EdgeLayerElement : VisualElement
         {
             private readonly ProjectBoardAsset _boardAsset;
-            public IDictionary<string, Vector2> PreviewNodePositions { get; set; }
 
+            public IDictionary<string, Vector2> PreviewNodePositions { get; set; }
             public HashSet<string> VisibleNodeIds { get; set; }
+            public ConnectionPreviewData PreviewConnection { get; set; }
 
             public EdgeLayerElement(ProjectBoardAsset boardAsset)
             {
@@ -51,19 +59,43 @@ namespace ProjectDesigner.V2.Editor
 
                     IProjectDesignerEdgeDefinition definition = ProjectDesignerRegistry.GetEdgeDefinition(edge.TypeId);
                     painter.strokeColor = ParseColor(definition == null ? "#9AA3AF" : definition.AccentColor, new Color(0.6f, 0.6f, 0.6f));
-
-                    Vector2 sourcePosition = GetNodePosition(source);
-                    Vector2 targetPosition = GetNodePosition(target);
-
-                    Vector2 start = new Vector2(sourcePosition.x + source.Size.x, sourcePosition.y + source.Size.y * 0.5f);
-                    Vector2 end = new Vector2(targetPosition.x, targetPosition.y + target.Size.y * 0.5f);
-                    float tangent = Mathf.Max(80f, Mathf.Abs(end.x - start.x) * 0.35f);
-
-                    painter.BeginPath();
-                    painter.MoveTo(start);
-                    painter.BezierCurveTo(start + Vector2.right * tangent, end + Vector2.left * tangent, end);
-                    painter.Stroke();
+                    DrawCurve(painter, source, target, GetNodePosition(source), GetNodePosition(target));
                 }
+
+                if (PreviewConnection == null)
+                {
+                    return;
+                }
+
+                BoardNodeModel previewSource = _boardAsset.Document.GetNode(PreviewConnection.SourceNodeId);
+                if (previewSource == null)
+                {
+                    return;
+                }
+
+                Vector2 sourcePosition = GetNodePosition(previewSource);
+                Vector2 start = GetOutputAnchor(previewSource, sourcePosition);
+                Vector2 end = PreviewConnection.EndPosition;
+                float tangent = Mathf.Max(80f, Mathf.Abs(end.x - start.x) * 0.35f);
+
+                painter.strokeColor = PreviewConnection.AccentColor;
+                painter.lineWidth = 3f;
+                painter.BeginPath();
+                painter.MoveTo(start);
+                painter.BezierCurveTo(start + Vector2.right * tangent, end + Vector2.left * tangent, end);
+                painter.Stroke();
+            }
+
+            private void DrawCurve(UnityEngine.UIElements.Painter2D painter, BoardNodeModel source, BoardNodeModel target, Vector2 sourcePosition, Vector2 targetPosition)
+            {
+                Vector2 start = GetOutputAnchor(source, sourcePosition);
+                Vector2 end = GetInputAnchor(target, targetPosition);
+                float tangent = Mathf.Max(80f, Mathf.Abs(end.x - start.x) * 0.35f);
+
+                painter.BeginPath();
+                painter.MoveTo(start);
+                painter.BezierCurveTo(start + Vector2.right * tangent, end + Vector2.left * tangent, end);
+                painter.Stroke();
             }
 
             private Vector2 GetNodePosition(BoardNodeModel node)
@@ -80,7 +112,19 @@ namespace ProjectDesigner.V2.Editor
 
                 return node.Position;
             }
+
+            private static Vector2 GetOutputAnchor(BoardNodeModel node, Vector2 nodePosition)
+            {
+                return new Vector2(nodePosition.x + node.Size.x, nodePosition.y + node.Size.y * 0.5f);
+            }
+
+            private static Vector2 GetInputAnchor(BoardNodeModel node, Vector2 nodePosition)
+            {
+                return new Vector2(nodePosition.x, nodePosition.y + node.Size.y * 0.5f);
+            }
         }
+
+        private const string DefaultHintText = "Drag cards to arrange them. Drag empty space to pan. Drag from Link to create relationships.";
 
         private readonly ProjectBoardAsset _boardAsset;
         private readonly IBoardCommandDispatcher _dispatcher;
@@ -90,12 +134,20 @@ namespace ProjectDesigner.V2.Editor
         private readonly Label _hintLabel;
         private readonly Dictionary<string, BoardNodeView> _nodeViews = new Dictionary<string, BoardNodeView>();
         private readonly Dictionary<string, Vector2> _previewNodePositions = new Dictionary<string, Vector2>();
+        private Dictionary<string, List<ProjectDesignerLinkOption>> _connectionTargetOptions = new Dictionary<string, List<ProjectDesignerLinkOption>>();
 
         private string _draggingNodeId = string.Empty;
         private int _dragPointerId = -1;
         private Vector2 _dragStartMousePosition;
         private Vector2 _dragStartNodePosition;
         private Vector2 _dragCurrentNodePosition;
+
+        private string _connectingNodeId = string.Empty;
+        private int _connectPointerId = -1;
+        private Vector2 _connectPreviewPosition;
+        private string _hoveredConnectionTargetId = string.Empty;
+        private VisualElement _connectionMenu;
+
         private bool _panning;
         private Vector2 _panStartMousePosition;
         private Vector2 _panStartOffset;
@@ -138,7 +190,7 @@ namespace ProjectDesigner.V2.Editor
             _nodeLayer.style.bottom = 0f;
             _contentLayer.Add(_nodeLayer);
 
-            _hintLabel = new Label("Drag cards to arrange them. Drag empty space to pan. Drop Unity assets here to create nodes.");
+            _hintLabel = new Label(DefaultHintText);
             _hintLabel.AddToClassList("pd-canvas-hint");
             _hintLabel.pickingMode = PickingMode.Ignore;
             Add(_hintLabel);
@@ -150,10 +202,13 @@ namespace ProjectDesigner.V2.Editor
             RegisterCallback<WheelEvent>(OnWheel);
             RegisterCallback<DragUpdatedEvent>(OnDragUpdated);
             RegisterCallback<DragPerformEvent>(OnDragPerform);
+            RegisterCallback<KeyDownEvent>(OnKeyDown);
         }
 
         public void Refresh()
         {
+            HideConnectionMenu();
+            CancelConnectionPreview();
             UpdateTransform();
             RebuildNodes();
             _edgeLayer.MarkDirtyRepaint();
@@ -168,6 +223,7 @@ namespace ProjectDesigner.V2.Editor
                 nodeView.SetSelected(nodeView.NodeId == selectedNodeId);
             }
 
+            UpdateConnectionHighlights();
             BringNodeToFront(selectedNodeId);
             _edgeLayer.MarkDirtyRepaint();
             MarkDirtyRepaint();
@@ -232,13 +288,17 @@ namespace ProjectDesigner.V2.Editor
                 nodeView.Refresh(_boardAsset.Document, selectedNodeId == node.Id);
                 nodeView.Selected += OnNodeSelected;
                 nodeView.DragStarted += OnNodeDragStarted;
+                nodeView.ConnectionStarted += OnNodeConnectionStarted;
                 _nodeLayer.Add(nodeView);
                 _nodeViews[node.Id] = nodeView;
             }
+
+            UpdateConnectionHighlights();
         }
 
         private void OnNodeSelected(string nodeId)
         {
+            HideConnectionMenu();
             BringNodeToFront(nodeId);
             if (SelectionChanged != null)
             {
@@ -248,6 +308,13 @@ namespace ProjectDesigner.V2.Editor
 
         private void OnNodeDragStarted(string nodeId, Vector2 mousePosition, int pointerId)
         {
+            if (!string.IsNullOrEmpty(_connectingNodeId))
+            {
+                return;
+            }
+
+            HideConnectionMenu();
+
             BoardNodeModel node = _boardAsset.Document.GetNode(nodeId);
             if (node == null)
             {
@@ -261,11 +328,62 @@ namespace ProjectDesigner.V2.Editor
             _dragCurrentNodePosition = node.Position;
             PointerCaptureHelper.CapturePointer(this, pointerId);
             BringNodeToFront(nodeId);
+            Focus();
+        }
+
+        private void OnNodeConnectionStarted(string nodeId, Vector2 mousePosition, int pointerId)
+        {
+            if (!string.IsNullOrEmpty(_draggingNodeId))
+            {
+                return;
+            }
+
+            HideConnectionMenu();
+
+            BoardNodeModel node = _boardAsset.Document.GetNode(nodeId);
+            if (node == null)
+            {
+                return;
+            }
+
+            _connectionTargetOptions = ProjectDesignerLinkUtility.GetLinkOptionsByTarget(_boardAsset.Document, node);
+            if (_connectionTargetOptions.Count == 0)
+            {
+                UpdateHintLabel();
+                return;
+            }
+
+            _connectingNodeId = nodeId;
+            _connectPointerId = pointerId;
+            _connectPreviewPosition = ScreenToBoard(mousePosition);
+            _hoveredConnectionTargetId = string.Empty;
+            _edgeLayer.PreviewConnection = new ConnectionPreviewData
+            {
+                SourceNodeId = nodeId,
+                EndPosition = _connectPreviewPosition,
+                AccentColor = GetConnectionPreviewColor(string.Empty)
+            };
+
+            PointerCaptureHelper.CapturePointer(this, pointerId);
+            BringNodeToFront(nodeId);
+            UpdateHoveredConnectionTarget(_connectPreviewPosition);
+            UpdateConnectionHighlights();
+            UpdateHintLabel();
+            _edgeLayer.MarkDirtyRepaint();
+            MarkDirtyRepaint();
+            Focus();
         }
 
         private void OnPointerDown(PointerDownEvent evt)
         {
-            if (!string.IsNullOrEmpty(_draggingNodeId) || evt.button != 0 || !IsEmptyTarget(evt.target))
+            if (IsConnectionMenuTarget(evt.target))
+            {
+                return;
+            }
+
+            HideConnectionMenu();
+
+            if (!string.IsNullOrEmpty(_draggingNodeId) || !string.IsNullOrEmpty(_connectingNodeId) || evt.button != 0 || !IsEmptyTarget(evt.target))
             {
                 return;
             }
@@ -280,13 +398,38 @@ namespace ProjectDesigner.V2.Editor
                 SelectionChanged.Invoke(string.Empty);
             }
 
+            Focus();
             evt.StopPropagation();
         }
 
         private void OnPointerMove(PointerMoveEvent evt)
         {
+            if (!string.IsNullOrEmpty(_connectingNodeId))
+            {
+                if (evt.pointerId != _connectPointerId)
+                {
+                    return;
+                }
+
+                Vector2 boardPosition = ScreenToBoard(GetEventPosition(evt.position));
+                _connectPreviewPosition = boardPosition;
+                UpdateHoveredConnectionTarget(boardPosition);
+                UpdateConnectionPreview();
+                UpdateConnectionHighlights();
+                UpdateHintLabel();
+                _edgeLayer.MarkDirtyRepaint();
+                MarkDirtyRepaint();
+                evt.StopPropagation();
+                return;
+            }
+
             if (!string.IsNullOrEmpty(_draggingNodeId))
             {
+                if (evt.pointerId != _dragPointerId)
+                {
+                    return;
+                }
+
                 float zoom = Mathf.Max(0.01f, _boardAsset.Document.ViewState.Zoom);
                 Vector2 deltaX = (GetEventPosition(evt.position) - _dragStartMousePosition) / zoom;
                 _dragCurrentNodePosition = _dragStartNodePosition + deltaX;
@@ -318,8 +461,31 @@ namespace ProjectDesigner.V2.Editor
 
         private void OnPointerUp(PointerUpEvent evt)
         {
+            if (!string.IsNullOrEmpty(_connectingNodeId))
+            {
+                if (evt.pointerId != _connectPointerId)
+                {
+                    return;
+                }
+
+                int connectPointerId = _connectPointerId;
+                Vector2 boardPosition = ScreenToBoard(GetEventPosition(evt.position));
+                CompleteConnectionDrag(boardPosition, GetEventPosition(evt.position));
+                if (connectPointerId >= 0 && PointerCaptureHelper.HasPointerCapture(this, connectPointerId))
+                {
+                    PointerCaptureHelper.ReleasePointer(this, connectPointerId);
+                }
+                evt.StopPropagation();
+                return;
+            }
+
             if (!string.IsNullOrEmpty(_draggingNodeId))
             {
+                if (evt.pointerId != _dragPointerId)
+                {
+                    return;
+                }
+
                 int dragPointerId = _dragPointerId;
                 CompleteNodeDrag();
                 if (dragPointerId >= 0 && PointerCaptureHelper.HasPointerCapture(this, dragPointerId))
@@ -343,11 +509,14 @@ namespace ProjectDesigner.V2.Editor
         private void OnPointerCaptureOut(PointerCaptureOutEvent evt)
         {
             CancelNodeDragPreview();
+            CancelConnectionPreview();
             _panning = false;
         }
 
         private void OnWheel(WheelEvent evt)
         {
+            HideConnectionMenu();
+
             Vector2 boardPositionBefore = ScreenToBoard(evt.localMousePosition);
             float oldZoom = _boardAsset.Document.ViewState.Zoom;
             float newZoom = Mathf.Clamp(oldZoom * (evt.delta.y > 0f ? 0.92f : 1.08f), 0.35f, 2.5f);
@@ -376,6 +545,7 @@ namespace ProjectDesigner.V2.Editor
                 return;
             }
 
+            HideConnectionMenu();
             DragAndDrop.AcceptDrag();
             Vector2 startPosition = ScreenToBoard(evt.localMousePosition);
             Vector2 offset = Vector2.zero;
@@ -397,6 +567,22 @@ namespace ProjectDesigner.V2.Editor
             }
 
             evt.StopPropagation();
+        }
+
+        private void OnKeyDown(KeyDownEvent evt)
+        {
+            if (evt.keyCode != KeyCode.Escape)
+            {
+                return;
+            }
+
+            bool hadConnectionState = !string.IsNullOrEmpty(_connectingNodeId) || _connectionMenu != null;
+            HideConnectionMenu();
+            CancelConnectionPreview();
+            if (hadConnectionState)
+            {
+                evt.StopPropagation();
+            }
         }
 
         private void UpdateTransform()
@@ -446,12 +632,269 @@ namespace ProjectDesigner.V2.Editor
             }
         }
 
+        private void UpdateHoveredConnectionTarget(Vector2 boardPosition)
+        {
+            string hoveredTargetId = GetNodeIdAtBoardPosition(boardPosition, _connectingNodeId);
+            if (!string.IsNullOrEmpty(hoveredTargetId) && !_connectionTargetOptions.ContainsKey(hoveredTargetId))
+            {
+                hoveredTargetId = string.Empty;
+            }
+
+            _hoveredConnectionTargetId = hoveredTargetId;
+        }
+
+        private void UpdateConnectionPreview()
+        {
+            if (string.IsNullOrEmpty(_connectingNodeId))
+            {
+                _edgeLayer.PreviewConnection = null;
+                return;
+            }
+
+            Vector2 endPosition = _connectPreviewPosition;
+            if (!string.IsNullOrEmpty(_hoveredConnectionTargetId))
+            {
+                BoardNodeModel targetNode = _boardAsset.Document.GetNode(_hoveredConnectionTargetId);
+                if (targetNode != null)
+                {
+                    endPosition = new Vector2(targetNode.Position.x, targetNode.Position.y + targetNode.Size.y * 0.5f);
+                }
+            }
+
+            _edgeLayer.PreviewConnection = new ConnectionPreviewData
+            {
+                SourceNodeId = _connectingNodeId,
+                EndPosition = endPosition,
+                AccentColor = GetConnectionPreviewColor(_hoveredConnectionTargetId)
+            };
+        }
+
+        private void UpdateConnectionHighlights()
+        {
+            foreach (KeyValuePair<string, BoardNodeView> pair in _nodeViews)
+            {
+                bool isOrigin = pair.Key == _connectingNodeId;
+                bool isValidTarget = !isOrigin && _connectionTargetOptions.ContainsKey(pair.Key);
+                bool isHoveredTarget = isValidTarget && pair.Key == _hoveredConnectionTargetId;
+                pair.Value.SetConnectionState(isOrigin, isValidTarget, isHoveredTarget);
+            }
+        }
+
+        private void UpdateHintLabel()
+        {
+            if (_connectionMenu != null)
+            {
+                _hintLabel.text = "Choose a link type to finish this connection, or click empty space to cancel.";
+                return;
+            }
+
+            if (!string.IsNullOrEmpty(_connectingNodeId))
+            {
+                if (!string.IsNullOrEmpty(_hoveredConnectionTargetId) &&
+                    _connectionTargetOptions.TryGetValue(_hoveredConnectionTargetId, out List<ProjectDesignerLinkOption> options))
+                {
+                    _hintLabel.text = options.Count == 1
+                        ? "Release to create a " + options[0].Definition.DisplayName + "."
+                        : "Release to choose from " + options.Count + " valid link types.";
+                    return;
+                }
+
+                _hintLabel.text = "Drag to a highlighted card. Release on empty space to cancel.";
+                return;
+            }
+
+            _hintLabel.text = DefaultHintText;
+        }
+
+        private void CompleteConnectionDrag(Vector2 boardPosition, Vector2 localMousePosition)
+        {
+            string connectingNodeId = _connectingNodeId;
+            string hoveredTargetId = _hoveredConnectionTargetId;
+            Dictionary<string, List<ProjectDesignerLinkOption>> optionsByTarget = _connectionTargetOptions;
+
+            BoardNodeModel sourceNode = _boardAsset.Document.GetNode(connectingNodeId);
+            string targetNodeId = !string.IsNullOrEmpty(hoveredTargetId)
+                ? hoveredTargetId
+                : GetNodeIdAtBoardPosition(boardPosition, connectingNodeId);
+
+            CancelConnectionPreview();
+
+            if (sourceNode == null || string.IsNullOrEmpty(targetNodeId))
+            {
+                return;
+            }
+
+            BoardNodeModel targetNode = _boardAsset.Document.GetNode(targetNodeId);
+            if (targetNode == null)
+            {
+                return;
+            }
+
+            if (!optionsByTarget.TryGetValue(targetNodeId, out List<ProjectDesignerLinkOption> options) || options.Count == 0)
+            {
+                return;
+            }
+
+            if (options.Count == 1)
+            {
+                CreateEdgeFromOption(options[0], sourceNode.Id);
+                return;
+            }
+
+            ShowConnectionMenu(localMousePosition, sourceNode, targetNode, options);
+        }
+
+        private void ShowConnectionMenu(Vector2 localMousePosition, BoardNodeModel sourceNode, BoardNodeModel targetNode, List<ProjectDesignerLinkOption> options)
+        {
+            HideConnectionMenu();
+
+            var menu = new VisualElement();
+            menu.AddToClassList("pd-inline-link-menu");
+
+            float left = Mathf.Clamp(localMousePosition.x + 12f, 12f, Mathf.Max(12f, layout.width - 280f));
+            float top = Mathf.Clamp(localMousePosition.y + 12f, 12f, Mathf.Max(12f, layout.height - 260f));
+            menu.style.left = left;
+            menu.style.top = top;
+
+            var title = new Label("Create link");
+            title.AddToClassList("pd-inline-link-menu-title");
+            menu.Add(title);
+
+            var body = new Label(sourceNode.Title + " <-> " + targetNode.Title);
+            body.AddToClassList("pd-inline-link-menu-body");
+            menu.Add(body);
+
+            foreach (ProjectDesignerLinkOption option in options)
+            {
+                ProjectDesignerLinkOption localOption = option;
+                var button = new Button(() =>
+                {
+                    HideConnectionMenu();
+                    CreateEdgeFromOption(localOption, sourceNode.Id);
+                })
+                {
+                    text = ProjectDesignerLinkUtility.GetInlineActionLabel(localOption)
+                };
+                button.AddToClassList("pd-secondary-button");
+                menu.Add(button);
+            }
+
+            var cancelButton = new Button(() => HideConnectionMenu())
+            {
+                text = "Cancel"
+            };
+            cancelButton.AddToClassList("pd-secondary-button");
+            menu.Add(cancelButton);
+
+            _connectionMenu = menu;
+            Add(_connectionMenu);
+            _connectionMenu.BringToFront();
+            UpdateHintLabel();
+        }
+
+        private void HideConnectionMenu()
+        {
+            if (_connectionMenu == null)
+            {
+                return;
+            }
+
+            if (_connectionMenu.parent != null)
+            {
+                _connectionMenu.parent.Remove(_connectionMenu);
+            }
+
+            _connectionMenu = null;
+            UpdateHintLabel();
+        }
+
+        private void CreateEdgeFromOption(ProjectDesignerLinkOption option, string selectedNodeId)
+        {
+            if (option == null || option.Definition == null || option.OtherNode == null || string.IsNullOrEmpty(selectedNodeId))
+            {
+                return;
+            }
+
+            BoardNodeModel selectedNode = _boardAsset.Document.GetNode(selectedNodeId);
+            if (selectedNode == null)
+            {
+                return;
+            }
+
+            string sourceId = option.SelectedNodeIsSource ? selectedNode.Id : option.OtherNode.Id;
+            string targetId = option.SelectedNodeIsSource ? option.OtherNode.Id : selectedNode.Id;
+            var edge = new BoardEdgeModel(option.Definition.TypeId, sourceId, targetId);
+            edge.Label = option.Definition.GetLabel(edge, _boardAsset.Document);
+            _dispatcher.Execute(new CreateEdgeCommand(_boardAsset, edge));
+        }
+
         private bool IsEmptyTarget(object target)
         {
             return ReferenceEquals(target, this) ||
                    ReferenceEquals(target, _contentLayer) ||
                    ReferenceEquals(target, _edgeLayer) ||
                    ReferenceEquals(target, _nodeLayer);
+        }
+
+        private bool IsConnectionMenuTarget(object target)
+        {
+            if (_connectionMenu == null)
+            {
+                return false;
+            }
+
+            VisualElement element = target as VisualElement;
+            while (element != null)
+            {
+                if (ReferenceEquals(element, _connectionMenu))
+                {
+                    return true;
+                }
+
+                element = element.parent;
+            }
+
+            return false;
+        }
+
+        private string GetNodeIdAtBoardPosition(Vector2 boardPosition, string excludedNodeId)
+        {
+            for (int index = _nodeLayer.childCount - 1; index >= 0; index--)
+            {
+                BoardNodeView nodeView = _nodeLayer.hierarchy.ElementAt(index) as BoardNodeView;
+                if (nodeView == null || nodeView.NodeId == excludedNodeId)
+                {
+                    continue;
+                }
+
+                BoardNodeModel node = _boardAsset.Document.GetNode(nodeView.NodeId);
+                if (node == null)
+                {
+                    continue;
+                }
+
+                Rect nodeRect = new Rect(node.Position, node.Size);
+                if (nodeRect.Contains(boardPosition))
+                {
+                    return node.Id;
+                }
+            }
+
+            return string.Empty;
+        }
+
+        private Color GetConnectionPreviewColor(string hoveredTargetId)
+        {
+            Color fallback = new Color(0.3f, 0.48f, 1f, 0.95f);
+            if (string.IsNullOrEmpty(hoveredTargetId) ||
+                !_connectionTargetOptions.TryGetValue(hoveredTargetId, out List<ProjectDesignerLinkOption> options) ||
+                options.Count == 0 ||
+                options[0].Definition == null)
+            {
+                return fallback;
+            }
+
+            return ParseColor(options[0].Definition.AccentColor, fallback);
         }
 
         private static Color ParseColor(string htmlColor, Color fallback)
@@ -537,5 +980,29 @@ namespace ProjectDesigner.V2.Editor
             MarkDirtyRepaint();
         }
 
+        private void CancelConnectionPreview()
+        {
+            if (string.IsNullOrEmpty(_connectingNodeId))
+            {
+                return;
+            }
+
+            int connectPointerId = _connectPointerId;
+            _connectingNodeId = string.Empty;
+            _connectPointerId = -1;
+            _hoveredConnectionTargetId = string.Empty;
+            _connectionTargetOptions = new Dictionary<string, List<ProjectDesignerLinkOption>>();
+            _edgeLayer.PreviewConnection = null;
+            UpdateConnectionHighlights();
+
+            if (connectPointerId >= 0 && PointerCaptureHelper.HasPointerCapture(this, connectPointerId))
+            {
+                PointerCaptureHelper.ReleasePointer(this, connectPointerId);
+            }
+
+            UpdateHintLabel();
+            _edgeLayer.MarkDirtyRepaint();
+            MarkDirtyRepaint();
+        }
     }
 }

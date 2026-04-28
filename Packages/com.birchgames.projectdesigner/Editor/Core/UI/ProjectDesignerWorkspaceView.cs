@@ -264,7 +264,7 @@ namespace ProjectDesigner.V2.Editor
         private void BuildConnectionsInspector(BoardNodeModel selectedNode)
         {
             Foldout connectionsFoldout = CreateFoldout("Links", false);
-            connectionsFoldout.Add(CreateMutedBodyLabel("Create relationships only when they help the board tell a clearer story."));
+            connectionsFoldout.Add(CreateMutedBodyLabel("Drag from the Link handle on a card for the fastest path, or create relationships manually here when you need more control."));
             _inspectorView.Add(connectionsFoldout);
 
             List<ProjectDesignerLinkOption> options = ProjectDesignerLinkUtility.GetLinkOptions(_boardAsset.Document, selectedNode);

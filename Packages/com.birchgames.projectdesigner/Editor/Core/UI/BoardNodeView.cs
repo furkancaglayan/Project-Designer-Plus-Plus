@@ -10,14 +10,17 @@ namespace ProjectDesigner.V2.Editor
         private readonly BoardNodeModel _node;
         private readonly IProjectDesignerNodeDefinition _definition;
         private readonly VisualElement _selectionFrame;
+        private readonly VisualElement _linkFrame;
         private readonly Label _titleLabel;
         private readonly Label _categoryLabel;
         private readonly Label _previewLabel;
         private readonly Label _tagsLabel;
+        private readonly Label _connectHandle;
         private readonly Color _accentColor;
 
         public event Action<string> Selected;
         public event Action<string, Vector2, int> DragStarted;
+        public event Action<string, Vector2, int> ConnectionStarted;
 
         public string NodeId
         {
@@ -49,6 +52,24 @@ namespace ProjectDesigner.V2.Editor
             _selectionFrame.pickingMode = PickingMode.Ignore;
             _selectionFrame.style.display = DisplayStyle.None;
             Add(_selectionFrame);
+
+            _linkFrame = new VisualElement();
+            _linkFrame.AddToClassList("pd-node-link-frame");
+            _linkFrame.pickingMode = PickingMode.Ignore;
+            _linkFrame.style.display = DisplayStyle.None;
+            Add(_linkFrame);
+
+            _connectHandle = new Label("Link");
+            _connectHandle.AddToClassList("pd-node-connector");
+            _connectHandle.pickingMode = PickingMode.Position;
+            _connectHandle.style.backgroundColor = ProjectDesignerColorUtility.WithAlpha(_accentColor, 0.12f);
+            _connectHandle.style.borderTopColor = ProjectDesignerColorUtility.WithAlpha(_accentColor, 0.24f);
+            _connectHandle.style.borderRightColor = ProjectDesignerColorUtility.WithAlpha(_accentColor, 0.24f);
+            _connectHandle.style.borderBottomColor = ProjectDesignerColorUtility.WithAlpha(_accentColor, 0.24f);
+            _connectHandle.style.borderLeftColor = ProjectDesignerColorUtility.WithAlpha(_accentColor, 0.24f);
+            _connectHandle.style.color = ProjectDesignerColorUtility.Blend(_accentColor, new Color(0.18f, 0.22f, 0.26f), 0.28f);
+            _connectHandle.RegisterCallback<PointerDownEvent>(OnConnectionPointerDown);
+            Add(_connectHandle);
 
             _categoryLabel = new Label(_node.Category);
             _categoryLabel.AddToClassList("pd-node-category");
@@ -95,12 +116,41 @@ namespace ProjectDesigner.V2.Editor
             style.height = _node.Size.y;
 
             SetSelected(isSelected);
+            SetConnectionState(false, false, false);
         }
 
         public void SetSelected(bool isSelected)
         {
             EnableInClassList("pd-node-selected", isSelected);
             _selectionFrame.style.display = isSelected ? DisplayStyle.Flex : DisplayStyle.None;
+        }
+
+        public void SetConnectionState(bool isOrigin, bool isValidTarget, bool isHoveredTarget)
+        {
+            bool hasLinkState = isValidTarget || isHoveredTarget;
+            _linkFrame.style.display = hasLinkState ? DisplayStyle.Flex : DisplayStyle.None;
+            _linkFrame.EnableInClassList("pd-node-link-valid", isValidTarget && !isHoveredTarget);
+            _linkFrame.EnableInClassList("pd-node-link-hover", isHoveredTarget);
+            _connectHandle.EnableInClassList("pd-node-connector-active", isOrigin);
+
+            if (isOrigin)
+            {
+                Color activeColor = new Color(0.3f, 0.48f, 1f);
+                _connectHandle.style.backgroundColor = activeColor;
+                _connectHandle.style.borderTopColor = activeColor;
+                _connectHandle.style.borderRightColor = activeColor;
+                _connectHandle.style.borderBottomColor = activeColor;
+                _connectHandle.style.borderLeftColor = activeColor;
+                _connectHandle.style.color = Color.white;
+                return;
+            }
+
+            _connectHandle.style.backgroundColor = ProjectDesignerColorUtility.WithAlpha(_accentColor, 0.12f);
+            _connectHandle.style.borderTopColor = ProjectDesignerColorUtility.WithAlpha(_accentColor, 0.24f);
+            _connectHandle.style.borderRightColor = ProjectDesignerColorUtility.WithAlpha(_accentColor, 0.24f);
+            _connectHandle.style.borderBottomColor = ProjectDesignerColorUtility.WithAlpha(_accentColor, 0.24f);
+            _connectHandle.style.borderLeftColor = ProjectDesignerColorUtility.WithAlpha(_accentColor, 0.24f);
+            _connectHandle.style.color = ProjectDesignerColorUtility.Blend(_accentColor, new Color(0.18f, 0.22f, 0.26f), 0.28f);
         }
 
         public void SetPreviewPosition(Vector2 position)
@@ -124,6 +174,26 @@ namespace ProjectDesigner.V2.Editor
             if (DragStarted != null)
             {
                 DragStarted.Invoke(_node.Id, GetEventPosition(evt.position), evt.pointerId);
+            }
+
+            evt.StopPropagation();
+        }
+
+        private void OnConnectionPointerDown(PointerDownEvent evt)
+        {
+            if (evt.button != 0)
+            {
+                return;
+            }
+
+            if (Selected != null)
+            {
+                Selected.Invoke(_node.Id);
+            }
+
+            if (ConnectionStarted != null)
+            {
+                ConnectionStarted.Invoke(_node.Id, GetEventPosition(evt.position), evt.pointerId);
             }
 
             evt.StopPropagation();

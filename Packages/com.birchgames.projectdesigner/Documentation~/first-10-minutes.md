@@ -33,7 +33,7 @@ Then update the pinned `Project Brief` or the most visible top-left context card
 
 ## 4. Trace The Seeded Links
 
-Before adding anything, click a few cards and inspect the links section.
+Before adding anything, drag from the `Link` handle on a few cards and then inspect the links section.
 
 This is the fastest way to understand:
 

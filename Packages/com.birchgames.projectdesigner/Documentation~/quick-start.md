@@ -32,9 +32,9 @@ Project Designer+ opens as a planning-first Unity editor package for pre-product
 - Left sidebar:
   add cards and jump between saved views.
 - Center board:
-  pan, zoom, drag cards, and drop Unity assets onto the planner.
+  pan, zoom, drag cards, drag from `Link` on a card to create relationships, and drop Unity assets onto the planner.
 - Right inspector:
-  edit the selected card or planning board details and create only valid links.
+  edit the selected card or planning board details and use the manual link fallback when you need more control.
 - Bottom overview:
   watch planning metrics without adding a dashboard card to the board.
 

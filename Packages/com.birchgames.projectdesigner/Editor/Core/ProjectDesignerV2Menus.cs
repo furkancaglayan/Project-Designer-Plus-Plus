@@ -12,12 +12,16 @@ namespace ProjectDesigner.V2.Editor
             ProjectDesignerV2Window.Open();
         }
 
+        [MenuItem("Tools/Project Designer/Project Finder", priority = -9)]
+        [MenuItem("Window/Project Designer/Project Finder", priority = 2000)]
         [MenuItem("Tools/Project Designer/Open Planning Boards", priority = -9)]
         public static void OpenPlanningBoards()
         {
             ProjectDesignerBoardBrowserWindow.Open();
         }
 
+        [MenuItem("Tools/Project Designer/Onboarding", priority = -8)]
+        [MenuItem("Window/Project Designer/Onboarding", priority = 2001)]
         [MenuItem("Tools/Project Designer/Show Onboarding", priority = -8)]
         public static void ShowOnboarding()
         {
