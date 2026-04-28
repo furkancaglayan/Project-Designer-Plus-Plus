@@ -24,6 +24,7 @@ namespace ProjectDesigner.V2.Editor
         private readonly VisualElement _selectionFrame;
         private readonly VisualElement _linkFrame;
         private readonly Label _titleLabel;
+        private readonly VisualElement _signalContainer;
         private readonly Label _categoryLabel;
         private readonly Label _previewLabel;
         private readonly VisualElement _tagsContainer;
@@ -101,6 +102,11 @@ namespace ProjectDesigner.V2.Editor
             _titleLabel.style.color = ProjectDesignerColorUtility.Blend(_accentColor, new Color(0.18f, 0.22f, 0.26f), 0.34f);
             Add(_titleLabel);
 
+            _signalContainer = new VisualElement();
+            _signalContainer.AddToClassList("pd-node-signal-row");
+            _signalContainer.pickingMode = PickingMode.Ignore;
+            Add(_signalContainer);
+
             _previewLabel = new Label(_definition == null ? string.Empty : _definition.GetPreview(_node, document));
             _previewLabel.AddToClassList("pd-node-preview");
             _previewLabel.pickingMode = PickingMode.Ignore;
@@ -120,6 +126,7 @@ namespace ProjectDesigner.V2.Editor
         {
             _titleLabel.text = _node.Title;
             _categoryLabel.text = _node.Category;
+            RefreshSignals(document);
             _previewLabel.text = _definition == null ? string.Empty : _definition.GetPreview(_node, document);
             RefreshTagChips();
 
@@ -251,6 +258,135 @@ namespace ProjectDesigner.V2.Editor
                 chip.style.color = ProjectDesignerColorUtility.Blend(_accentColor, new Color(0.18f, 0.22f, 0.26f), 0.28f);
                 chip.pickingMode = PickingMode.Ignore;
                 _tagsContainer.Add(chip);
+            }
+        }
+
+        private void RefreshSignals(BoardDocument document)
+        {
+            _signalContainer.Clear();
+
+            TaskNodeModel task = _node as TaskNodeModel;
+            if (task != null)
+            {
+                AddSignalChip(task.Status.ToString(), GetTaskStatusColor(task.Status));
+                AddSignalChip(task.Priority.ToString(), GetTaskPriorityColor(task.Priority));
+
+                if (!string.IsNullOrWhiteSpace(task.Assignee))
+                {
+                    AddSignalChip(task.Assignee.Trim(), new Color(0.2f, 0.52f, 0.88f));
+                }
+
+                if (BoardInsights.IsTaskBlocked(document, task))
+                {
+                    AddSignalChip("Blocked", new Color(0.88f, 0.37f, 0.26f));
+                }
+
+                if (BoardInsights.IsTaskOverdue(task))
+                {
+                    AddSignalChip("Overdue", new Color(0.84f, 0.25f, 0.27f));
+                }
+                else if (BoardInsights.IsTaskDueSoon(task))
+                {
+                    AddSignalChip("Due Soon", new Color(0.92f, 0.67f, 0.22f));
+                }
+
+                return;
+            }
+
+            MilestoneNodeModel milestone = _node as MilestoneNodeModel;
+            if (milestone != null)
+            {
+                BoardMilestoneHealthReport health = BoardInsights.GetMilestoneHealth(document, milestone);
+                AddSignalChip(GetMilestoneHealthLabel(health.State), GetMilestoneHealthColor(health.State));
+                if (!string.IsNullOrWhiteSpace(milestone.TargetDateIso))
+                {
+                    AddSignalChip(milestone.TargetDateIso, new Color(0.32f, 0.45f, 0.82f));
+                }
+
+                return;
+            }
+        }
+
+        private void AddSignalChip(string text, Color color)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                return;
+            }
+
+            var chip = new Label(text.Trim());
+            chip.AddToClassList("pd-node-signal-chip");
+            chip.style.backgroundColor = ProjectDesignerColorUtility.WithAlpha(color, 0.12f);
+            chip.style.borderTopColor = ProjectDesignerColorUtility.WithAlpha(color, 0.22f);
+            chip.style.borderRightColor = ProjectDesignerColorUtility.WithAlpha(color, 0.22f);
+            chip.style.borderBottomColor = ProjectDesignerColorUtility.WithAlpha(color, 0.22f);
+            chip.style.borderLeftColor = ProjectDesignerColorUtility.WithAlpha(color, 0.22f);
+            chip.style.color = ProjectDesignerColorUtility.Blend(color, new Color(0.18f, 0.22f, 0.26f), 0.16f);
+            chip.pickingMode = PickingMode.Ignore;
+            _signalContainer.Add(chip);
+        }
+
+        private static Color GetTaskStatusColor(TaskNodeStatus status)
+        {
+            switch (status)
+            {
+                case TaskNodeStatus.InProgress:
+                    return new Color(0.24f, 0.55f, 0.88f);
+                case TaskNodeStatus.Blocked:
+                    return new Color(0.88f, 0.37f, 0.26f);
+                case TaskNodeStatus.Done:
+                    return new Color(0.28f, 0.66f, 0.4f);
+                default:
+                    return new Color(0.53f, 0.59f, 0.66f);
+            }
+        }
+
+        private static Color GetTaskPriorityColor(TaskNodePriority priority)
+        {
+            switch (priority)
+            {
+                case TaskNodePriority.Critical:
+                    return new Color(0.83f, 0.25f, 0.3f);
+                case TaskNodePriority.High:
+                    return new Color(0.95f, 0.58f, 0.22f);
+                case TaskNodePriority.Medium:
+                    return new Color(0.33f, 0.53f, 0.92f);
+                default:
+                    return new Color(0.47f, 0.67f, 0.41f);
+            }
+        }
+
+        private static string GetMilestoneHealthLabel(BoardMilestoneHealthState state)
+        {
+            switch (state)
+            {
+                case BoardMilestoneHealthState.Complete:
+                    return "Complete";
+                case BoardMilestoneHealthState.OffTrack:
+                    return "Off Track";
+                case BoardMilestoneHealthState.AtRisk:
+                    return "At Risk";
+                case BoardMilestoneHealthState.NoLinkedTasks:
+                    return "Needs Tasks";
+                default:
+                    return "On Track";
+            }
+        }
+
+        private static Color GetMilestoneHealthColor(BoardMilestoneHealthState state)
+        {
+            switch (state)
+            {
+                case BoardMilestoneHealthState.Complete:
+                    return new Color(0.28f, 0.66f, 0.4f);
+                case BoardMilestoneHealthState.OffTrack:
+                    return new Color(0.83f, 0.25f, 0.3f);
+                case BoardMilestoneHealthState.AtRisk:
+                    return new Color(0.95f, 0.58f, 0.22f);
+                case BoardMilestoneHealthState.NoLinkedTasks:
+                    return new Color(0.53f, 0.59f, 0.66f);
+                default:
+                    return new Color(0.24f, 0.55f, 0.88f);
             }
         }
     }

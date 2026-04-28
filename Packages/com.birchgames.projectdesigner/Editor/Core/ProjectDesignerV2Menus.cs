@@ -119,49 +119,55 @@ namespace ProjectDesigner.V2.Editor
             RunWorkspaceAction(workspace => workspace.ToggleSnapToGrid());
         }
 
-        [MenuItem("Tools/Project Designer/Board Operations/Arrange/Align Left", priority = 24)]
+        [MenuItem("Tools/Project Designer/Board Operations/Select All Visible", priority = 24)]
+        public static void SelectAllVisible()
+        {
+            RunWorkspaceAction(workspace => workspace.SelectAllVisibleNodes());
+        }
+
+        [MenuItem("Tools/Project Designer/Board Operations/Arrange/Align Left", priority = 25)]
         public static void AlignLeft()
         {
             RunWorkspaceAction(workspace => workspace.ArrangeSelection(BoardArrangeMode.AlignLeft));
         }
 
-        [MenuItem("Tools/Project Designer/Board Operations/Arrange/Align Center", priority = 25)]
+        [MenuItem("Tools/Project Designer/Board Operations/Arrange/Align Center", priority = 26)]
         public static void AlignCenter()
         {
             RunWorkspaceAction(workspace => workspace.ArrangeSelection(BoardArrangeMode.AlignCenter));
         }
 
-        [MenuItem("Tools/Project Designer/Board Operations/Arrange/Align Right", priority = 26)]
+        [MenuItem("Tools/Project Designer/Board Operations/Arrange/Align Right", priority = 27)]
         public static void AlignRight()
         {
             RunWorkspaceAction(workspace => workspace.ArrangeSelection(BoardArrangeMode.AlignRight));
         }
 
-        [MenuItem("Tools/Project Designer/Board Operations/Arrange/Align Top", priority = 27)]
+        [MenuItem("Tools/Project Designer/Board Operations/Arrange/Align Top", priority = 28)]
         public static void AlignTop()
         {
             RunWorkspaceAction(workspace => workspace.ArrangeSelection(BoardArrangeMode.AlignTop));
         }
 
-        [MenuItem("Tools/Project Designer/Board Operations/Arrange/Align Middle", priority = 28)]
+        [MenuItem("Tools/Project Designer/Board Operations/Arrange/Align Middle", priority = 29)]
         public static void AlignMiddle()
         {
             RunWorkspaceAction(workspace => workspace.ArrangeSelection(BoardArrangeMode.AlignMiddle));
         }
 
-        [MenuItem("Tools/Project Designer/Board Operations/Arrange/Align Bottom", priority = 29)]
+        [MenuItem("Tools/Project Designer/Board Operations/Arrange/Align Bottom", priority = 30)]
         public static void AlignBottom()
         {
             RunWorkspaceAction(workspace => workspace.ArrangeSelection(BoardArrangeMode.AlignBottom));
         }
 
-        [MenuItem("Tools/Project Designer/Board Operations/Arrange/Distribute Horizontal", priority = 30)]
+        [MenuItem("Tools/Project Designer/Board Operations/Arrange/Distribute Horizontal", priority = 31)]
         public static void DistributeHorizontal()
         {
             RunWorkspaceAction(workspace => workspace.ArrangeSelection(BoardArrangeMode.DistributeHorizontal));
         }
 
-        [MenuItem("Tools/Project Designer/Board Operations/Arrange/Distribute Vertical", priority = 31)]
+        [MenuItem("Tools/Project Designer/Board Operations/Arrange/Distribute Vertical", priority = 32)]
         public static void DistributeVertical()
         {
             RunWorkspaceAction(workspace => workspace.ArrangeSelection(BoardArrangeMode.DistributeVertical));

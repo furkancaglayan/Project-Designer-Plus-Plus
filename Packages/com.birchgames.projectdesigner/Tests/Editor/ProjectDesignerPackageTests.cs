@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -100,13 +101,13 @@ namespace ProjectDesigner.V2.Tests
     {
         public int Priority { get { return 777; } }
 
-        public bool CanImport(Object asset)
+        public bool CanImport(UnityEngine.Object asset)
         {
             TextAsset textAsset = asset as TextAsset;
             return textAsset != null && textAsset.name.IndexOf("extension-test", System.StringComparison.OrdinalIgnoreCase) >= 0;
         }
 
-        public IEnumerable<BoardNodeModel> Import(Object asset, Vector2 position)
+        public IEnumerable<BoardNodeModel> Import(UnityEngine.Object asset, Vector2 position)
         {
             TextAsset textAsset = asset as TextAsset;
             if (textAsset == null)
@@ -486,6 +487,104 @@ namespace ProjectDesigner.V2.Tests
             new ArrangeNodesCommand(board, new[] { first.Id, second.Id }, BoardArrangeMode.AlignLeft).Execute(board);
             Assert.AreEqual(96f, board.Document.GetNode(first.Id).Position.x);
             Assert.AreEqual(96f, board.Document.GetNode(second.Id).Position.x);
+        }
+
+        [Test]
+        public void BoardInsights_AssigneeSummariesAggregateOpenWorkload()
+        {
+            BoardDocument document = BoardPresetFactory.CreateEmpty("Workload");
+            DateTime referenceDate = new DateTime(2026, 4, 28);
+
+            var first = new TaskNodeModel { Title = "First", Assignee = "Aylin", EstimatePoints = 5, DueDateIso = "2026-04-27" };
+            var second = new TaskNodeModel { Title = "Second", Assignee = "Aylin", EstimatePoints = 8, Status = TaskNodeStatus.Blocked };
+            var third = new TaskNodeModel { Title = "Third", Assignee = "Mert", EstimatePoints = 2, Status = TaskNodeStatus.Done };
+            document.AddNode(first);
+            document.AddNode(second);
+            document.AddNode(third);
+
+            IReadOnlyList<BoardAssigneeSummary> summaries = BoardInsights.GetAssigneeSummaries(document, referenceDate);
+            BoardAssigneeSummary aylin = summaries.First(summary => summary.Assignee == "Aylin");
+
+            Assert.AreEqual(2, aylin.OpenTaskCount);
+            Assert.AreEqual(13, aylin.TotalEstimatePoints);
+            Assert.AreEqual(1, aylin.BlockedTaskCount);
+            Assert.AreEqual(1, aylin.OverdueTaskCount);
+            Assert.IsTrue(aylin.HasOverload);
+        }
+
+        [Test]
+        public void BoardInsights_MilestoneHealthTracksRiskAndCompletion()
+        {
+            BoardDocument document = BoardPresetFactory.CreateEmpty("Milestone Health");
+            DateTime referenceDate = new DateTime(2026, 4, 28);
+
+            var milestone = new MilestoneNodeModel { Title = "Vertical Slice", TargetDateIso = "2026-05-01" };
+            var taskA = new TaskNodeModel { Title = "Gameplay loop", Status = TaskNodeStatus.InProgress };
+            var taskB = new TaskNodeModel { Title = "Art pass", Status = TaskNodeStatus.Blocked };
+            document.AddNode(milestone);
+            document.AddNode(taskA);
+            document.AddNode(taskB);
+            document.AddEdge(new BoardEdgeModel(BoardEdgeTypeIds.Milestone, taskA.Id, milestone.Id));
+            document.AddEdge(new BoardEdgeModel(BoardEdgeTypeIds.Milestone, taskB.Id, milestone.Id));
+
+            BoardMilestoneHealthReport report = BoardInsights.GetMilestoneHealth(document, milestone, referenceDate);
+            Assert.AreEqual(BoardMilestoneHealthState.AtRisk, report.State);
+            Assert.AreEqual(2, report.LinkedTaskCount);
+            Assert.AreEqual(1, report.BlockedTaskCount);
+
+            taskA.Status = TaskNodeStatus.Done;
+            taskB.Status = TaskNodeStatus.Done;
+            report = BoardInsights.GetMilestoneHealth(document, milestone, referenceDate);
+            Assert.AreEqual(BoardMilestoneHealthState.Complete, report.State);
+            Assert.AreEqual(1f, report.Completion);
+        }
+
+        [Test]
+        public void BoardInsights_DependencyHelpersIdentifyWaitingAndBlockingTasks()
+        {
+            BoardDocument document = BoardPresetFactory.CreateEmpty("Dependencies");
+            var dependent = new TaskNodeModel { Title = "Dependent", Status = TaskNodeStatus.InProgress };
+            var blocker = new TaskNodeModel { Title = "Blocker", Status = TaskNodeStatus.InProgress };
+            var freeTask = new TaskNodeModel { Title = "Free", Status = TaskNodeStatus.InProgress };
+            document.AddNode(dependent);
+            document.AddNode(blocker);
+            document.AddNode(freeTask);
+            document.AddEdge(new BoardEdgeModel(BoardEdgeTypeIds.Dependency, dependent.Id, blocker.Id));
+
+            Assert.IsTrue(BoardInsights.HasUnresolvedDependencies(document, dependent));
+            Assert.IsTrue(BoardInsights.IsTaskBlocked(document, dependent));
+            Assert.AreEqual(1, BoardInsights.CountUnresolvedDependencyLinks(document));
+            CollectionAssert.AreEquivalent(new[] { dependent.Id }, BoardInsights.GetBlockedTasks(document).Select(task => task.Id).ToArray());
+            CollectionAssert.AreEquivalent(new[] { blocker.Id }, BoardInsights.GetTasksBlockingOthers(document).Select(task => task.Id).ToArray());
+            Assert.IsFalse(BoardInsights.HasUnresolvedDependencies(document, freeTask));
+        }
+
+        [Test]
+        public void BoardInsights_QuickFiltersAndVisibleNodesRespectPlannerSignals()
+        {
+            BoardDocument document = BoardPresetFactory.CreateEmpty("Quick Filters");
+            string overdueDate = DateTime.Today.AddDays(-1).ToString("yyyy-MM-dd");
+            string soonDate = DateTime.Today.AddDays(3).ToString("yyyy-MM-dd");
+
+            var overdueTask = new TaskNodeModel { Title = "Overdue", Assignee = "Aylin", DueDateIso = overdueDate };
+            var soonTask = new TaskNodeModel { Title = "Soon", Assignee = "Aylin", DueDateIso = soonDate };
+            var unassignedTask = new TaskNodeModel { Title = "Unassigned" };
+            var riskNote = new NoteNodeModel { Title = "Risk Note" };
+            riskNote.SetTagsFromCsv("risk, review");
+
+            document.AddNode(overdueTask);
+            document.AddNode(soonTask);
+            document.AddNode(unassignedTask);
+            document.AddNode(riskNote);
+
+            document.ViewState.QuickFilterId = BoardQuickFilterIds.Overdue;
+            CollectionAssert.AreEquivalent(new[] { overdueTask.Id }, BoardInsights.GetVisibleNodes(document).Select(node => node.Id).ToArray());
+
+            document.ViewState.QuickFilterId = BoardQuickFilterIds.ForAssignee("Aylin");
+            CollectionAssert.AreEquivalent(new[] { overdueTask.Id, soonTask.Id }, BoardInsights.GetVisibleNodes(document).Select(node => node.Id).ToArray());
+
+            document.ViewState.QuickFilterId = BoardQuickFilterIds.AtRisk;
+            CollectionAssert.AreEquivalent(new[] { riskNote.Id }, BoardInsights.GetVisibleNodes(document).Select(node => node.Id).ToArray());
         }
 
         [Test]

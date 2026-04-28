@@ -29,7 +29,18 @@ namespace ProjectDesigner.V2.BuiltIn
             }
 
             string assignee = string.IsNullOrEmpty(task.Assignee) ? "Unassigned" : task.Assignee;
-            return task.Status + " | " + task.Priority + " | " + assignee;
+            string dueLabel = string.Empty;
+            if (BoardInsights.IsTaskOverdue(task))
+            {
+                dueLabel = " | Overdue";
+            }
+            else if (BoardInsights.IsTaskDueSoon(task))
+            {
+                dueLabel = " | Due Soon";
+            }
+
+            string blockedLabel = BoardInsights.IsTaskBlocked(document, task) ? " | Blocked" : string.Empty;
+            return task.Status + " | " + task.Priority + " | " + assignee + dueLabel + blockedLabel;
         }
     }
 
@@ -89,8 +100,24 @@ namespace ProjectDesigner.V2.BuiltIn
                 return string.Empty;
             }
 
-            float progress = BoardInsights.CalculateMilestoneCompletion(document, milestone);
-            return Mathf.RoundToInt(progress * 100f) + "% complete";
+            BoardMilestoneHealthReport health = BoardInsights.GetMilestoneHealth(document, milestone);
+            string state;
+            switch (health.State)
+            {
+                case BoardMilestoneHealthState.NoLinkedTasks:
+                    state = "Needs tasks";
+                    break;
+                case BoardMilestoneHealthState.OffTrack:
+                    state = "Off Track";
+                    break;
+                case BoardMilestoneHealthState.AtRisk:
+                    state = "At Risk";
+                    break;
+                default:
+                    state = health.State.ToString();
+                    break;
+            }
+            return state + " | " + Mathf.RoundToInt(health.Completion * 100f) + "% complete";
         }
     }
 

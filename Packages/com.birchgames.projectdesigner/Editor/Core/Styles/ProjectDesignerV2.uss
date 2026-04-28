@@ -295,6 +295,31 @@
     color: rgb(31, 40, 52);
 }
 
+.pd-node-signal-row {
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-bottom: 6px;
+}
+
+.pd-node-signal-chip {
+    margin-right: 6px;
+    margin-bottom: 6px;
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    font-size: 10px;
+    -unity-font-style: bold;
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
 .pd-node-preview {
     flex-grow: 1;
     white-space: normal;
@@ -327,12 +352,17 @@
 }
 
 .pd-overview {
-    flex-direction: row;
-    min-height: 92px;
+    flex-direction: column;
+    min-height: 132px;
     padding: 12px;
     background-color: rgb(246, 249, 255);
     border-top-width: 1px;
     border-top-color: rgba(69, 102, 171, 0.1);
+}
+
+.pd-overview-row {
+    flex-direction: row;
+    margin-bottom: 8px;
 }
 
 .pd-overview-card {
@@ -351,6 +381,18 @@
     border-left-color: rgba(27, 39, 51, 0.08);
 }
 
+.pd-overview-workload-card {
+    width: 148px;
+}
+
+.pd-overview-card-active {
+    border-top-color: rgb(76, 122, 255);
+    border-right-color: rgb(76, 122, 255);
+    border-bottom-color: rgb(76, 122, 255);
+    border-left-color: rgb(76, 122, 255);
+    background-color: rgba(76, 122, 255, 0.08);
+}
+
 .pd-overview-value {
     font-size: 22px;
     -unity-font-style: bold;
@@ -359,6 +401,12 @@
 
 .pd-overview-label {
     color: rgb(103, 119, 136);
+}
+
+.pd-overview-detail {
+    margin-top: 4px;
+    font-size: 10px;
+    color: rgb(95, 109, 126);
 }
 
 .pd-inspector-title {
@@ -412,6 +460,15 @@
     border-right-color: rgba(76, 122, 255, 0.18);
     border-bottom-color: rgba(76, 122, 255, 0.18);
     border-left-color: rgba(76, 122, 255, 0.18);
+}
+
+.pd-secondary-button.pd-overview-card-active {
+    background-color: rgba(76, 122, 255, 0.12);
+    border-top-color: rgb(76, 122, 255);
+    border-right-color: rgb(76, 122, 255);
+    border-bottom-color: rgb(76, 122, 255);
+    border-left-color: rgb(76, 122, 255);
+    color: rgb(32, 58, 105);
 }
 
 .pd-welcome {

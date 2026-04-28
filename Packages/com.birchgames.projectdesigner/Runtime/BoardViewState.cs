@@ -23,6 +23,8 @@ namespace ProjectDesigner.V2.Data
         [SerializeField]
         private string _activeFilterId;
         [SerializeField]
+        private string _quickFilterId;
+        [SerializeField]
         private bool _snapToGrid;
 
         public Vector2 PanOffset
@@ -106,6 +108,12 @@ namespace ProjectDesigner.V2.Data
             set { _snapToGrid = value; }
         }
 
+        public string QuickFilterId
+        {
+            get { return _quickFilterId; }
+            set { _quickFilterId = value ?? string.Empty; }
+        }
+
         public BoardViewState()
         {
             _panOffset = Vector2.zero;
@@ -115,6 +123,7 @@ namespace ProjectDesigner.V2.Data
             _selectedNodeId = string.Empty;
             _selectedNodeIds = new List<string>();
             _activeFilterId = string.Empty;
+            _quickFilterId = string.Empty;
             _snapToGrid = false;
         }
 
@@ -128,6 +137,7 @@ namespace ProjectDesigner.V2.Data
                 Category = Category,
                 SelectedNodeId = SelectedNodeId,
                 ActiveFilterId = ActiveFilterId,
+                QuickFilterId = QuickFilterId,
                 SnapToGrid = SnapToGrid
             };
             clone.SetSelection(SelectedNodeIds, SelectedNodeId);

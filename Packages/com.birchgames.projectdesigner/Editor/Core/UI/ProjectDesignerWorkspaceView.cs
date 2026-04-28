@@ -57,7 +57,7 @@ namespace ProjectDesigner.V2.Editor
             _canvasView.SelectionChanged += OnSelectionChanged;
             centerColumn.Add(_canvasView);
 
-            _overviewView = new ProjectDesignerOverviewView();
+            _overviewView = new ProjectDesignerOverviewView(ToggleQuickFilter);
             centerColumn.Add(_overviewView);
 
             _inspectorView = new ScrollView();
@@ -222,6 +222,11 @@ namespace ProjectDesigner.V2.Editor
             title.AddToClassList("pd-inspector-title");
             _inspectorView.Add(title);
 
+            if (!string.IsNullOrWhiteSpace(_boardAsset.Document.ViewState.QuickFilterId))
+            {
+                _inspectorView.Add(CreateMutedBodyLabel("Quick filter: " + DescribeQuickFilter(_boardAsset.Document.ViewState.QuickFilterId)));
+            }
+
             var nameField = new TextField("Board Name");
             nameField.value = _boardAsset.Document.BoardName;
             nameField.isDelayed = true;
@@ -283,6 +288,7 @@ namespace ProjectDesigner.V2.Editor
             }
 
             _inspectorView.Add(templatesFoldout);
+            BuildPlannerInsights();
         }
 
         private void BuildMultiSelectionInspector(List<BoardNodeModel> selectedNodes)
@@ -491,6 +497,7 @@ namespace ProjectDesigner.V2.Editor
             _boardAsset.Document.ViewState.ActiveFilterId = string.Empty;
             _boardAsset.Document.ViewState.SearchQuery = string.Empty;
             _boardAsset.Document.ViewState.Category = BoardNodeCategories.All;
+            _boardAsset.Document.ViewState.QuickFilterId = string.Empty;
             _searchField.value = string.Empty;
             _categoryField.value = BoardNodeCategories.All;
             PersistBoard();
@@ -514,6 +521,13 @@ namespace ProjectDesigner.V2.Editor
             if (evt.ctrlKey && evt.keyCode == KeyCode.Z)
             {
                 _commandStack.Undo();
+                evt.StopPropagation();
+                return;
+            }
+
+            if (evt.ctrlKey && evt.keyCode == KeyCode.A)
+            {
+                SelectAllVisibleNodes();
                 evt.StopPropagation();
                 return;
             }
@@ -677,6 +691,18 @@ namespace ProjectDesigner.V2.Editor
             return _boardAsset.Document.ViewState.SelectedNodeIds.Count > 0;
         }
 
+        internal void SelectAllVisibleNodes()
+        {
+            List<string> visibleNodeIds = BoardInsights.GetVisibleNodes(_boardAsset.Document)
+                .Select(node => node.Id)
+                .ToList();
+
+            _boardAsset.Document.ViewState.SetSelection(visibleNodeIds, visibleNodeIds.FirstOrDefault());
+            PersistBoard();
+            RefreshInspector();
+            _canvasView.RefreshSelection();
+        }
+
         internal void DuplicateSelection()
         {
             List<string> selectedIds = _boardAsset.Document.ViewState.SelectedNodeIds.ToList();
@@ -718,6 +744,16 @@ namespace ProjectDesigner.V2.Editor
             RefreshAll();
         }
 
+        internal void ToggleQuickFilter(string filterId)
+        {
+            string currentFilter = _boardAsset.Document.ViewState.QuickFilterId;
+            _boardAsset.Document.ViewState.QuickFilterId = string.Equals(currentFilter, filterId, StringComparison.Ordinal)
+                ? string.Empty
+                : (filterId ?? string.Empty);
+            PersistBoard();
+            RefreshAll();
+        }
+
         private static VisualElement CreateActionRow()
         {
             var row = new VisualElement();
@@ -733,6 +769,136 @@ namespace ProjectDesigner.V2.Editor
             };
             button.AddToClassList("pd-secondary-button");
             return button;
+        }
+
+        private void BuildPlannerInsights()
+        {
+            Foldout workloadFoldout = CreateFoldout("Workload", true);
+            IReadOnlyList<BoardAssigneeSummary> assigneeSummaries = BoardInsights.GetAssigneeSummaries(_boardAsset.Document);
+            if (assigneeSummaries.Count == 0)
+            {
+                workloadFoldout.Add(CreateMutedBodyLabel("Assign tasks to teammates to unlock workload summaries."));
+            }
+            else
+            {
+                foreach (BoardAssigneeSummary summary in assigneeSummaries.Take(5))
+                {
+                    string detail = summary.Assignee + ": " + summary.OpenTaskCount + " open tasks | " + summary.TotalEstimatePoints + " pts";
+                    if (summary.BlockedTaskCount > 0)
+                    {
+                        detail += " | " + summary.BlockedTaskCount + " blocked";
+                    }
+
+                    if (summary.OverdueTaskCount > 0)
+                    {
+                        detail += " | " + summary.OverdueTaskCount + " overdue";
+                    }
+
+                    if (summary.HasOverload)
+                    {
+                        detail += " | heavy load";
+                    }
+
+                    workloadFoldout.Add(CreateMutedBodyLabel(detail));
+                }
+
+                VisualElement assigneeButtons = CreateActionRow();
+                foreach (BoardAssigneeSummary summary in assigneeSummaries.Take(4))
+                {
+                    assigneeButtons.Add(CreateQuickFilterButton(summary.Assignee, BoardQuickFilterIds.ForAssignee(summary.Assignee)));
+                }
+
+                workloadFoldout.Add(assigneeButtons);
+            }
+
+            workloadFoldout.Add(CreateMutedBodyLabel(BoardInsights.CountUnassignedOpenTasks(_boardAsset.Document) + " unassigned open tasks"));
+            _inspectorView.Add(workloadFoldout);
+
+            Foldout riskFoldout = CreateFoldout("Timeline & Risk", false);
+            riskFoldout.Add(CreateMutedBodyLabel(BoardInsights.GetOverdueTasks(_boardAsset.Document).Count() + " overdue tasks"));
+            riskFoldout.Add(CreateMutedBodyLabel(BoardInsights.GetDueSoonTasks(_boardAsset.Document).Count() + " due soon tasks"));
+            riskFoldout.Add(CreateMutedBodyLabel(BoardInsights.CountAtRiskNodes(_boardAsset.Document) + " at-risk cards"));
+            foreach (BoardMilestoneHealthReport report in BoardInsights.GetAtRiskMilestones(_boardAsset.Document).Take(3))
+            {
+                riskFoldout.Add(CreateMutedBodyLabel(report.Milestone.Title + ": " + DescribeMilestoneHealth(report)));
+            }
+
+            VisualElement riskButtons = CreateActionRow();
+            riskButtons.Add(CreateQuickFilterButton("Blocked", BoardQuickFilterIds.Blocked));
+            riskButtons.Add(CreateQuickFilterButton("Due Soon", BoardQuickFilterIds.DueSoon));
+            riskButtons.Add(CreateQuickFilterButton("Overdue", BoardQuickFilterIds.Overdue));
+            riskButtons.Add(CreateQuickFilterButton("At Risk", BoardQuickFilterIds.AtRisk));
+            riskFoldout.Add(riskButtons);
+            _inspectorView.Add(riskFoldout);
+
+            Foldout dependencyFoldout = CreateFoldout("Dependencies", false);
+            dependencyFoldout.Add(CreateMutedBodyLabel(BoardInsights.CountUnresolvedDependencyLinks(_boardAsset.Document) + " unresolved dependency links"));
+            dependencyFoldout.Add(CreateMutedBodyLabel(BoardInsights.GetBlockedTasks(_boardAsset.Document).Count(task => BoardInsights.HasUnresolvedDependencies(_boardAsset.Document, task)) + " tasks are waiting on other tasks"));
+            dependencyFoldout.Add(CreateMutedBodyLabel(BoardInsights.GetTasksBlockingOthers(_boardAsset.Document).Count() + " tasks are blocking downstream work"));
+            _inspectorView.Add(dependencyFoldout);
+        }
+
+        private Button CreateQuickFilterButton(string text, string filterId)
+        {
+            Button button = CreateInspectorButton(text, () => ToggleQuickFilter(filterId));
+            if (string.Equals(_boardAsset.Document.ViewState.QuickFilterId, filterId, StringComparison.Ordinal))
+            {
+                button.AddToClassList("pd-overview-card-active");
+            }
+
+            return button;
+        }
+
+        private static string DescribeQuickFilter(string filterId)
+        {
+            switch (filterId)
+            {
+                case BoardQuickFilterIds.Tasks:
+                    return "Tasks";
+                case BoardQuickFilterIds.InProgress:
+                    return "In Progress";
+                case BoardQuickFilterIds.Blocked:
+                    return "Blocked";
+                case BoardQuickFilterIds.Overdue:
+                    return "Overdue";
+                case BoardQuickFilterIds.DueSoon:
+                    return "Due Soon";
+                case BoardQuickFilterIds.Unassigned:
+                    return "Unassigned";
+                case BoardQuickFilterIds.AtRisk:
+                    return "At Risk";
+                case BoardQuickFilterIds.Milestones:
+                    return "Milestones";
+            }
+
+            if (BoardQuickFilterIds.IsAssigneeFilter(filterId))
+            {
+                return "Assignee: " + BoardQuickFilterIds.GetAssigneeName(filterId);
+            }
+
+            return filterId;
+        }
+
+        private static string DescribeMilestoneHealth(BoardMilestoneHealthReport report)
+        {
+            if (report == null)
+            {
+                return string.Empty;
+            }
+
+            switch (report.State)
+            {
+                case BoardMilestoneHealthState.OffTrack:
+                    return "Off track";
+                case BoardMilestoneHealthState.AtRisk:
+                    return "At risk";
+                case BoardMilestoneHealthState.Complete:
+                    return "Complete";
+                case BoardMilestoneHealthState.NoLinkedTasks:
+                    return "Needs linked tasks";
+                default:
+                    return "On track";
+            }
         }
     }
 }

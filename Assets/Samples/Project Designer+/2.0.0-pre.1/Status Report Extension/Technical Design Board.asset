@@ -22,12 +22,16 @@ MonoBehaviour:
     - Technical Designer
     - Pipeline Engineer
     _viewState:
-      _panOffset: {x: -310.2221, y: -440.27325}
-      _zoom: 0.9746449
+      _panOffset: {x: -32.04193, y: -543.4569}
+      _zoom: 0.5554062
       _searchQuery: 
-      _category: Technical Design
-      _selectedNodeId: 57c928deb7414aa7a37c7ae773a685ce
+      _category: All
+      _selectedNodeId: 7b3aaec237624f73a674740da2186d77
+      _selectedNodeIds:
+      - 7b3aaec237624f73a674740da2186d77
       _activeFilterId: 
+      _quickFilterId: 
+      _snapToGrid: 0
     _savedFilters:
     - _id: 764e24a207294f0b91fb9ee901a18c61
       _name: Planning
@@ -157,29 +161,42 @@ MonoBehaviour:
       _sourceNodeId: 19e20169528043679bb288859cd14c68
       _targetNodeId: 57c928deb7414aa7a37c7ae773a685ce
       _label: relates to
+    - _id: a2622bd960b941cd8d251083d964802a
+      _typeId: project-designer.edge.technical
+      _sourceNodeId: d33325fd1cec42339e160b3605688472
+      _targetNodeId: 0ca6414901fb4203b43082c97e510e85
+      _label: relates to
+    - _id: af62214dd996456e9aaeb4f0495e158b
+      _typeId: project-designer.edge.reference
+      _sourceNodeId: 1912f216e29942428c0e4fcdaa6c9fd0
+      _targetNodeId: 7b3aaec237624f73a674740da2186d77
+      _label: references
     _nodes:
-    - rid: 4671173541606195862
-    - rid: 4671173541606195863
-    - rid: 4671173541606195864
-    - rid: 4671173541606195865
-    - rid: 4671173541606195866
-    - rid: 4671173541606195867
-    - rid: 4671173541606195868
-    - rid: 4671173541606195869
-    - rid: 4671173541606195870
-    - rid: 4671173541606195871
-    - rid: 4671173541606195872
-    - rid: 4671173541606195873
+    - rid: 4671173548504776754
+    - rid: 4671173548504776755
+    - rid: 4671173548504776756
+    - rid: 4671173548504776757
+    - rid: 4671173548504776758
+    - rid: 4671173548504776759
+    - rid: 4671173548504776760
+    - rid: 4671173548504776761
+    - rid: 4671173548504776762
+    - rid: 4671173548504776763
+    - rid: 4671173548504776764
+    - rid: 4671173548504776765
+    - rid: 4671173548504776766
+    - rid: 4671173548504776767
+    - rid: 4671173548504776768
   references:
     version: 2
     RefIds:
-    - rid: 4671173541606195862
+    - rid: 4671173548504776754
       type: {class: ProjectBriefNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
       data:
         _id: 9d81895ed71f4154a2127d0eb9bda2ad
         _typeId: project-designer.project-brief
         _title: Project Brief
-        _position: {x: 120, y: 100}
+        _position: {x: 235.39069, y: 100}
         _size: {x: 360, y: 280}
         _tags:
         - overview
@@ -192,13 +209,13 @@ MonoBehaviour:
         _projectKnowledge: 'Keep the product surface simple, but keep the internals
           modular: board data, editor shell, drag interactions, and importers should
           evolve independently.'
-    - rid: 4671173541606195863
+    - rid: 4671173548504776755
       type: {class: ClassNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
       data:
         _id: ed797114a9b446f092b2057aadcb920e
         _typeId: project-designer.class
         _title: PlannerBootstrapper
-        _position: {x: -56.439507, y: 390.151}
+        _position: {x: -17.53122, y: 465.20178}
         _size: {x: 340, y: 260}
         _tags:
         - entry
@@ -217,13 +234,13 @@ MonoBehaviour:
           _visibility: public
         - _signature: OpenBoard(ProjectBoardAsset board)
           _visibility: public
-    - rid: 4671173541606195864
+    - rid: 4671173548504776756
       type: {class: ClassNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
       data:
         _id: ec7d914c4264416d8c39e98fcd778a9a
         _typeId: project-designer.class
         _title: BoardDocumentRepository
-        _position: {x: 306.81, y: 299.69788}
+        _position: {x: 528.31256, y: 235.06726}
         _size: {x: 340, y: 260}
         _tags:
         - persistence
@@ -242,13 +259,13 @@ MonoBehaviour:
           _visibility: public
         - _signature: Save(BoardDocument document)
           _visibility: public
-    - rid: 4671173541606195865
+    - rid: 4671173548504776757
       type: {class: ClassNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
       data:
         _id: 57c928deb7414aa7a37c7ae773a685ce
         _typeId: project-designer.class
         _title: PlannerCanvasController
-        _position: {x: 637.67487, y: 490.65454}
+        _position: {x: 1200.6173, y: 580.26904}
         _size: {x: 340, y: 260}
         _tags:
         - interaction
@@ -269,13 +286,13 @@ MonoBehaviour:
           _visibility: public
         - _signature: FrameAll()
           _visibility: public
-    - rid: 4671173541606195866
+    - rid: 4671173548504776758
       type: {class: ClassNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
       data:
         _id: 37c5b1eb050048d894beb2cc353741ea
         _typeId: project-designer.class
         _title: LinkValidationService
-        _position: {x: 1254.4165, y: 358.88327}
+        _position: {x: 1493.5392, y: 350.13452}
         _size: {x: 340, y: 260}
         _tags:
         - links
@@ -292,13 +309,13 @@ MonoBehaviour:
           _visibility: public
         - _signature: CreateEdge(BoardNodeModel source, BoardNodeModel target)
           _visibility: public
-    - rid: 4671173541606195867
+    - rid: 4671173548504776759
       type: {class: ClassNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
       data:
         _id: 19e20169528043679bb288859cd14c68
         _typeId: project-designer.class
         _title: AssetImportPipeline
-        _position: {x: -108.60454, y: 959.0757}
+        _position: {x: -270.45312, y: 845.4708}
         _size: {x: 340, y: 260}
         _tags:
         - importer
@@ -315,13 +332,13 @@ MonoBehaviour:
           _visibility: public
         - _signature: Import(Object asset, Vector2 position)
           _visibility: public
-    - rid: 4671173541606195868
+    - rid: 4671173548504776760
       type: {class: ClassNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
       data:
         _id: 0ca6414901fb4203b43082c97e510e85
         _typeId: project-designer.class
         _title: OverviewMetricsService
-        _position: {x: 595.24005, y: 1117.648}
+        _position: {x: 816.44214, y: 1320.8071}
         _size: {x: 340, y: 260}
         _tags:
         - metrics
@@ -338,13 +355,13 @@ MonoBehaviour:
           _visibility: public
         - _signature: CalculateMilestoneCompletion(MilestoneNodeModel milestone)
           _visibility: public
-    - rid: 4671173541606195869
+    - rid: 4671173548504776761
       type: {class: ClassNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
       data:
         _id: 3b9e0b3dfb244dc399b7844525aa4430
         _typeId: project-designer.class
         _title: ExtensionRegistryFacade
-        _position: {x: 1132.6954, y: 717.8673}
+        _position: {x: 1347.0782, y: 1204.0598}
         _size: {x: 340, y: 260}
         _tags:
         - extensibility
@@ -361,13 +378,13 @@ MonoBehaviour:
           _visibility: public
         - _signature: RegisterImporter(IProjectDesignerAssetImporter importer)
           _visibility: public
-    - rid: 4671173541606195870
+    - rid: 4671173548504776762
       type: {class: NoteNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
       data:
         _id: 1912f216e29942428c0e4fcdaa6c9fd0
         _typeId: project-designer.note
         _title: Migration Constraints
-        _position: {x: 120, y: 980}
+        _position: {x: 658.77356, y: 1510.9417}
         _size: {x: 300, y: 220}
         _tags:
         - migration
@@ -381,13 +398,13 @@ MonoBehaviour:
           - Preserve extension
           points even when the default UX gets simplified.'
         _accentHex: '#4C7AFF'
-    - rid: 4671173541606195871
+    - rid: 4671173548504776763
       type: {class: NoteNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
       data:
         _id: 7b3aaec237624f73a674740da2186d77
         _typeId: project-designer.note
         _title: Technical Risks
-        _position: {x: 500, y: 980}
+        _position: {x: 128.92973, y: 1434.1943}
         _size: {x: 300, y: 220}
         _tags:
         - risk
@@ -401,13 +418,13 @@ MonoBehaviour:
           -
           Importer ordering needs tests before more samples ship.'
         _accentHex: '#E58C4A'
-    - rid: 4671173541606195872
+    - rid: 4671173548504776764
       type: {class: ReferenceNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
       data:
         _id: 827bf6cab99648deb1ffe555346444a9
         _typeId: project-designer.reference
         _title: UI Toolkit Notes
-        _position: {x: 1260, y: 980}
+        _position: {x: 543.6953, y: 695.3363}
         _size: {x: 320, y: 220}
         _tags:
         - reference
@@ -420,13 +437,13 @@ MonoBehaviour:
         _textReference: Useful when validating drag and selection behaviors in custom
           canvas controls.
         _externalUrl: https://docs.unity3d.com/Manual/UIElements.html
-    - rid: 4671173541606195873
+    - rid: 4671173548504776765
       type: {class: ReferenceNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
       data:
         _id: b2c9ab33d4f0435db32478816e7f1049
         _typeId: project-designer.reference
         _title: UPM Packaging Checklist
-        _position: {x: 1640, y: 980}
+        _position: {x: 1640.0001, y: 770.40356}
         _size: {x: 320, y: 220}
         _tags:
         - reference
@@ -439,3 +456,49 @@ MonoBehaviour:
         _textReference: Track asmdef boundaries, Samples~ usage, docs, and package.json
           metadata together.
         _externalUrl: 
+    - rid: 4671173548504776766
+      type: {class: ClassNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
+      data:
+        _id: d33325fd1cec42339e160b3605688472
+        _typeId: project-designer.class
+        _title: Class
+        _position: {x: 506.94873, y: 960.5381}
+        _size: {x: 340, y: 260}
+        _tags: []
+        _isPinned: 0
+        _namespaceName: Game
+        _summary: Use this for technical design, ownership, and class relationships.
+        _fields: []
+        _methods: []
+    - rid: 4671173548504776767
+      type: {class: MilestoneNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
+      data:
+        _id: 332277779729457a8604323240ed5ff9
+        _typeId: project-designer.milestone
+        _title: Milestone
+        _position: {x: 173.2801, y: 1075.6053}
+        _size: {x: 320, y: 200}
+        _tags: []
+        _isPinned: 0
+        _summary: Capture the milestone goal and done definition.
+        _targetDateIso: 
+    - rid: 4671173548504776768
+      type: {class: NoteNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
+      data:
+        _id: e96eb34ad1b74fe2ad399df4e645862f
+        _typeId: project-designer.note
+        _title: Technical Risks
+        _position: {x: -123.99217, y: 1130.6726}
+        _size: {x: 300, y: 220}
+        _tags:
+        - risk
+        - architecture
+        _isPinned: 0
+        _body: '- Drag interactions can regress silently across Unity versions.
+
+          -
+          Hidden technical complexity should not leak into the planning-first UX.
+
+          -
+          Importer ordering needs tests before more samples ship.'
+        _accentHex: '#E58C4A'
