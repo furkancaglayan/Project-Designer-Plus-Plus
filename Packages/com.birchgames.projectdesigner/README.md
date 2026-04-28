@@ -2,26 +2,26 @@
 
 Project Designer+ is a node-based pre-production planner for indie Unity teams.
 
-It ships as an editor package with a custom UI Toolkit workspace, typed board documents, built-in planning nodes, asset-driven reference capture, and explicit extension hooks for custom workflows.
+It ships as a UPM-friendly editor package with a custom UI Toolkit planner, typed planning-board documents, built-in workflow presets, asset-driven reference capture, and explicit extension hooks for custom cards.
 
 ## Highlights
 
-- Plan milestones, tasks, notes, references, and technical design in one board.
-- Drag Unity assets into the canvas to generate reference or class nodes.
-- Use a command-stack-driven board model for undo, redo, testing, and persistence.
-- Start from curated board presets: `Empty`, `Solo Indie`, `Small Team`, and `Technical Design`.
-- Extend the package with your own nodes, edges, inspectors, and importers.
+- Plan tasks, milestones, notes, references, project context, and technical design in one board.
+- Open a dedicated `Planning Boards` browser to create or reopen boards quickly.
+- Start from showcase boards and workflow presets, not just empty templates.
+- Drag Unity assets into the planner to generate reference or class cards.
+- Extend the package with your own cards, links, inspectors, and importers.
 
 ## Package Layout
 
 - `Runtime`
-  Board document model, node types, command stack, registry contracts, and package-facing APIs.
+  Board document model, card types, command stack, registry contracts, and package-facing APIs.
 - `Editor`
-  UI Toolkit workspace, built-in definitions, inspectors, importers, onboarding, and board asset tooling.
+  UI Toolkit planner, board browser, onboarding, built-in definitions, inspectors, importers, and board tooling.
 - `Samples~/StatusReportExtension`
-  Example custom node, inspector, and asset importer built on the public registry.
+  Example custom card, inspector, importer, README, and demo board built on the public registry.
 - `Tests/Editor`
-  Edit mode tests for document behavior, presets, commands, importers, and extension registration.
+  Edit mode tests for document behavior, presets, commands, importers, board discovery, and extension registration.
 - `Documentation~`
   Versioned docs and Asset Store listing drafts.
 
@@ -31,11 +31,16 @@ It ships as an editor package with a custom UI Toolkit workspace, typed board do
 
 ## Entry Points
 
-- `Tools/Project Designer/Open Workspace`
+- `Tools/Project Designer/Open Planner`
+- `Tools/Project Designer/Open Planning Boards`
 - `Tools/Project Designer/New Board`
 - `Tools/Project Designer/New Solo Indie Board`
 - `Tools/Project Designer/New Small Team Board`
 - `Tools/Project Designer/New Technical Design Board`
+- `Tools/Project Designer/New Pitch & Vision Board`
+- `Tools/Project Designer/New Milestone Roadmap Board`
+- `Tools/Project Designer/New Research & Reference Board`
+- `Tools/Project Designer/New Stakeholder Review Board`
 
 ## Documentation
 

@@ -60,6 +60,15 @@ namespace ProjectDesigner.V2.BuiltIn
             label.style.marginBottom = 4f;
             parent.Add(label);
         }
+
+        public static Foldout CreateFoldout(string title, bool expanded = false)
+        {
+            return new Foldout
+            {
+                text = title,
+                value = expanded
+            };
+        }
     }
 
     internal sealed class TaskNodeInspector : IProjectDesignerInspector
@@ -141,6 +150,71 @@ namespace ProjectDesigner.V2.BuiltIn
             }, true);
 
             BuiltInInspectorUtility.AddTagsField(root, task, board, dispatcher, repaint);
+            return root;
+        }
+    }
+
+    internal sealed class ProjectBriefNodeInspector : IProjectDesignerInspector
+    {
+        public string NodeTypeId { get { return BoardNodeTypeIds.ProjectBrief; } }
+        public int Priority { get { return 100; } }
+
+        public VisualElement BuildInspector(ProjectBoardAsset board, BoardNodeModel node, IBoardCommandDispatcher dispatcher, Action repaint)
+        {
+            var brief = node as ProjectBriefNodeModel;
+            var root = new VisualElement();
+            if (brief == null)
+            {
+                return root;
+            }
+
+            BuiltInInspectorUtility.AddDelayedTextField(root, "Title", brief.Title, value =>
+            {
+                ProjectBriefNodeModel updated = (ProjectBriefNodeModel)brief.Clone();
+                updated.Title = value;
+                dispatcher.Execute(new UpdateNodeCommand(board, updated));
+                repaint();
+            });
+
+            BuiltInInspectorUtility.AddDelayedTextField(root, "Overview", brief.Overview, value =>
+            {
+                ProjectBriefNodeModel updated = (ProjectBriefNodeModel)brief.Clone();
+                updated.Overview = value;
+                dispatcher.Execute(new UpdateNodeCommand(board, updated));
+                repaint();
+            }, true);
+
+            BuiltInInspectorUtility.AddDelayedTextField(root, "Team Snapshot", brief.TeamSnapshot, value =>
+            {
+                ProjectBriefNodeModel updated = (ProjectBriefNodeModel)brief.Clone();
+                updated.TeamSnapshot = value;
+                dispatcher.Execute(new UpdateNodeCommand(board, updated));
+                repaint();
+            }, true);
+
+            BuiltInInspectorUtility.AddDelayedTextField(root, "Project Knowledge", brief.ProjectKnowledge, value =>
+            {
+                ProjectBriefNodeModel updated = (ProjectBriefNodeModel)brief.Clone();
+                updated.ProjectKnowledge = value;
+                dispatcher.Execute(new UpdateNodeCommand(board, updated));
+                repaint();
+            }, true);
+
+            var syncButton = new Button(() =>
+            {
+                ProjectBriefNodeModel updated = (ProjectBriefNodeModel)brief.Clone();
+                updated.Overview = board.Document.Summary;
+                updated.TeamSnapshot = string.Join(", ", board.Document.TeamMembers);
+                dispatcher.Execute(new UpdateNodeCommand(board, updated));
+                repaint();
+            })
+            {
+                text = "Sync From Board Details"
+            };
+            syncButton.AddToClassList("pd-secondary-button");
+            root.Add(syncButton);
+
+            BuiltInInspectorUtility.AddTagsField(root, brief, board, dispatcher, repaint);
             return root;
         }
     }
@@ -336,8 +410,8 @@ namespace ProjectDesigner.V2.BuiltIn
                 repaint();
             }, true);
 
-            BuiltInInspectorUtility.AddSectionTitle(root, "Fields");
-            BuiltInInspectorUtility.AddDelayedTextField(root, "Field List", string.Join("\n", classNode.Fields.Select(item => item.Visibility + " " + item.Signature)), value =>
+            Foldout fieldsFoldout = BuiltInInspectorUtility.CreateFoldout("Fields", false);
+            BuiltInInspectorUtility.AddDelayedTextField(fieldsFoldout, "Field List", string.Join("\n", classNode.Fields.Select(item => item.Visibility + " " + item.Signature)), value =>
             {
                 ClassNodeModel updated = (ClassNodeModel)classNode.Clone();
                 updated.Fields.Clear();
@@ -353,9 +427,10 @@ namespace ProjectDesigner.V2.BuiltIn
                 dispatcher.Execute(new UpdateNodeCommand(board, updated));
                 repaint();
             }, true);
+            root.Add(fieldsFoldout);
 
-            BuiltInInspectorUtility.AddSectionTitle(root, "Methods");
-            BuiltInInspectorUtility.AddDelayedTextField(root, "Method List", string.Join("\n", classNode.Methods.Select(item => item.Visibility + " " + item.Signature)), value =>
+            Foldout methodsFoldout = BuiltInInspectorUtility.CreateFoldout("Methods", false);
+            BuiltInInspectorUtility.AddDelayedTextField(methodsFoldout, "Method List", string.Join("\n", classNode.Methods.Select(item => item.Visibility + " " + item.Signature)), value =>
             {
                 ClassNodeModel updated = (ClassNodeModel)classNode.Clone();
                 updated.Methods.Clear();
@@ -371,6 +446,7 @@ namespace ProjectDesigner.V2.BuiltIn
                 dispatcher.Execute(new UpdateNodeCommand(board, updated));
                 repaint();
             }, true);
+            root.Add(methodsFoldout);
 
             BuiltInInspectorUtility.AddTagsField(root, classNode, board, dispatcher, repaint);
             return root;

@@ -10,8 +10,8 @@ namespace ProjectDesigner.V2.Editor
     {
         public static ProjectBoardAsset CreateBoardAsset(string presetId, string boardName)
         {
-            string targetFolder = GetTargetFolder();
-            string safeName = string.IsNullOrWhiteSpace(boardName) ? "Project Board" : boardName.Trim();
+            string targetFolder = EnsureAssetFolderExists(GetTargetFolder());
+            string safeName = string.IsNullOrWhiteSpace(boardName) ? ProjectDesignerProductInfo.DefaultBoardName : boardName.Trim();
             string assetPath = AssetDatabase.GenerateUniqueAssetPath(targetFolder + "/" + safeName + ".asset");
 
             ProjectBoardAsset asset = ScriptableObject.CreateInstance<ProjectBoardAsset>();
@@ -38,7 +38,7 @@ namespace ProjectDesigner.V2.Editor
 
         public static string GetTargetFolder()
         {
-            string defaultPath = "Assets";
+            string defaultPath = ProjectDesignerSettings.instance.DefaultBoardFolder;
             Object selectedObject = Selection.activeObject;
             if (selectedObject == null)
             {
@@ -51,6 +51,11 @@ namespace ProjectDesigner.V2.Editor
                 return defaultPath;
             }
 
+            if (!path.StartsWith("Assets"))
+            {
+                return defaultPath;
+            }
+
             if (File.Exists(path))
             {
                 string directoryName = Path.GetDirectoryName(path);
@@ -58,6 +63,30 @@ namespace ProjectDesigner.V2.Editor
             }
 
             return path.Replace("\\", "/");
+        }
+
+        private static string EnsureAssetFolderExists(string assetFolder)
+        {
+            string normalizedPath = ProjectDesignerSettings.NormalizeAssetFolder(assetFolder);
+            if (AssetDatabase.IsValidFolder(normalizedPath))
+            {
+                return normalizedPath;
+            }
+
+            string[] segments = normalizedPath.Split('/');
+            string currentPath = "Assets";
+            for (int i = 1; i < segments.Length; i++)
+            {
+                string nextPath = currentPath + "/" + segments[i];
+                if (!AssetDatabase.IsValidFolder(nextPath))
+                {
+                    AssetDatabase.CreateFolder(currentPath, segments[i]);
+                }
+
+                currentPath = nextPath;
+            }
+
+            return currentPath;
         }
     }
 }

@@ -13,6 +13,7 @@ namespace ProjectDesigner.V2.BuiltIn
 
         public static void Register()
         {
+            ProjectDesignerRegistry.RegisterNodeDefinition(new ProjectBriefNodeDefinition());
             ProjectDesignerRegistry.RegisterNodeDefinition(new TaskNodeDefinition());
             ProjectDesignerRegistry.RegisterNodeDefinition(new MilestoneNodeDefinition());
             ProjectDesignerRegistry.RegisterNodeDefinition(new NoteNodeDefinition());
@@ -24,6 +25,7 @@ namespace ProjectDesigner.V2.BuiltIn
             ProjectDesignerRegistry.RegisterEdgeDefinition(new ReferenceEdgeDefinition());
             ProjectDesignerRegistry.RegisterEdgeDefinition(new TechnicalRelationEdgeDefinition());
 
+            ProjectDesignerRegistry.RegisterInspector(new ProjectBriefNodeInspector());
             ProjectDesignerRegistry.RegisterInspector(new TaskNodeInspector());
             ProjectDesignerRegistry.RegisterInspector(new MilestoneNodeInspector());
             ProjectDesignerRegistry.RegisterInspector(new NoteNodeInspector());

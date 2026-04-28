@@ -10,6 +10,7 @@ namespace ProjectDesigner.V2.Data
 
     public static class BoardNodeTypeIds
     {
+        public const string ProjectBrief = "project-designer.project-brief";
         public const string Task = "project-designer.task";
         public const string Milestone = "project-designer.milestone";
         public const string Note = "project-designer.note";
@@ -32,5 +33,9 @@ namespace ProjectDesigner.V2.Data
         public const string SoloIndie = "project-designer.preset.solo";
         public const string SmallTeam = "project-designer.preset.small-team";
         public const string TechnicalDesign = "project-designer.preset.technical";
+        public const string PitchVision = "project-designer.preset.pitch-vision";
+        public const string MilestoneRoadmap = "project-designer.preset.milestone-roadmap";
+        public const string ResearchReference = "project-designer.preset.research-reference";
+        public const string StakeholderReview = "project-designer.preset.stakeholder-review";
     }
 }

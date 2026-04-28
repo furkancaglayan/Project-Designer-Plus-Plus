@@ -10,12 +10,10 @@ namespace ProjectDesigner.V2.Editor
         [SerializeField]
         private ProjectBoardAsset _boardAsset;
 
-        private bool _styleLoaded;
-
         public static void Open(ProjectBoardAsset board = null)
         {
             ProjectDesignerV2Window window = GetWindow<ProjectDesignerV2Window>();
-            window.titleContent = new GUIContent("Project Designer+");
+            window.titleContent = new GUIContent(ProjectDesignerProductInfo.PlannerWindowTitle);
             if (board != null)
             {
                 window._boardAsset = board;
@@ -28,7 +26,7 @@ namespace ProjectDesigner.V2.Editor
 
         private void OnEnable()
         {
-            titleContent = new GUIContent("Project Designer+");
+            titleContent = new GUIContent(ProjectDesignerProductInfo.PlannerWindowTitle);
             Rebuild();
         }
 
@@ -39,12 +37,17 @@ namespace ProjectDesigner.V2.Editor
                 return;
             }
 
-            EnsureStyles();
+            ProjectDesignerThemeConfig.ApplyTheme(rootVisualElement);
             rootVisualElement.Clear();
 
             if (_boardAsset == null)
             {
-                rootVisualElement.Add(new ProjectDesignerWelcomeView(CreatePresetBoard, TryOpenSelectedBoard));
+                rootVisualElement.Add(new ProjectDesignerWelcomeView(
+                    CreatePresetBoard,
+                    TryOpenSelectedBoard,
+                    ProjectDesignerV2Menus.OpenQuickStartGuide,
+                    ProjectDesignerV2Menus.OpenProjectSettings,
+                    ProjectDesignerV2Menus.OpenPlanningBoards));
             }
             else
             {
@@ -52,19 +55,9 @@ namespace ProjectDesigner.V2.Editor
             }
         }
 
-        private void EnsureStyles()
+        public void RefreshTheme()
         {
-            if (_styleLoaded)
-            {
-                return;
-            }
-
-            StyleSheet styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>(ProjectDesignerPackageInfo.StyleSheetPath);
-            if (styleSheet != null)
-            {
-                rootVisualElement.styleSheets.Add(styleSheet);
-                _styleLoaded = true;
-            }
+            Rebuild();
         }
 
         private void SetBoard(ProjectBoardAsset boardAsset)
@@ -83,7 +76,7 @@ namespace ProjectDesigner.V2.Editor
             ProjectBoardAsset selectedBoard = Selection.activeObject as ProjectBoardAsset;
             if (selectedBoard == null)
             {
-                EditorUtility.DisplayDialog("Project Designer+", "Select a Project Board asset in the Project window first.", "OK");
+                EditorUtility.DisplayDialog(ProjectDesignerProductInfo.ProductName, "Select a Planning Board asset in the Project window first.", "OK");
                 return;
             }
 

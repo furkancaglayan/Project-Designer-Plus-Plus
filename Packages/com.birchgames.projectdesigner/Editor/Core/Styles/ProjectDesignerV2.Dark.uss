@@ -1,0 +1,151 @@
+.pd-workspace {
+    background-color: rgb(24, 28, 34);
+    color: rgb(236, 239, 244);
+}
+
+.pd-toolbar {
+    background-color: rgb(18, 22, 28);
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+.pd-toolbar-title {
+    color: rgb(236, 239, 244);
+}
+
+.pd-toolbar-button {
+    background-color: rgb(34, 40, 49);
+    color: rgb(230, 235, 241);
+    border-top-color: rgba(255, 255, 255, 0.08);
+    border-right-color: rgba(255, 255, 255, 0.08);
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+    border-left-color: rgba(255, 255, 255, 0.08);
+}
+
+.pd-sidebar {
+    background-color: rgb(20, 24, 31);
+    border-right-color: rgba(255, 255, 255, 0.08);
+}
+
+.pd-inspector {
+    background-color: rgb(20, 24, 31);
+    border-left-color: rgba(255, 255, 255, 0.08);
+}
+
+.pd-section-title {
+    color: rgb(236, 239, 244);
+}
+
+.pd-subsection-title {
+    color: rgb(154, 168, 189);
+}
+
+.pd-node-library-button,
+.pd-filter-button,
+.pd-secondary-button {
+    background-color: rgb(34, 40, 49);
+    color: rgb(230, 235, 241);
+    border-top-color: rgba(255, 255, 255, 0.08);
+    border-right-color: rgba(255, 255, 255, 0.08);
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+    border-left-color: rgba(255, 255, 255, 0.08);
+}
+
+.pd-canvas {
+    background-color: rgb(24, 28, 34);
+}
+
+.pd-node {
+    background-color: rgb(34, 40, 49);
+    border-top-color: rgba(255, 255, 255, 0.08);
+    border-left-color: rgba(255, 255, 255, 0.08);
+    border-right-color: rgba(255, 255, 255, 0.08);
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+.pd-node-selected {
+    border-top-color: rgb(245, 229, 120);
+    border-left-color: rgb(245, 229, 120);
+    border-right-color: rgb(245, 229, 120);
+    border-bottom-color: rgb(245, 229, 120);
+}
+
+.pd-node-category {
+    color: rgb(154, 168, 189);
+}
+
+.pd-node-title {
+    color: rgb(236, 239, 244);
+}
+
+.pd-node-preview {
+    color: rgb(225, 229, 236);
+}
+
+.pd-node-tags {
+    color: rgb(120, 187, 214);
+}
+
+.pd-overview {
+    background-color: rgb(18, 22, 28);
+    border-top-color: rgba(255, 255, 255, 0.08);
+}
+
+.pd-overview-card {
+    background-color: rgb(31, 37, 45);
+    border-top-color: rgba(255, 255, 255, 0.08);
+    border-right-color: rgba(255, 255, 255, 0.08);
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+    border-left-color: rgba(255, 255, 255, 0.08);
+}
+
+.pd-overview-value,
+.pd-inspector-title,
+.pd-welcome-title,
+.pd-welcome-preset-title {
+    color: rgb(236, 239, 244);
+}
+
+.pd-overview-label,
+.pd-muted-body,
+.pd-onboarding-meta,
+.pd-welcome-preset-description,
+.pd-welcome-body {
+    color: rgb(177, 186, 199);
+}
+
+.pd-primary-button {
+    background-color: rgb(76, 122, 255);
+    color: rgb(255, 255, 255);
+}
+
+.pd-welcome,
+.pd-onboarding-window {
+    background-color: rgb(24, 28, 34);
+}
+
+.pd-welcome-card,
+.pd-onboarding-footer {
+    background-color: rgb(28, 34, 42);
+}
+
+.pd-welcome-eyebrow {
+    color: rgb(103, 195, 255);
+}
+
+.pd-welcome-preset,
+.pd-foldout {
+    background-color: rgb(34, 40, 49);
+    border-top-color: rgba(255, 255, 255, 0.08);
+    border-right-color: rgba(255, 255, 255, 0.08);
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+    border-left-color: rgba(255, 255, 255, 0.08);
+}
+
+.pd-canvas-hint {
+    background-color: rgba(34, 40, 49, 0.96);
+    color: rgb(177, 186, 199);
+    border-top-color: rgba(255, 255, 255, 0.08);
+    border-right-color: rgba(255, 255, 255, 0.08);
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+    border-left-color: rgba(255, 255, 255, 0.08);
+}

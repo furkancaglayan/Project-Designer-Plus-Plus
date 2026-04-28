@@ -33,6 +33,37 @@ namespace ProjectDesigner.V2.BuiltIn
         }
     }
 
+    internal sealed class ProjectBriefNodeDefinition : IProjectDesignerNodeDefinition
+    {
+        public string TypeId { get { return BoardNodeTypeIds.ProjectBrief; } }
+        public string DisplayName { get { return ProjectDesignerProductInfo.ProjectBriefTitle; } }
+        public string Description { get { return "A sticky planning card for the high-level pitch, team snapshot, and shared project knowledge."; } }
+        public string Category { get { return BoardNodeCategories.Planning; } }
+        public string AccentColor { get { return "#F5C451"; } }
+        public Vector2 DefaultSize { get { return new Vector2(360f, 280f); } }
+
+        public BoardNodeModel CreateDefaultNode(Vector2 position)
+        {
+            var node = new ProjectBriefNodeModel();
+            node.Position = position;
+            node.Size = DefaultSize;
+            node.IsPinned = true;
+            return node;
+        }
+
+        public string GetPreview(BoardNodeModel node, BoardDocument document)
+        {
+            ProjectBriefNodeModel brief = node as ProjectBriefNodeModel;
+            if (brief == null)
+            {
+                return string.Empty;
+            }
+
+            string team = string.IsNullOrWhiteSpace(brief.TeamSnapshot) ? "Team snapshot pending" : brief.TeamSnapshot;
+            return team + " | " + brief.Overview;
+        }
+    }
+
     internal sealed class MilestoneNodeDefinition : IProjectDesignerNodeDefinition
     {
         public string TypeId { get { return BoardNodeTypeIds.Milestone; } }

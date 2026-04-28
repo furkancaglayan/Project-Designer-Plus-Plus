@@ -1,28 +1,31 @@
 # Project Designer+
 
-Project Designer+ is now being rebuilt as a UPM-first Unity editor package for node-based pre-production planning.
+Project Designer+ is being rebuilt as a UPM-first Unity editor package for node-based pre-production planning.
 
-The active package lives at [Packages/com.birchgames.projectdesigner](Packages/com.birchgames.projectdesigner) and targets `Unity 2022.3 LTS+`. It focuses on:
+The active package lives at [Packages/com.birchgames.projectdesigner](Packages/com.birchgames.projectdesigner) and targets `Unity 2022.3 LTS+`.
 
-- milestone and task planning for indie teams
-- reference capture from Unity assets
-- a UI Toolkit workspace with a custom board canvas
-- public extension hooks for custom nodes, inspectors, edges, and asset importers
-- technical design as a secondary workflow instead of the entire product pitch
+## Current Direction
+
+- planning-first boards for indie teams
+- workflow presets and richer showcase examples
+- asset-backed reference capture inside Unity
+- a custom UI Toolkit planner with a dedicated board browser
+- public extension hooks for custom cards, inspectors, links, and importers
+- technical design as a secondary workflow instead of the whole product pitch
 
 ## Repo Layout
 
 - `Packages/com.birchgames.projectdesigner`
-  The new package, docs, samples, tests, and editor tooling for the v2 rewrite.
+  The active package, docs, samples, tests, and editor tooling.
 - `Assets/ProjectDesigner+`
-  Legacy v1 asset content kept in the repo as reference during the transition.
+  Legacy v1 content kept in the repo as reference during the transition.
 
 ## Getting Started
 
 1. Open the project in Unity.
-2. Use `Tools/Project Designer/Open Workspace` or create a board from the `Tools/Project Designer` menu.
-3. Work from one of the packaged starter boards:
-   `Empty`, `Solo Indie`, `Small Team`, or `Technical Design`.
+2. Use `Tools/Project Designer/Open Planning Boards` to browse or create boards.
+3. Start from a workflow preset or one of the richer showcase boards.
+4. Import the `Status Report Extension` sample if you want to evaluate custom-card extensibility immediately.
 
 ## Documentation
 
@@ -36,6 +39,4 @@ The active package lives at [Packages/com.birchgames.projectdesigner](Packages/c
 
 ## Current Status
 
-This repository now contains the v2 package foundation, built-in planning definitions, preset board generation, the UI Toolkit workspace shell, a sample extension, and edit mode tests.
-
-The repo still includes the older asset implementation under `Assets/ProjectDesigner+` while the package rewrite is completed and validated inside Unity.
+The package now contains the v2 planner shell, workflow presets, showcase boards, a planning-board browser, onboarding, a sample extension with a demo board, and edit mode tests around the new architecture.

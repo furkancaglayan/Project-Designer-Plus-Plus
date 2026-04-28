@@ -20,7 +20,7 @@
   "samples": [
     {
       "displayName": "Status Report Extension",
-      "description": "A sample custom node, inspector, and asset importer built on top of the Project Designer+ registry.",
+      "description": "A sample custom node, inspector, asset importer, and demo planning board built on top of the Project Designer+ registry.",
       "path": "Samples~/StatusReportExtension"
     }
   ]

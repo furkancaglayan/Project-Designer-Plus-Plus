@@ -1,43 +1,61 @@
 # Quick Start
 
-Project Designer+ opens as a node-based workspace for planning game pre-production directly inside Unity.
+Project Designer+ opens as a planning-first Unity editor package for pre-production boards, workflow presets, and asset-backed reference capture.
 
-## Create Your First Board
+## Open The Planner
 
-1. Open Unity with the package available in `Packages/com.birchgames.projectdesigner`.
-2. Use `Tools/Project Designer/New Board` or one of the starter presets.
-3. Double-click the created `ProjectBoardAsset` to open the workspace.
+1. Open Unity with `Packages/com.birchgames.projectdesigner` available.
+2. Use `Tools/Project Designer/Open Planning Boards` if you want the board browser, or `Tools/Project Designer/Open Planner` if you already have a board selected.
+3. Create a new planning board from `Tools/Project Designer` or `Assets/Create/Project Designer`.
 
-## Use the Workspace
+## Pick A Starting Point
+
+- `New Board`
+  Light starting point with a pinned `Project Brief` card.
+- `Solo Indie Board`
+  Rich showcase board for solo slice planning and references.
+- `Small Team Board`
+  Denser cross-discipline planning example.
+- `Technical Design Board`
+  Secondary architecture-focused example.
+- `Pitch & Vision Board`
+  Workflow preset for player promise, audience, and pitch framing.
+- `Milestone Roadmap Board`
+  Workflow preset for checkpoints, sequencing, and scope.
+- `Research & Reference Board`
+  Workflow preset for clustering inspiration and extracting decisions.
+- `Stakeholder Review Board`
+  Workflow preset for demo prep, risks, and review asks.
+
+## Use The Planner
 
 - Left sidebar:
-  add built-in node types and apply saved filters.
-- Center canvas:
-  pan, zoom, drag nodes, and drop Unity assets onto the board.
+  add cards and jump between saved views.
+- Center board:
+  pan, zoom, drag cards, and drop Unity assets onto the planner.
 - Right inspector:
-  edit the selected node or board details and create links between nodes.
+  edit the selected card or planning board details and create only valid links.
 - Bottom overview:
-  monitor task, milestone, reference, and technical node counts.
+  watch planning metrics without adding a dashboard card to the board.
 
-## Built-In Node Types
+## Built-In Card Types
 
 - `Task`
-  Backlog item with status, priority, estimate, assignee, due date, tags, and acceptance notes.
+  Status, priority, estimate, assignee, due date, tags, and acceptance criteria.
 - `Milestone`
-  Roll-up checkpoint that tracks linked task completion.
+  Roll-up checkpoint for linked tasks.
 - `Note`
-  Lightweight idea capture and pre-production notes.
+  Lightweight ideas, risks, and planning notes.
 - `Reference`
-  Linked Unity assets, text snippets, image references, and URLs.
+  Unity assets, screenshots, image notes, text notes, and URLs.
 - `Class`
-  Secondary technical-design node for class and ownership planning.
+  Secondary technical-design card for code structure discussions.
+- `Project Brief`
+  Sticky context card for pitch, team snapshot, and project knowledge.
 
 ## Asset Drag-Drop
 
-- Drop a `TextAsset` onto the board to create a reference node.
-- Drop a `Texture2D` or `Sprite` to create a visual reference node.
-- Drop a `MonoScript` to create a class node from script metadata.
-
-## Suggested Starting Preset
-
-Use `Solo Indie Board` if you are testing the package alone, or `Small Team Board` if you want to evaluate the planning flow with explicit team roles.
+- Drop a `TextAsset` to create a reference card.
+- Drop a `Texture2D` or `Sprite` to create a visual reference card.
+- Drop a `MonoScript` to create a class card.
+- Import the `Status Report Extension` sample to see how a custom importer adds a new card type.

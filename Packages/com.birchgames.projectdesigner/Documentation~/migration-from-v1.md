@@ -7,7 +7,7 @@ Project Designer+ v2 is a clean-break package rewrite.
 - v1 was asset-folder based and centered on an IMGUI node system.
 - v2 is packaged as `com.birchgames.projectdesigner`.
 - v2 uses a new `ProjectBoardAsset` document model.
-- v2 uses UI Toolkit for the workspace shell and a custom canvas/edge layer.
+- v2 uses UI Toolkit for the planner shell and a custom canvas/edge layer.
 - v2 replaces reflection-first customization with explicit registry-driven extension points.
 
 ## Compatibility

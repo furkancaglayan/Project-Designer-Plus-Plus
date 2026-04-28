@@ -1,44 +1,55 @@
 # Extensibility
 
-Project Designer+ v2 exposes explicit registration APIs instead of relying on reflection-heavy inheritance.
+Project Designer+ v2 exposes explicit registration APIs instead of reflection-heavy inheritance.
 
 ## Public Extension Points
 
 - `ProjectDesignerRegistry`
-  Central registration point for definitions, inspectors, and importers.
+  Registers card definitions, link definitions, inspectors, and importers.
 - `IProjectDesignerNodeDefinition`
-  Declares a node type, default creation, display metadata, and preview text.
+  Declares card metadata, accent color, default size, and preview text.
 - `IProjectDesignerEdgeDefinition`
-  Declares a link type and its connection rules.
+  Declares link rules and link styling.
 - `IProjectDesignerInspector`
-  Builds the right-side inspector UI for a node type.
+  Builds the right-side inspector UI for a card type.
 - `IProjectDesignerAssetImporter`
-  Maps dropped Unity assets into board nodes.
+  Turns dropped Unity assets into planner cards.
 
-## Extension Flow
+## Recommended Flow
 
 1. Define a custom `BoardNodeModel`.
 2. Create a matching `IProjectDesignerNodeDefinition`.
 3. Create a matching `IProjectDesignerInspector`.
 4. Optionally create one or more `IProjectDesignerAssetImporter` implementations.
 5. Register everything from an editor-only bootstrap class.
+6. Open a demo board that already uses the new card, so the extension is easy to inspect in context.
 
 ## Sample Extension
 
 See:
 
 - [StatusReportExtension.cs](../Samples~/StatusReportExtension/StatusReportExtension.cs)
+- [Status Report Demo Board.asset](../Samples~/StatusReportExtension/Status%20Report%20Demo%20Board.asset)
+- [README.md](../Samples~/StatusReportExtension/README.md)
 
 That sample adds:
 
 - a custom `StatusReportNodeModel`
-- a node definition
+- a node definition with its own accent color and preview
 - a custom inspector
 - a `TextAsset` importer for assets with `status` in the name
+- a demo planning board that already uses the custom card
+
+## What To Verify In The Sample
+
+- the card appears in the planner beside built-in cards
+- the card uses the custom inspector
+- the custom importer creates the expected card when you drop matching assets
+- the planner does not require any core-package edits to surface the extension
 
 ## Design Guidance
 
-- Keep custom nodes focused on one planning job.
-- Prefer importers that create immediately useful data from dropped assets.
-- Use the built-in planning model as the primary product surface and push project-specific workflows into extensions.
-- Treat technical design as a secondary board mode unless your package fork is specifically targeting engineering workflows.
+- Keep custom cards focused on one planning job.
+- Use `AccentColor` as the visual identity hook for card buttons and card chrome.
+- Prefer importers that create immediately useful planning data from dropped assets.
+- Keep technical workflows secondary unless you are intentionally forking the package toward a more engineering-specific tool.

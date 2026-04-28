@@ -6,7 +6,12 @@ namespace ProjectDesigner.V2.Editor
 {
     internal sealed class ProjectDesignerWelcomeView : VisualElement
     {
-        public ProjectDesignerWelcomeView(Action<string, string> createPreset, Action openSelectedBoard)
+        public ProjectDesignerWelcomeView(
+            Action<string, string> createPreset,
+            Action openSelectedBoard,
+            Action openQuickStart,
+            Action openProjectSettings,
+            Action openBoardBrowser)
         {
             AddToClassList("pd-welcome");
 
@@ -22,18 +27,34 @@ namespace ProjectDesigner.V2.Editor
             title.AddToClassList("pd-welcome-title");
             card.Add(title);
 
-            var body = new Label("Start from a ready-made board, capture references from Unity assets, map milestones and tasks, and keep technical design as a secondary workflow instead of the entire product.");
+            var body = new Label("Use the planner to arrange planning boards, capture references from Unity assets, map milestones and tasks, and keep technical design as a secondary workflow instead of the main event.");
             body.AddToClassList("pd-welcome-body");
             card.Add(body);
 
-            card.Add(CreatePresetButton("New Empty Board", "Build your own board structure from scratch.", BoardPresetIds.Empty, "Project Board", createPreset));
-            card.Add(CreatePresetButton("Solo Indie Board", "Vision, slice planning, and reference capture for a solo project.", BoardPresetIds.SoloIndie, "Solo Indie Board", createPreset));
-            card.Add(CreatePresetButton("Small Team Board", "Feature planning and shared reference workflows for a small team.", BoardPresetIds.SmallTeam, "Small Team Board", createPreset));
-            card.Add(CreatePresetButton("Technical Design Board", "Secondary workflow for class maps and implementation planning.", BoardPresetIds.TechnicalDesign, "Technical Design Board", createPreset));
+            card.Add(CreatePresetButton("New Empty Board", "Start light with a sticky project brief card and build your own structure from there.", BoardPresetIds.Empty, ProjectDesignerProductInfo.DefaultBoardName, createPreset));
+            card.Add(CreatePresetButton("Solo Indie Board", "A fuller showcase board with pitch framing, slice planning, references, risks, and milestone links.", BoardPresetIds.SoloIndie, ProjectDesignerProductInfo.SoloBoardName, createPreset));
+            card.Add(CreatePresetButton("Small Team Board", "A denser collaborative example covering design, production, art, engineering, and stakeholder review prep.", BoardPresetIds.SmallTeam, ProjectDesignerProductInfo.SmallTeamBoardName, createPreset));
+            card.Add(CreatePresetButton("Technical Design Board", "A richer technical map with multiple classes, notes, references, and explicit architecture relationships.", BoardPresetIds.TechnicalDesign, ProjectDesignerProductInfo.TechnicalBoardName, createPreset));
 
-            var openButton = new Button(openSelectedBoard) { text = "Open Selected Board" };
+            var openButton = new Button(openSelectedBoard) { text = "Open Selected Planning Board" };
             openButton.AddToClassList("pd-secondary-button");
             card.Add(openButton);
+
+            var actionRow = new VisualElement();
+            actionRow.AddToClassList("pd-action-row");
+            card.Add(actionRow);
+
+            var quickStartButton = new Button(openQuickStart) { text = "Quick Start" };
+            quickStartButton.AddToClassList("pd-secondary-button");
+            actionRow.Add(quickStartButton);
+
+            var settingsButton = new Button(openProjectSettings) { text = "Project Settings" };
+            settingsButton.AddToClassList("pd-secondary-button");
+            actionRow.Add(settingsButton);
+
+            var browserButton = new Button(openBoardBrowser) { text = "Browse Boards" };
+            browserButton.AddToClassList("pd-secondary-button");
+            actionRow.Add(browserButton);
         }
 
         private static VisualElement CreatePresetButton(string title, string description, string presetId, string boardName, Action<string, string> createPreset)

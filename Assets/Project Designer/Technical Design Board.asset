@@ -1,0 +1,151 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c9b53d589047b34cb69ecbee4544dd4, type: 3}
+  m_Name: Technical Design Board
+  m_EditorClassIdentifier: 
+  _schemaVersion: 2.0.0-preview
+  _document:
+    _boardName: Technical Design Board
+    _summary: A technical design board for class structure, ownership, and implementation
+      notes.
+    _teamMembers:
+    - Producer
+    - Designer
+    - Programmer
+    - Artist
+    _viewState:
+      _panOffset: {x: 130.48553, y: 162.70856}
+      _zoom: 0.778688
+      _searchQuery: 
+      _category: Technical Design
+      _selectedNodeId: 9d1d4f977c6f41d4a4997a943db6ac83
+      _activeFilterId: 
+    _savedFilters:
+    - _id: b642665ab0ef4185983823f07d6e7240
+      _name: Planning
+      _searchQuery: 
+      _category: Planning
+      _requiredTag: 
+      _includeTechnicalDesign: 1
+    - _id: 613079c3db8a4e30b55ba8484973657a
+      _name: References
+      _searchQuery: 
+      _category: Reference
+      _requiredTag: 
+      _includeTechnicalDesign: 1
+    - _id: 52cfaf0fcd264c2c874c4c9d395558b1
+      _name: Technical
+      _searchQuery: 
+      _category: Technical Design
+      _requiredTag: 
+      _includeTechnicalDesign: 1
+    _templates:
+    - _id: project-designer.preset.empty
+      _name: Empty
+      _description: Start light with a pinned project brief card, then add your own
+        structure.
+    - _id: project-designer.preset.solo
+      _name: Solo Indie
+      _description: Vision, slice planning, and reference capture for a solo project.
+    - _id: project-designer.preset.small-team
+      _name: Small Team
+      _description: A collaborative planning board for design, art, engineering,
+        and production.
+    - _id: project-designer.preset.technical
+      _name: Technical Design
+      _description: A secondary workflow for class maps and implementation planning.
+    _edges:
+    - _id: b8401138fd7f4d969fb1cd7c276c70b1
+      _typeId: project-designer.edge.technical
+      _sourceNodeId: 751f8f78182f4d0eb18c588608732db3
+      _targetNodeId: 9d1d4f977c6f41d4a4997a943db6ac83
+      _label: 
+    - _id: 57172e3bd36046d8aefb4a527cb7e879
+      _typeId: project-designer.edge.reference
+      _sourceNodeId: 3214e8f40b464d4b906f58b32714438b
+      _targetNodeId: 751f8f78182f4d0eb18c588608732db3
+      _label: 
+    _nodes:
+    - rid: 4671173538647376172
+    - rid: 4671173538647376173
+    - rid: 4671173538647376174
+    - rid: 4671173538647376175
+  references:
+    version: 2
+    RefIds:
+    - rid: 4671173538647376172
+      type: {class: ProjectBriefNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
+      data:
+        _id: 72e17212e9f84382ad9e1c12b0d1eafb
+        _typeId: project-designer.project-brief
+        _title: Project Brief
+        _position: {x: 120, y: 100}
+        _size: {x: 360, y: 280}
+        _tags:
+        - overview
+        - team
+        - knowledge
+        _isPinned: 1
+        _overview: A technical design board for class structure, ownership, and implementation
+          notes.
+        _teamSnapshot: Producer, Designer, Programmer, Artist
+        _projectKnowledge: Architecture goals, ownership boundaries, and technical
+          assumptions.
+    - rid: 4671173538647376173
+      type: {class: ClassNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
+      data:
+        _id: 9d1d4f977c6f41d4a4997a943db6ac83
+        _typeId: project-designer.class
+        _title: BoardBootstrapper
+        _position: {x: 504.71603, y: 104.323944}
+        _size: {x: 340, y: 260}
+        _tags: []
+        _isPinned: 0
+        _namespaceName: Game.Tools
+        _summary: Loads data and coordinates the editor-facing services.
+        _fields:
+        - _signature: '_document : BoardDocument'
+          _visibility: private
+        _methods:
+        - _signature: Load()
+          _visibility: public
+    - rid: 4671173538647376174
+      type: {class: ClassNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
+      data:
+        _id: 751f8f78182f4d0eb18c588608732db3
+        _typeId: project-designer.class
+        _title: TaskPlannerService
+        _position: {x: -97.482574, y: 254.18517}
+        _size: {x: 340, y: 260}
+        _tags: []
+        _isPinned: 0
+        _namespaceName: Game.Planning
+        _summary: Maps backlog data into milestone and slice views.
+        _fields:
+        - _signature: '_repository : TaskRepository'
+          _visibility: private
+        _methods:
+        - _signature: BuildBoard()
+          _visibility: public
+    - rid: 4671173538647376175
+      type: {class: NoteNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
+      data:
+        _id: 3214e8f40b464d4b906f58b32714438b
+        _typeId: project-designer.note
+        _title: Implementation Notes
+        _position: {x: 1040, y: 430}
+        _size: {x: 300, y: 220}
+        _tags: []
+        _isPinned: 0
+        _body: Keep technical nodes secondary in the product UI, but first-class
+          in the extension model.
+        _accentHex: '#2B90D9'

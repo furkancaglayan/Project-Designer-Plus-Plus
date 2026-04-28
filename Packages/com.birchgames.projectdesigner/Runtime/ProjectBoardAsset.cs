@@ -2,13 +2,13 @@ using UnityEngine;
 
 namespace ProjectDesigner.V2.Data
 {
-    [CreateAssetMenu(fileName = "Project Board", menuName = "Project Designer+/Project Board")]
+    [CreateAssetMenu(fileName = ProjectDesignerProductInfo.PlanningBoardName, menuName = ProjectDesignerProductInfo.CreateAssetMenuPath)]
     public sealed class ProjectBoardAsset : ScriptableObject
     {
         [SerializeField]
         private string _schemaVersion = "2.0.0-preview";
         [SerializeField]
-        private BoardDocument _document = new BoardDocument("Project Board");
+        private BoardDocument _document = new BoardDocument(ProjectDesignerProductInfo.DefaultBoardName);
 
         public string SchemaVersion
         {
@@ -49,7 +49,7 @@ namespace ProjectDesigner.V2.Data
         public static ProjectBoardAsset CreateTransient(BoardDocument document = null)
         {
             ProjectBoardAsset asset = CreateInstance<ProjectBoardAsset>();
-            asset.name = "Transient Project Board";
+            asset.name = "Transient " + ProjectDesignerProductInfo.PlanningBoardName;
             asset.ResetDocument(document ?? new BoardDocument(asset.name));
             return asset;
         }

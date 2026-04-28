@@ -27,8 +27,8 @@ namespace ProjectDesigner.V2.Data
 
         public string BoardName
         {
-            get { return string.IsNullOrWhiteSpace(_boardName) ? "Project Board" : _boardName; }
-            set { _boardName = string.IsNullOrWhiteSpace(value) ? "Project Board" : value.Trim(); }
+            get { return string.IsNullOrWhiteSpace(_boardName) ? ProjectDesignerProductInfo.DefaultBoardName : _boardName; }
+            set { _boardName = string.IsNullOrWhiteSpace(value) ? ProjectDesignerProductInfo.DefaultBoardName : value.Trim(); }
         }
 
         public string Summary
@@ -70,8 +70,8 @@ namespace ProjectDesigner.V2.Data
 
         public BoardDocument()
         {
-            _boardName = "Project Board";
-            _summary = "A node-based pre-production workspace for Unity teams.";
+            _boardName = ProjectDesignerProductInfo.DefaultBoardName;
+            _summary = "A node-based pre-production planning board for Unity teams.";
             EnsureDefaults();
         }
 

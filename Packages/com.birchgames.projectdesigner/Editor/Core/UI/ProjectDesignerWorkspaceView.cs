@@ -23,6 +23,7 @@ namespace ProjectDesigner.V2.Editor
         private readonly ToolbarSearchField _searchField;
         private readonly PopupField<string> _categoryField;
         private Label _toolbarTitle;
+        private int _createSequence;
 
         public ProjectDesignerWorkspaceView(ProjectBoardAsset boardAsset, Action<ProjectBoardAsset> setBoard)
         {
@@ -66,6 +67,7 @@ namespace ProjectDesigner.V2.Editor
 
             _searchField = new ToolbarSearchField();
             _searchField.value = _boardAsset.Document.ViewState.SearchQuery;
+            _searchField.tooltip = "Search titles, previews, and tags across the current board.";
             _searchField.RegisterValueChangedCallback(evt =>
             {
                 _boardAsset.Document.ViewState.SearchQuery = evt.newValue;
@@ -80,6 +82,7 @@ namespace ProjectDesigner.V2.Editor
                 BoardNodeCategories.Reference,
                 BoardNodeCategories.TechnicalDesign
             }, _boardAsset.Document.ViewState.Category);
+            _categoryField.tooltip = "Focus the board on a specific category.";
             _categoryField.RegisterValueChangedCallback(evt =>
             {
                 _boardAsset.Document.ViewState.Category = evt.newValue;
@@ -105,19 +108,19 @@ namespace ProjectDesigner.V2.Editor
             _toolbarTitle.AddToClassList("pd-toolbar-title");
             toolbar.Add(_toolbarTitle);
 
-            toolbar.Add(new ToolbarButton(() => _commandStack.Undo()) { text = "Undo" });
-            toolbar.Add(new ToolbarButton(() => _commandStack.Redo()) { text = "Redo" });
-            toolbar.Add(new ToolbarButton(() =>
+            toolbar.Add(CreateToolbarButton("Undo", () => _commandStack.Undo()));
+            toolbar.Add(CreateToolbarButton("Redo", () => _commandStack.Redo()));
+            toolbar.Add(CreateToolbarButton("Frame", () =>
             {
                 if (_canvasView != null)
                 {
                     _canvasView.FrameAll();
                 }
-            }) { text = "Frame" });
-            toolbar.Add(new ToolbarButton(DeleteSelectedNode) { text = "Delete" });
-            toolbar.Add(new ToolbarButton(SaveCurrentFilter) { text = "Save Filter" });
-            toolbar.Add(new ToolbarButton(ClearCurrentFilter) { text = "Clear Filter" });
-            toolbar.Add(new ToolbarButton(() => _setBoard(null)) { text = "Back" });
+            }));
+            toolbar.Add(CreateToolbarButton("Delete", DeleteSelectedNode));
+            toolbar.Add(CreateToolbarButton("Save View", SaveCurrentFilter));
+            toolbar.Add(CreateToolbarButton("Clear View", ClearCurrentFilter));
+            toolbar.Add(CreateToolbarButton("All Boards", () => _setBoard(null)));
             return toolbar;
         }
 
@@ -134,24 +137,23 @@ namespace ProjectDesigner.V2.Editor
         {
             _libraryView.Clear();
 
-            _libraryView.Add(CreateSectionLabel("Node Library"));
+            _libraryView.Add(CreateSectionLabel("Add Cards"));
+            _libraryView.Add(CreateMutedBodyLabel("Start with planning cards, add references as you gather material, and only dip into technical design when you need it."));
+
             foreach (IGrouping<string, IProjectDesignerNodeDefinition> group in ProjectDesignerRegistry.GetNodeDefinitions().GroupBy(definition => definition.Category))
             {
-                _libraryView.Add(CreateSubsectionLabel(group.Key));
-                foreach (IProjectDesignerNodeDefinition definition in group)
-                {
-                    var button = new Button(() => CreateNode(definition))
-                    {
-                        text = definition.DisplayName
-                    };
-                    button.AddToClassList("pd-node-library-button");
-                    _libraryView.Add(button);
-                }
+                _libraryView.Add(CreateLibraryGroup(group));
             }
 
-            _libraryView.Add(CreateSectionLabel("Saved Filters"));
+            _libraryView.Add(CreateSectionLabel("Saved Views"));
             _libraryView.Add(_savedFiltersContainer);
             _savedFiltersContainer.Clear();
+
+            if (_boardAsset.Document.SavedFilters.Count == 0)
+            {
+                _savedFiltersContainer.Add(CreateMutedBodyLabel("Save the current search and category filters to jump back to a view later."));
+                return;
+            }
 
             foreach (BoardSavedFilter filter in _boardAsset.Document.SavedFilters)
             {
@@ -192,7 +194,7 @@ namespace ProjectDesigner.V2.Editor
 
         private void BuildBoardInspector()
         {
-            Label title = new Label("Board Details");
+            Label title = new Label("Planning Board");
             title.AddToClassList("pd-inspector-title");
             _inspectorView.Add(title);
 
@@ -242,7 +244,9 @@ namespace ProjectDesigner.V2.Editor
             });
             _inspectorView.Add(teamField);
 
-            _inspectorView.Add(CreateSubsectionLabel("Templates"));
+            Foldout templatesFoldout = CreateFoldout("Starter Layouts", false);
+            templatesFoldout.Add(CreateMutedBodyLabel("Swap the current board structure for a curated layout."));
+
             foreach (BoardTemplateDefinition template in _boardAsset.Document.Templates)
             {
                 BoardTemplateDefinition localTemplate = template;
@@ -251,51 +255,84 @@ namespace ProjectDesigner.V2.Editor
                     text = localTemplate.Name
                 };
                 button.AddToClassList("pd-secondary-button");
-                _inspectorView.Add(button);
+                templatesFoldout.Add(button);
             }
+
+            _inspectorView.Add(templatesFoldout);
         }
 
         private void BuildConnectionsInspector(BoardNodeModel selectedNode)
         {
-            _inspectorView.Add(CreateSubsectionLabel("Connections"));
+            Foldout connectionsFoldout = CreateFoldout("Links", false);
+            connectionsFoldout.Add(CreateMutedBodyLabel("Create relationships only when they help the board tell a clearer story."));
+            _inspectorView.Add(connectionsFoldout);
 
-            List<BoardNodeModel> targets = _boardAsset.Document.Nodes
-                .Where(node => node != null && node.Id != selectedNode.Id)
-                .ToList();
-
-            List<string> edgeOptions = ProjectDesignerRegistry.GetEdgeDefinitions().Select(definition => definition.DisplayName).ToList();
-            List<string> targetOptions = targets.Select(node => node.Title + " (" + node.Category + ")").ToList();
-            if (edgeOptions.Count == 0 || targetOptions.Count == 0)
+            List<ProjectDesignerLinkOption> options = ProjectDesignerLinkUtility.GetLinkOptions(_boardAsset.Document, selectedNode);
+            if (options.Count == 0)
             {
-                _inspectorView.Add(new Label("Select at least two nodes to create a link."));
+                connectionsFoldout.Add(new Label("No valid links are available for this card right now."));
                 return;
             }
 
-            var edgePicker = new PopupField<string>("Edge Type", edgeOptions, 0);
-            var targetPicker = new PopupField<string>("Target", targetOptions, 0);
-            _inspectorView.Add(edgePicker);
-            _inspectorView.Add(targetPicker);
+            List<IProjectDesignerEdgeDefinition> availableDefinitions = options
+                .Select(option => option.Definition)
+                .GroupBy(definition => definition.TypeId)
+                .Select(group => group.First())
+                .ToList();
+
+            var edgePicker = new PopupField<string>("Link Type", availableDefinitions.Select(definition => definition.DisplayName).ToList(), 0);
+            var targetPicker = new PopupField<string>("Linked Card", new List<string>(), 0);
+            var directionHint = CreateMutedBodyLabel(string.Empty);
+            connectionsFoldout.Add(edgePicker);
+            connectionsFoldout.Add(targetPicker);
+            connectionsFoldout.Add(directionHint);
+
+            List<ProjectDesignerLinkOption> activeOptions = new List<ProjectDesignerLinkOption>();
+            Action refreshTargetPicker = () =>
+            {
+                IProjectDesignerEdgeDefinition selectedDefinition = availableDefinitions
+                    .FirstOrDefault(definition => definition.DisplayName == edgePicker.value);
+                activeOptions = options
+                    .Where(option => option.Definition.TypeId == (selectedDefinition == null ? string.Empty : selectedDefinition.TypeId))
+                    .ToList();
+
+                List<string> choiceLabels = activeOptions.Select(option => option.DisplayLabel).ToList();
+                targetPicker.choices = choiceLabels;
+                if (choiceLabels.Count > 0)
+                {
+                    targetPicker.index = 0;
+                    targetPicker.SetValueWithoutNotify(choiceLabels[0]);
+                }
+
+                bool pointsIntoSelectedNode = activeOptions.Any(option => !option.SelectedNodeIsSource);
+                directionHint.text = pointsIntoSelectedNode
+                    ? "Some link choices will point into the selected card instead of away from it."
+                    : "Only valid link targets are shown here.";
+            };
+
+            edgePicker.RegisterValueChangedCallback(evt => refreshTargetPicker());
+            refreshTargetPicker();
 
             var createButton = new Button(() =>
             {
-                IProjectDesignerEdgeDefinition edgeDefinition = ProjectDesignerRegistry.GetEdgeDefinitions()
-                    .FirstOrDefault(definition => definition.DisplayName == edgePicker.value);
-                BoardNodeModel targetNode = targets[targetPicker.index];
-                if (edgeDefinition == null || !edgeDefinition.CanConnect(_boardAsset.Document, selectedNode, targetNode))
+                if (activeOptions.Count == 0 || targetPicker.index < 0 || targetPicker.index >= activeOptions.Count)
                 {
-                    EditorUtility.DisplayDialog("Project Designer+", "That edge type is not valid for this pair of nodes.", "OK");
                     return;
                 }
 
-                var edge = new BoardEdgeModel(edgeDefinition.TypeId, selectedNode.Id, targetNode.Id);
-                edge.Label = edgeDefinition.GetLabel(edge, _boardAsset.Document);
+                ProjectDesignerLinkOption option = activeOptions[targetPicker.index];
+                string sourceId = option.SelectedNodeIsSource ? selectedNode.Id : option.OtherNode.Id;
+                string targetId = option.SelectedNodeIsSource ? option.OtherNode.Id : selectedNode.Id;
+
+                var edge = new BoardEdgeModel(option.Definition.TypeId, sourceId, targetId);
+                edge.Label = option.Definition.GetLabel(edge, _boardAsset.Document);
                 _commandStack.Execute(new CreateEdgeCommand(_boardAsset, edge));
             })
             {
                 text = "Create Link"
             };
             createButton.AddToClassList("pd-primary-button");
-            _inspectorView.Add(createButton);
+            connectionsFoldout.Add(createButton);
 
             foreach (BoardEdgeModel edge in _boardAsset.Document.Edges.Where(item => item.SourceNodeId == selectedNode.Id || item.TargetNodeId == selectedNode.Id))
             {
@@ -306,9 +343,11 @@ namespace ProjectDesigner.V2.Editor
                     continue;
                 }
 
+                IProjectDesignerEdgeDefinition edgeDefinition = ProjectDesignerRegistry.GetEdgeDefinition(edge.TypeId);
+                string edgeLabel = edgeDefinition == null ? edge.TypeId : edgeDefinition.DisplayName;
                 var row = new VisualElement();
                 row.AddToClassList("pd-edge-row");
-                row.Add(new Label(relatedNode.Title + " [" + edge.TypeId + "]"));
+                row.Add(new Label(relatedNode.Title + " [" + edgeLabel + "]"));
 
                 var removeButton = new Button(() => _commandStack.Execute(new DeleteEdgeCommand(_boardAsset, edge.Id)))
                 {
@@ -316,13 +355,18 @@ namespace ProjectDesigner.V2.Editor
                 };
                 removeButton.AddToClassList("pd-secondary-button");
                 row.Add(removeButton);
-                _inspectorView.Add(row);
+                connectionsFoldout.Add(row);
             }
         }
 
         private void CreateNode(IProjectDesignerNodeDefinition definition)
         {
-            BoardNodeModel node = definition.CreateDefaultNode(_canvasView.GetSuggestedSpawnPosition());
+            BoardNodeModel selectedNode = _boardAsset.Document.GetNode(_boardAsset.Document.ViewState.SelectedNodeId);
+            Vector2 spawnPosition = ProjectDesignerSpawnUtility.GetCreatePosition(
+                _canvasView.GetViewportCenterOnBoard(),
+                selectedNode,
+                _createSequence++);
+            BoardNodeModel node = definition.CreateDefaultNode(spawnPosition);
             _commandStack.Execute(new CreateNodeCommand(_boardAsset, node));
             OnSelectionChanged(node.Id);
         }
@@ -332,7 +376,7 @@ namespace ProjectDesigner.V2.Editor
             _boardAsset.Document.ViewState.SelectedNodeId = nodeId ?? string.Empty;
             PersistBoard();
             RefreshInspector();
-            _canvasView.Refresh();
+            _canvasView.RefreshSelection();
         }
 
         private void DeleteSelectedNode()
@@ -436,6 +480,63 @@ namespace ProjectDesigner.V2.Editor
             var label = new Label(text);
             label.AddToClassList("pd-subsection-title");
             return label;
+        }
+
+        private static Label CreateMutedBodyLabel(string text)
+        {
+            var label = new Label(text);
+            label.AddToClassList("pd-muted-body");
+            return label;
+        }
+
+        private VisualElement CreateLibraryGroup(IGrouping<string, IProjectDesignerNodeDefinition> group)
+        {
+            bool defaultOpen = group.Key != BoardNodeCategories.TechnicalDesign;
+            Foldout foldout = CreateFoldout(group.Key, defaultOpen);
+            foreach (IProjectDesignerNodeDefinition definition in group)
+            {
+                foldout.Add(CreateNodeLibraryButton(definition));
+            }
+
+            return foldout;
+        }
+
+        private Button CreateNodeLibraryButton(IProjectDesignerNodeDefinition definition)
+        {
+            var button = new Button(() => CreateNode(definition))
+            {
+                text = definition.DisplayName
+            };
+            button.AddToClassList("pd-node-library-button");
+
+            Color accent = ProjectDesignerColorUtility.ParseOrFallback(definition.AccentColor, new Color(0.43f, 0.43f, 0.43f));
+            button.style.backgroundColor = ProjectDesignerColorUtility.WithAlpha(accent, 0.08f);
+            button.style.borderLeftWidth = 4f;
+            button.style.borderLeftColor = accent;
+            button.style.color = ProjectDesignerColorUtility.Blend(accent, new Color(0.18f, 0.22f, 0.26f), 0.36f);
+            return button;
+        }
+
+        private static Foldout CreateFoldout(string text, bool defaultOpen)
+        {
+            var foldout = new Foldout
+            {
+                text = text,
+                value = defaultOpen
+            };
+            foldout.AddToClassList("pd-foldout");
+            return foldout;
+        }
+
+        private static ToolbarButton CreateToolbarButton(string text, Action onClick)
+        {
+            var button = new ToolbarButton(onClick)
+            {
+                text = text
+            };
+            button.AddToClassList("pd-toolbar-button");
+            button.style.width = ProjectDesignerProductInfo.ToolbarButtonWidth;
+            return button;
         }
     }
 }

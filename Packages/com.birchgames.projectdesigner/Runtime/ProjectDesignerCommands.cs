@@ -13,8 +13,8 @@ namespace ProjectDesigner.V2.Data
         protected ProjectDesignerSnapshotCommand(string displayName, BoardDocument before, BoardDocument after)
         {
             DisplayName = displayName;
-            _before = before == null ? new BoardDocument("Project Board") : before.DeepClone();
-            _after = after == null ? new BoardDocument("Project Board") : after.DeepClone();
+            _before = before == null ? new BoardDocument(ProjectDesignerProductInfo.DefaultBoardName) : before.DeepClone();
+            _after = after == null ? new BoardDocument(ProjectDesignerProductInfo.DefaultBoardName) : after.DeepClone();
         }
 
         public void Execute(ProjectBoardAsset board)

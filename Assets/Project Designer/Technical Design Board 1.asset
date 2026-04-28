@@ -1,0 +1,417 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c9b53d589047b34cb69ecbee4544dd4, type: 3}
+  m_Name: Technical Design Board 1
+  m_EditorClassIdentifier: 
+  _schemaVersion: 2.0.0-preview
+  _document:
+    _boardName: Technical Design Board 1
+    _summary: A denser technical-design board that demonstrates architecture mapping,
+      service relationships, and implementation notes.
+    _teamMembers:
+    - Tools Engineer
+    - Technical Designer
+    - Pipeline Engineer
+    _viewState:
+      _panOffset: {x: -154.90015, y: -22.825165}
+      _zoom: 0.6548635
+      _searchQuery: 
+      _category: Technical Design
+      _selectedNodeId: 
+      _activeFilterId: 
+    _savedFilters:
+    - _id: 6137c5e0e2e74efcb32b5074d583146c
+      _name: Planning
+      _searchQuery: 
+      _category: Planning
+      _requiredTag: 
+      _includeTechnicalDesign: 0
+    - _id: 9b51a5b372ea4f46856c61a3f6cc63cc
+      _name: References
+      _searchQuery: 
+      _category: Reference
+      _requiredTag: 
+      _includeTechnicalDesign: 0
+    - _id: ff1921b766cd43b4b0401323ba047053
+      _name: Technical
+      _searchQuery: 
+      _category: Technical Design
+      _requiredTag: 
+      _includeTechnicalDesign: 1
+    - _id: 29a4613240574112b8520264c3d197a1
+      _name: Architecture
+      _searchQuery: 
+      _category: Technical Design
+      _requiredTag: 
+      _includeTechnicalDesign: 1
+    - _id: 91853e51634841ec8ab8b1f7dade87c4
+      _name: Importers
+      _searchQuery: 
+      _category: Technical Design
+      _requiredTag: importer
+      _includeTechnicalDesign: 1
+    - _id: e889aad4c36048538086eacf98364855
+      _name: Risks
+      _searchQuery: 
+      _category: All
+      _requiredTag: risk
+      _includeTechnicalDesign: 1
+    _templates:
+    - _id: project-designer.preset.empty
+      _name: Empty
+      _description: Start light with a pinned project brief card, then add your own
+        structure.
+    - _id: project-designer.preset.solo
+      _name: Solo Indie
+      _description: A fuller solo-dev sample with slice planning, risks, references,
+        and milestone progress.
+    - _id: project-designer.preset.small-team
+      _name: Small Team
+      _description: A denser collaborative sample for design, production, art, and
+        stakeholder review prep.
+    - _id: project-designer.preset.technical
+      _name: Technical Design
+      _description: A richer architecture sample with multiple class relationships,
+        notes, and package-thinking.
+    _edges:
+    - _id: cf2d157a704b4b76a1ab341b485adbee
+      _typeId: project-designer.edge.technical
+      _sourceNodeId: 5bac8354eeef4f7196f793aa396e88cf
+      _targetNodeId: 4546f466e3ea4013934f436127c9f0a7
+      _label: 
+    - _id: 88a3ce3dc09241fab9e13451e28890ee
+      _typeId: project-designer.edge.technical
+      _sourceNodeId: 5bac8354eeef4f7196f793aa396e88cf
+      _targetNodeId: 9e0fbc86d9e049e2809efe08ee7a6dbb
+      _label: 
+    - _id: d65bb2ee09dd438db0d8035729706ccc
+      _typeId: project-designer.edge.technical
+      _sourceNodeId: 8a3ca03a46ea4568b29cf1d511cccfab
+      _targetNodeId: 5bac8354eeef4f7196f793aa396e88cf
+      _label: 
+    - _id: 9eb92e4e3f164fda83f802074b7d9e4d
+      _typeId: project-designer.edge.technical
+      _sourceNodeId: 77cbeda0433e4b94aa48fcbc89b86f89
+      _targetNodeId: e53aee7ef81740f98588a29dca460d78
+      _label: 
+    - _id: 1921c6473c3147049572e601bd743bc0
+      _typeId: project-designer.edge.technical
+      _sourceNodeId: 2bed711eb1d7479eac493efb67b2b124
+      _targetNodeId: 9e0fbc86d9e049e2809efe08ee7a6dbb
+      _label: 
+    - _id: baf0be54a06246eebe3400c52a12b39b
+      _typeId: project-designer.edge.technical
+      _sourceNodeId: e53aee7ef81740f98588a29dca460d78
+      _targetNodeId: 4546f466e3ea4013934f436127c9f0a7
+      _label: 
+    - _id: e210e63652ee4141a41fc0ce4dbd3e52
+      _typeId: project-designer.edge.reference
+      _sourceNodeId: ae1d9bb739524c69b7cca3957ac563d6
+      _targetNodeId: 4546f466e3ea4013934f436127c9f0a7
+      _label: 
+    - _id: dff7e650d3864741bd582e193daa6aba
+      _typeId: project-designer.edge.reference
+      _sourceNodeId: 14112181ed774e4eae055e5ec990cb38
+      _targetNodeId: 5bac8354eeef4f7196f793aa396e88cf
+      _label: 
+    - _id: 7f04abf1b9d549399316e4a7aa0c9b21
+      _typeId: project-designer.edge.reference
+      _sourceNodeId: c763ef95ec5c44fc95f2383f974a9548
+      _targetNodeId: 5bac8354eeef4f7196f793aa396e88cf
+      _label: 
+    - _id: 7c8d238324f04869a9a7ca21990b9512
+      _typeId: project-designer.edge.reference
+      _sourceNodeId: 26ceeb67a0f149acb2e314390d107959
+      _targetNodeId: e53aee7ef81740f98588a29dca460d78
+      _label: 
+    _nodes:
+    - rid: 4671173538647376176
+    - rid: 4671173538647376177
+    - rid: 4671173538647376178
+    - rid: 4671173538647376179
+    - rid: 4671173538647376180
+    - rid: 4671173538647376181
+    - rid: 4671173538647376182
+    - rid: 4671173538647376183
+    - rid: 4671173538647376184
+    - rid: 4671173538647376185
+    - rid: 4671173538647376186
+    - rid: 4671173538647376187
+  references:
+    version: 2
+    RefIds:
+    - rid: 4671173538647376176
+      type: {class: ProjectBriefNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
+      data:
+        _id: f41257e92eb742c3ab266cd398e6c758
+        _typeId: project-designer.project-brief
+        _title: Project Brief
+        _position: {x: 120, y: 100}
+        _size: {x: 360, y: 280}
+        _tags:
+        - overview
+        - team
+        - knowledge
+        _isPinned: 1
+        _overview: A denser technical-design board that demonstrates architecture
+          mapping, service relationships, and implementation notes.
+        _teamSnapshot: Tools Engineer, Technical Designer, Pipeline Engineer
+        _projectKnowledge: 'Keep the product surface simple, but keep the internals
+          modular: board data, editor shell, drag interactions, and importers should
+          evolve independently.'
+    - rid: 4671173538647376177
+      type: {class: ClassNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
+      data:
+        _id: 4546f466e3ea4013934f436127c9f0a7
+        _typeId: project-designer.class
+        _title: PlannerBootstrapper
+        _position: {x: 120, y: 360}
+        _size: {x: 340, y: 260}
+        _tags:
+        - entry
+        - shell
+        _isPinned: 0
+        _namespaceName: ProjectDesigner.V2.Editor
+        _summary: Creates the planner shell and wires registration before the window
+          renders.
+        _fields:
+        - _signature: '_registry : ProjectDesignerRegistry'
+          _visibility: private
+        - _signature: '_window : ProjectDesignerV2Window'
+          _visibility: private
+        _methods:
+        - _signature: Initialize()
+          _visibility: public
+        - _signature: OpenBoard(ProjectBoardAsset board)
+          _visibility: public
+    - rid: 4671173538647376178
+      type: {class: ClassNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
+      data:
+        _id: 9e0fbc86d9e049e2809efe08ee7a6dbb
+        _typeId: project-designer.class
+        _title: BoardDocumentRepository
+        _position: {x: 500, y: 360}
+        _size: {x: 340, y: 260}
+        _tags:
+        - persistence
+        - serialization
+        _isPinned: 0
+        _namespaceName: ProjectDesigner.V2.Runtime
+        _summary: Owns serialization, cloning, and persistence boundaries for board
+          documents.
+        _fields:
+        - _signature: '_serializer : EditorJsonUtility'
+          _visibility: private
+        - _signature: '_asset : ProjectBoardAsset'
+          _visibility: private
+        _methods:
+        - _signature: Load()
+          _visibility: public
+        - _signature: Save(BoardDocument document)
+          _visibility: public
+    - rid: 4671173538647376179
+      type: {class: ClassNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
+      data:
+        _id: 5bac8354eeef4f7196f793aa396e88cf
+        _typeId: project-designer.class
+        _title: PlannerCanvasController
+        _position: {x: 880, y: 360}
+        _size: {x: 340, y: 260}
+        _tags:
+        - interaction
+        - canvas
+        _isPinned: 0
+        _namespaceName: ProjectDesigner.V2.Editor
+        _summary: Handles pan, zoom, drag previews, and selection state for the canvas
+          layer.
+        _fields:
+        - _signature: '_previewPositions : Dictionary<string, Vector2>'
+          _visibility: private
+        - _signature: '_selection : string'
+          _visibility: private
+        _methods:
+        - _signature: BeginDrag(string nodeId)
+          _visibility: public
+        - _signature: UpdateDrag(Vector2 screenPosition)
+          _visibility: public
+        - _signature: FrameAll()
+          _visibility: public
+    - rid: 4671173538647376180
+      type: {class: ClassNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
+      data:
+        _id: 8a3ca03a46ea4568b29cf1d511cccfab
+        _typeId: project-designer.class
+        _title: LinkValidationService
+        _position: {x: 1260, y: 360}
+        _size: {x: 340, y: 260}
+        _tags:
+        - links
+        - ux
+        _isPinned: 0
+        _namespaceName: ProjectDesigner.V2.Editor
+        _summary: Resolves which links are valid for a selected card and powers the
+          simplified inspector UX.
+        _fields:
+        - _signature: '_edgeDefinitions : IEnumerable<IProjectDesignerEdgeDefinition>'
+          _visibility: private
+        _methods:
+        - _signature: GetValidTargets(BoardNodeModel selectedNode)
+          _visibility: public
+        - _signature: CreateEdge(BoardNodeModel source, BoardNodeModel target)
+          _visibility: public
+    - rid: 4671173538647376181
+      type: {class: ClassNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
+      data:
+        _id: 77cbeda0433e4b94aa48fcbc89b86f89
+        _typeId: project-designer.class
+        _title: AssetImportPipeline
+        _position: {x: 500, y: 700}
+        _size: {x: 340, y: 260}
+        _tags:
+        - importer
+        - extensibility
+        _isPinned: 0
+        _namespaceName: ProjectDesigner.V2.Editor
+        _summary: Maps Unity assets onto reference or class cards through explicit
+          importer registration.
+        _fields:
+        - _signature: '_importers : List<IProjectDesignerAssetImporter>'
+          _visibility: private
+        _methods:
+        - _signature: CanImport(Object asset)
+          _visibility: public
+        - _signature: Import(Object asset, Vector2 position)
+          _visibility: public
+    - rid: 4671173538647376182
+      type: {class: ClassNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
+      data:
+        _id: 2bed711eb1d7479eac493efb67b2b124
+        _typeId: project-designer.class
+        _title: OverviewMetricsService
+        _position: {x: 880, y: 700}
+        _size: {x: 340, y: 260}
+        _tags:
+        - metrics
+        - overview
+        _isPinned: 0
+        _namespaceName: ProjectDesigner.V2.Editor
+        _summary: Computes milestone progress and status counts for the docked overview
+          cards.
+        _fields:
+        - _signature: '_document : BoardDocument'
+          _visibility: private
+        _methods:
+        - _signature: CountTasksByStatus(TaskNodeStatus status)
+          _visibility: public
+        - _signature: CalculateMilestoneCompletion(MilestoneNodeModel milestone)
+          _visibility: public
+    - rid: 4671173538647376183
+      type: {class: ClassNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
+      data:
+        _id: e53aee7ef81740f98588a29dca460d78
+        _typeId: project-designer.class
+        _title: ExtensionRegistryFacade
+        _position: {x: 1260, y: 700}
+        _size: {x: 340, y: 260}
+        _tags:
+        - extensibility
+        - importer
+        _isPinned: 0
+        _namespaceName: ProjectDesigner.V2.Editor
+        _summary: Provides a single extension-facing registration surface for nodes,
+          edges, inspectors, and importers.
+        _fields:
+        - _signature: '_definitions : RegistrySnapshot'
+          _visibility: private
+        _methods:
+        - _signature: RegisterNode(IProjectDesignerNodeDefinition definition)
+          _visibility: public
+        - _signature: RegisterImporter(IProjectDesignerAssetImporter importer)
+          _visibility: public
+    - rid: 4671173538647376184
+      type: {class: NoteNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
+      data:
+        _id: ae1d9bb739524c69b7cca3957ac563d6
+        _typeId: project-designer.note
+        _title: Migration Constraints
+        _position: {x: 120, y: 980}
+        _size: {x: 300, y: 220}
+        _tags:
+        - migration
+        - decision
+        _isPinned: 0
+        _body: '- Keep the package UPM-friendly.
+
+          - Avoid dragging legacy
+          IMGUI assumptions into the new planner shell.
+
+          - Preserve extension
+          points even when the default UX gets simplified.'
+        _accentHex: '#4C7AFF'
+    - rid: 4671173538647376185
+      type: {class: NoteNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
+      data:
+        _id: 14112181ed774e4eae055e5ec990cb38
+        _typeId: project-designer.note
+        _title: Technical Risks
+        _position: {x: 500, y: 980}
+        _size: {x: 300, y: 220}
+        _tags:
+        - risk
+        - architecture
+        _isPinned: 0
+        _body: '- Drag interactions can regress silently across Unity versions.
+
+          -
+          Hidden technical complexity should not leak into the planning-first UX.
+
+          -
+          Importer ordering needs tests before more samples ship.'
+        _accentHex: '#E58C4A'
+    - rid: 4671173538647376186
+      type: {class: ReferenceNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
+      data:
+        _id: c763ef95ec5c44fc95f2383f974a9548
+        _typeId: project-designer.reference
+        _title: UI Toolkit Notes
+        _position: {x: 1260, y: 980}
+        _size: {x: 320, y: 220}
+        _tags:
+        - reference
+        - ui
+        _isPinned: 0
+        _summary: Reference docs for event propagation, picking, and editor window
+          composition.
+        _assetPath: 
+        _imageAssetPath: 
+        _textReference: Useful when validating drag and selection behaviors in custom
+          canvas controls.
+        _externalUrl: https://docs.unity3d.com/Manual/UIElements.html
+    - rid: 4671173538647376187
+      type: {class: ReferenceNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
+      data:
+        _id: 26ceeb67a0f149acb2e314390d107959
+        _typeId: project-designer.reference
+        _title: UPM Packaging Checklist
+        _position: {x: 1640, y: 980}
+        _size: {x: 320, y: 220}
+        _tags:
+        - reference
+        - package
+        _isPinned: 0
+        _summary: Keep runtime, editor, tests, docs, and samples separated so the
+          asset behaves like a real package.
+        _assetPath: 
+        _imageAssetPath: 
+        _textReference: Track asmdef boundaries, Samples~ usage, docs, and package.json
+          metadata together.
+        _externalUrl: 

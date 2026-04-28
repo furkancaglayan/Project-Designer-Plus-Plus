@@ -4,7 +4,7 @@
     "references": [
         "ProjectDesigner.V2.Data",
         "ProjectDesigner.V2.BuiltIn",
-        "ProjectDesigner.V2.SampleExtension"
+        "ProjectDesigner.V2.Editor"
     ],
     "includePlatforms": [
         "Editor"

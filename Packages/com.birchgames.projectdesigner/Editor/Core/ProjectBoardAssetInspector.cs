@@ -20,7 +20,7 @@ namespace ProjectDesigner.V2.Editor
             EditorGUILayout.HelpBox(board.Document.Summary, MessageType.Info);
 
             EditorGUILayout.Space(8f);
-            if (GUILayout.Button("Open Workspace"))
+            if (GUILayout.Button("Open Planner"))
             {
                 ProjectDesignerV2Window.Open(board);
             }
