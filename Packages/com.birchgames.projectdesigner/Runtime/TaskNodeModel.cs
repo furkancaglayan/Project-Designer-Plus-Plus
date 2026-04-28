@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace ProjectDesigner.V2.Data
 {
@@ -30,8 +31,8 @@ namespace ProjectDesigner.V2.Data
         private TaskNodePriority _priority;
         [SerializeField]
         private int _estimatePoints;
-        [SerializeField]
-        private string _assignee;
+        [SerializeField, FormerlySerializedAs("_assignee")]
+        private string _assigneeId;
         [SerializeField]
         private string _dueDateIso;
         [SerializeField]
@@ -66,10 +67,10 @@ namespace ProjectDesigner.V2.Data
             set { _estimatePoints = Mathf.Max(0, value); }
         }
 
-        public string Assignee
+        public string AssigneeId
         {
-            get { return _assignee; }
-            set { _assignee = value ?? string.Empty; }
+            get { return _assigneeId; }
+            set { _assigneeId = value ?? string.Empty; }
         }
 
         public string DueDateIso
@@ -91,7 +92,7 @@ namespace ProjectDesigner.V2.Data
             _status = TaskNodeStatus.NotStarted;
             _priority = TaskNodePriority.Medium;
             _estimatePoints = 3;
-            _assignee = string.Empty;
+            _assigneeId = string.Empty;
             _dueDateIso = string.Empty;
             _acceptanceCriteria = string.Empty;
         }
@@ -104,7 +105,7 @@ namespace ProjectDesigner.V2.Data
                 Status = Status,
                 Priority = Priority,
                 EstimatePoints = EstimatePoints,
-                Assignee = Assignee,
+                AssigneeId = AssigneeId,
                 DueDateIso = DueDateIso,
                 AcceptanceCriteria = AcceptanceCriteria
             };
@@ -118,7 +119,8 @@ namespace ProjectDesigner.V2.Data
             {
                 base.GetSearchText(),
                 Description,
-                Assignee,
+                AssigneeId,
+                ProjectDesignerTeamRosterResolver.GetDisplayName(ProjectDesignerTeamRosterContext.CurrentRoster, AssigneeId),
                 DueDateIso,
                 AcceptanceCriteria,
                 Status.ToString(),

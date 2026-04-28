@@ -41,7 +41,7 @@ Project Designer+ opens as a planning-first Unity editor package for pre-product
 ## Built-In Card Types
 
 - `Task`
-  Status, priority, estimate, assignee, due date, tags, and acceptance criteria.
+Status, priority, estimate, assignee from the shared team roster, due date, tags, and acceptance criteria.
 - `Milestone`
   Roll-up checkpoint for linked tasks.
 - `Note`
@@ -51,7 +51,7 @@ Project Designer+ opens as a planning-first Unity editor package for pre-product
 - `Class`
   Secondary technical-design card for code structure discussions.
 - `Project Brief`
-  Sticky context card for pitch, team snapshot, and project knowledge.
+Sticky context card for pitch, board team snapshot, and project knowledge.
 
 ## Asset Drag-Drop
 

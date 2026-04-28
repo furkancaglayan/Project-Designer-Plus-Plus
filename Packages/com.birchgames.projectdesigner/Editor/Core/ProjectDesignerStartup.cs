@@ -1,3 +1,4 @@
+using ProjectDesigner.V2.Data;
 using UnityEditor;
 using UnityEngine;
 
@@ -10,6 +11,7 @@ namespace ProjectDesigner.V2.Editor
 
         static ProjectDesignerStartup()
         {
+            ProjectDesignerTeamRosterContext.SetProvider(() => ProjectDesignerSettings.instance.DefaultTeamRoster);
             EditorApplication.delayCall += ShowOnboardingIfNeeded;
         }
 

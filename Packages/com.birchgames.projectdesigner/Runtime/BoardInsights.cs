@@ -64,21 +64,21 @@ namespace ProjectDesigner.V2.Data
             return GetTasks(document).Where(task => task.Status != TaskNodeStatus.Done);
         }
 
-        public static IEnumerable<TaskNodeModel> GetTasksForAssignee(BoardDocument document, string assignee)
+        public static IEnumerable<TaskNodeModel> GetTasksForAssignee(BoardDocument document, string assigneeId)
         {
             if (document == null)
             {
                 return Enumerable.Empty<TaskNodeModel>();
             }
 
-            if (string.IsNullOrWhiteSpace(assignee))
+            if (string.IsNullOrWhiteSpace(assigneeId))
             {
-                return GetTasks(document).Where(task => string.IsNullOrWhiteSpace(task.Assignee));
+                return GetTasks(document).Where(task => string.IsNullOrWhiteSpace(task.AssigneeId));
             }
 
             return document.Nodes
                 .OfType<TaskNodeModel>()
-                .Where(task => string.Equals(task.Assignee, assignee, StringComparison.OrdinalIgnoreCase));
+                .Where(task => string.Equals(task.AssigneeId, assigneeId, StringComparison.OrdinalIgnoreCase));
         }
 
         public static int CountTasksByStatus(BoardDocument document, TaskNodeStatus status)
@@ -185,7 +185,7 @@ namespace ProjectDesigner.V2.Data
 
         public static IEnumerable<TaskNodeModel> GetUnassignedTasks(BoardDocument document)
         {
-            return GetOpenTasks(document).Where(task => string.IsNullOrWhiteSpace(task.Assignee));
+            return GetOpenTasks(document).Where(task => string.IsNullOrWhiteSpace(task.AssigneeId));
         }
 
         public static IEnumerable<TaskNodeModel> GetTasksWithRiskTags(BoardDocument document)
@@ -330,22 +330,26 @@ namespace ProjectDesigner.V2.Data
                 .Where(report => report.State == BoardMilestoneHealthState.AtRisk || report.State == BoardMilestoneHealthState.OffTrack);
         }
 
-        public static IReadOnlyList<BoardAssigneeSummary> GetAssigneeSummaries(BoardDocument document, DateTime? referenceDate = null)
+        public static IReadOnlyList<BoardAssigneeSummary> GetAssigneeSummaries(BoardDocument document, DateTime? referenceDate = null, ProjectDesignerTeamRosterAsset roster = null)
         {
             if (document == null)
             {
                 return Array.Empty<BoardAssigneeSummary>();
             }
 
+            ProjectDesignerTeamRosterAsset resolvedRoster = roster ?? ProjectDesignerTeamRosterContext.CurrentRoster;
             return GetOpenTasks(document)
-                .Where(task => !string.IsNullOrWhiteSpace(task.Assignee))
-                .GroupBy(task => task.Assignee.Trim(), StringComparer.OrdinalIgnoreCase)
+                .Where(task => !string.IsNullOrWhiteSpace(task.AssigneeId))
+                .GroupBy(task => task.AssigneeId.Trim(), StringComparer.OrdinalIgnoreCase)
                 .Select(group =>
                 {
                     List<TaskNodeModel> tasks = group.ToList();
+                    string assigneeId = group.Key;
                     return new BoardAssigneeSummary
                     {
-                        Assignee = group.Key,
+                        AssigneeId = assigneeId,
+                        DisplayName = ProjectDesignerTeamRosterResolver.GetDisplayName(resolvedRoster, assigneeId),
+                        AccentColor = ProjectDesignerTeamRosterResolver.GetAccentColor(resolvedRoster, assigneeId),
                         OpenTaskCount = tasks.Count,
                         TotalEstimatePoints = tasks.Sum(task => task.EstimatePoints),
                         BlockedTaskCount = tasks.Count(task => IsTaskBlocked(document, task)),
@@ -355,7 +359,7 @@ namespace ProjectDesigner.V2.Data
                 })
                 .OrderByDescending(summary => summary.OpenTaskCount)
                 .ThenByDescending(summary => summary.TotalEstimatePoints)
-                .ThenBy(summary => summary.Assignee)
+                .ThenBy(summary => summary.DisplayName)
                 .ToList();
         }
 
@@ -439,7 +443,7 @@ namespace ProjectDesigner.V2.Data
                     return task != null && IsTaskDueSoon(task, referenceDate);
 
                 case BoardQuickFilterIds.Unassigned:
-                    return task != null && string.IsNullOrWhiteSpace(task.Assignee) && task.Status != TaskNodeStatus.Done;
+                    return task != null && string.IsNullOrWhiteSpace(task.AssigneeId) && task.Status != TaskNodeStatus.Done;
 
                 case BoardQuickFilterIds.AtRisk:
                     if (HasRiskTag(node))
@@ -463,13 +467,13 @@ namespace ProjectDesigner.V2.Data
 
             if (BoardQuickFilterIds.IsAssigneeFilter(quickFilterId))
             {
-                string assigneeName = BoardQuickFilterIds.GetAssigneeName(quickFilterId);
-                if (string.Equals(assigneeName, "unassigned", StringComparison.OrdinalIgnoreCase))
+                string assigneeId = BoardQuickFilterIds.GetAssigneeId(quickFilterId);
+                if (string.Equals(assigneeId, "unassigned", StringComparison.OrdinalIgnoreCase))
                 {
-                    return task != null && string.IsNullOrWhiteSpace(task.Assignee) && task.Status != TaskNodeStatus.Done;
+                    return task != null && string.IsNullOrWhiteSpace(task.AssigneeId) && task.Status != TaskNodeStatus.Done;
                 }
 
-                return task != null && string.Equals(task.Assignee, assigneeName, StringComparison.OrdinalIgnoreCase);
+                return task != null && string.Equals(task.AssigneeId, assigneeId, StringComparison.OrdinalIgnoreCase);
             }
 
             return true;

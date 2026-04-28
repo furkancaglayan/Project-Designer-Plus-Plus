@@ -27,7 +27,8 @@ Select the board background and update:
 
 - board name
 - one-paragraph summary
-- team directory
+- team roster in Project Settings
+- board team snapshot
 
 Then update the pinned `Project Brief` or the most visible top-left context card so the board stops feeling like sample content immediately.
 

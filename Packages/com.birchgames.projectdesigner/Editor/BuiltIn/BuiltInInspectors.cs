@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using ProjectDesigner.V2.Data;
 using UnityEditor;
@@ -71,6 +72,18 @@ namespace ProjectDesigner.V2.BuiltIn
         }
     }
 
+    internal readonly struct AssigneeChoice
+    {
+        public string Id { get; }
+        public string Label { get; }
+
+        public AssigneeChoice(string id, string label)
+        {
+            Id = id ?? string.Empty;
+            Label = string.IsNullOrWhiteSpace(label) ? "Unassigned" : label.Trim();
+        }
+    }
+
     internal sealed class TaskNodeInspector : IProjectDesignerInspector
     {
         public string NodeTypeId { get { return BoardNodeTypeIds.Task; } }
@@ -125,21 +138,61 @@ namespace ProjectDesigner.V2.BuiltIn
                 repaint();
             });
 
-            BuiltInInspectorUtility.AddDelayedTextField(root, "Assignee", task.Assignee, value =>
+            ProjectDesignerTeamRosterAsset roster = ProjectDesignerTeamRosterContext.CurrentRoster;
+            if (roster == null)
             {
-                TaskNodeModel updated = (TaskNodeModel)task.Clone();
-                updated.Assignee = value;
-                dispatcher.Execute(new UpdateNodeCommand(board, updated));
-                repaint();
-            });
+                root.Add(new HelpBox("Assign a default team roster in Project Settings to pick assignees from a shared project-wide list.", HelpBoxMessageType.Info));
 
-            BuiltInInspectorUtility.AddDelayedTextField(root, "Due Date", task.DueDateIso, value =>
+                var openSettingsButton = new Button(() => SettingsService.OpenProjectSettings(ProjectDesignerProductInfo.SettingsPath))
+                {
+                    text = "Open Project Settings"
+                };
+                openSettingsButton.AddToClassList("pd-secondary-button");
+                root.Add(openSettingsButton);
+            }
+            else
+            {
+                roster.EnsureDefaults();
+                ProjectDesignerTeamMemberData resolvedMember = ProjectDesignerTeamRosterResolver.ResolveMember(roster, task.AssigneeId);
+                string selectedAssigneeId = resolvedMember == null ? (task.AssigneeId ?? string.Empty) : resolvedMember.Id;
+                bool isUnmappedAssignee = !string.IsNullOrWhiteSpace(task.AssigneeId) && resolvedMember == null;
+                bool hasInactiveSelectedAssignee = resolvedMember != null && !resolvedMember.IsActive;
+
+                List<AssigneeChoice> choices = BuildAssigneeChoices(roster, selectedAssigneeId, resolvedMember, isUnmappedAssignee, hasInactiveSelectedAssignee);
+                int selectedIndex = Mathf.Max(0, choices.FindIndex(choice => string.Equals(choice.Id, selectedAssigneeId, StringComparison.OrdinalIgnoreCase)));
+                var assigneeField = new PopupField<string>("Assignee", choices.Select(choice => choice.Label).ToList(), selectedIndex);
+                assigneeField.RegisterValueChangedCallback(evt =>
+                {
+                    int choiceIndex = choices.FindIndex(choice => choice.Label == evt.newValue);
+                    if (choiceIndex < 0)
+                    {
+                        return;
+                    }
+
+                    TaskNodeModel updated = (TaskNodeModel)task.Clone();
+                    updated.AssigneeId = choices[choiceIndex].Id;
+                    dispatcher.Execute(new UpdateNodeCommand(board, updated));
+                    repaint();
+                });
+                root.Add(assigneeField);
+
+                if (isUnmappedAssignee)
+                {
+                    root.Add(new HelpBox("This task points to a missing roster member id. Pick a team member from the dropdown or clear the assignment.", HelpBoxMessageType.Warning));
+                }
+            }
+
+            BuiltInInspectorUtility.AddDelayedTextField(root, "Due Date (YYYY-MM-DD)", task.DueDateIso, value =>
             {
                 TaskNodeModel updated = (TaskNodeModel)task.Clone();
                 updated.DueDateIso = value;
                 dispatcher.Execute(new UpdateNodeCommand(board, updated));
                 repaint();
             });
+            if (!string.IsNullOrWhiteSpace(task.DueDateIso) && !BoardInsights.TryParseDate(task.DueDateIso, out _))
+            {
+                root.Add(new HelpBox("Use a valid date like 2026-05-15 so timeline and milestone health signals stay accurate.", HelpBoxMessageType.Warning));
+            }
 
             BuiltInInspectorUtility.AddDelayedTextField(root, "Acceptance", task.AcceptanceCriteria, value =>
             {
@@ -151,6 +204,66 @@ namespace ProjectDesigner.V2.BuiltIn
 
             BuiltInInspectorUtility.AddTagsField(root, task, board, dispatcher, repaint);
             return root;
+        }
+
+        private static List<AssigneeChoice> BuildAssigneeChoices(ProjectDesignerTeamRosterAsset roster, string selectedAssigneeId, ProjectDesignerTeamMemberData selectedMember, bool includeUnmappedChoice, bool includeInactiveSelectedChoice)
+        {
+            var choices = new List<AssigneeChoice>
+            {
+                new AssigneeChoice(string.Empty, "Unassigned")
+            };
+
+            if (includeUnmappedChoice)
+            {
+                choices.Add(new AssigneeChoice(selectedAssigneeId, "Missing roster member"));
+            }
+
+            if (includeInactiveSelectedChoice && selectedMember != null)
+            {
+                choices.Add(new AssigneeChoice(selectedMember.Id, selectedMember.DisplayName + " - inactive"));
+            }
+
+            List<ProjectDesignerTeamMemberData> members = roster.Members
+                .Where(member => member != null && member.IsActive)
+                .OrderBy(member => member.DisplayName)
+                .ToList();
+            Dictionary<string, int> labelCounts = members
+                .GroupBy(member => BuildMemberLabel(member), StringComparer.OrdinalIgnoreCase)
+                .ToDictionary(group => group.Key, group => group.Count(), StringComparer.OrdinalIgnoreCase);
+
+            foreach (ProjectDesignerTeamMemberData member in members)
+            {
+                string label = BuildMemberLabel(member);
+                if (labelCounts[label] > 1)
+                {
+                    label += " - " + member.Id;
+                }
+
+                choices.Add(new AssigneeChoice(member.Id, label));
+            }
+
+            return choices;
+        }
+
+        private static string BuildMemberLabel(ProjectDesignerTeamMemberData member)
+        {
+            string label = member == null ? "Team Member" : member.DisplayName;
+            if (member == null)
+            {
+                return label;
+            }
+
+            if (!string.IsNullOrWhiteSpace(member.Role))
+            {
+                return label + " - " + member.Role.Trim();
+            }
+
+            if (!string.IsNullOrWhiteSpace(member.Discipline))
+            {
+                return label + " - " + member.Discipline.Trim();
+            }
+
+            return label;
         }
     }
 
@@ -184,7 +297,7 @@ namespace ProjectDesigner.V2.BuiltIn
                 repaint();
             }, true);
 
-            BuiltInInspectorUtility.AddDelayedTextField(root, "Team Snapshot", brief.TeamSnapshot, value =>
+            BuiltInInspectorUtility.AddDelayedTextField(root, "Board Team Snapshot", brief.TeamSnapshot, value =>
             {
                 ProjectBriefNodeModel updated = (ProjectBriefNodeModel)brief.Clone();
                 updated.TeamSnapshot = value;
@@ -209,7 +322,7 @@ namespace ProjectDesigner.V2.BuiltIn
                 repaint();
             })
             {
-                text = "Sync From Board Details"
+                text = "Sync From Board Context"
             };
             syncButton.AddToClassList("pd-secondary-button");
             root.Add(syncButton);

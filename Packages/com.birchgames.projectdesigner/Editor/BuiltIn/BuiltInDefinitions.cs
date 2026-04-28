@@ -46,7 +46,7 @@ namespace ProjectDesigner.V2.BuiltIn
     {
         public string TypeId { get { return BoardNodeTypeIds.ProjectBrief; } }
         public string DisplayName { get { return ProjectDesignerProductInfo.ProjectBriefTitle; } }
-        public string Description { get { return "A sticky planning card for the high-level pitch, team snapshot, and shared project knowledge."; } }
+        public string Description { get { return "A sticky planning card for the high-level pitch, board team snapshot, and shared project knowledge."; } }
         public string Category { get { return BoardNodeCategories.Planning; } }
         public string AccentColor { get { return "#F5C451"; } }
         public Vector2 DefaultSize { get { return new Vector2(360f, 280f); } }

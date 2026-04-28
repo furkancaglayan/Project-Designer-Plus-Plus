@@ -134,6 +134,7 @@ namespace ProjectDesigner.V2.Tests
         {
             ProjectDesignerRegistry.ResetForTests();
             ProjectDesignerBuiltInRegistration.Register();
+            ProjectDesignerTeamRosterContext.SetProvider(null);
         }
 
         [TearDown]
@@ -146,6 +147,7 @@ namespace ProjectDesigner.V2.Tests
 
             _temporaryAssets.Clear();
             AssetDatabase.Refresh();
+            ProjectDesignerTeamRosterContext.SetProvider(null);
         }
 
         [Test]
@@ -495,21 +497,27 @@ namespace ProjectDesigner.V2.Tests
             BoardDocument document = BoardPresetFactory.CreateEmpty("Workload");
             DateTime referenceDate = new DateTime(2026, 4, 28);
 
-            var first = new TaskNodeModel { Title = "First", Assignee = "Aylin", EstimatePoints = 5, DueDateIso = "2026-04-27" };
-            var second = new TaskNodeModel { Title = "Second", Assignee = "Aylin", EstimatePoints = 8, Status = TaskNodeStatus.Blocked };
-            var third = new TaskNodeModel { Title = "Third", Assignee = "Mert", EstimatePoints = 2, Status = TaskNodeStatus.Done };
+            ProjectDesignerTeamRosterAsset roster = CreateRoster(
+                new ProjectDesignerTeamMemberData { Id = "aylin", DisplayName = "Aylin", Role = "Producer", AccentColor = "#55AAFF" },
+                new ProjectDesignerTeamMemberData { Id = "mert", DisplayName = "Mert", Role = "Engineer", AccentColor = "#66CC88" });
+
+            var first = new TaskNodeModel { Title = "First", AssigneeId = "aylin", EstimatePoints = 5, DueDateIso = "2026-04-27" };
+            var second = new TaskNodeModel { Title = "Second", AssigneeId = "aylin", EstimatePoints = 8, Status = TaskNodeStatus.Blocked };
+            var third = new TaskNodeModel { Title = "Third", AssigneeId = "mert", EstimatePoints = 2, Status = TaskNodeStatus.Done };
             document.AddNode(first);
             document.AddNode(second);
             document.AddNode(third);
 
-            IReadOnlyList<BoardAssigneeSummary> summaries = BoardInsights.GetAssigneeSummaries(document, referenceDate);
-            BoardAssigneeSummary aylin = summaries.First(summary => summary.Assignee == "Aylin");
+            IReadOnlyList<BoardAssigneeSummary> summaries = BoardInsights.GetAssigneeSummaries(document, referenceDate, roster);
+            BoardAssigneeSummary aylin = summaries.First(summary => summary.AssigneeId == "aylin");
 
             Assert.AreEqual(2, aylin.OpenTaskCount);
             Assert.AreEqual(13, aylin.TotalEstimatePoints);
             Assert.AreEqual(1, aylin.BlockedTaskCount);
             Assert.AreEqual(1, aylin.OverdueTaskCount);
             Assert.IsTrue(aylin.HasOverload);
+            Assert.AreEqual("Aylin", aylin.DisplayName);
+            Assert.AreEqual("#55AAFF", aylin.AccentColor);
         }
 
         [Test]
@@ -566,8 +574,8 @@ namespace ProjectDesigner.V2.Tests
             string overdueDate = DateTime.Today.AddDays(-1).ToString("yyyy-MM-dd");
             string soonDate = DateTime.Today.AddDays(3).ToString("yyyy-MM-dd");
 
-            var overdueTask = new TaskNodeModel { Title = "Overdue", Assignee = "Aylin", DueDateIso = overdueDate };
-            var soonTask = new TaskNodeModel { Title = "Soon", Assignee = "Aylin", DueDateIso = soonDate };
+            var overdueTask = new TaskNodeModel { Title = "Overdue", AssigneeId = "aylin", DueDateIso = overdueDate };
+            var soonTask = new TaskNodeModel { Title = "Soon", AssigneeId = "aylin", DueDateIso = soonDate };
             var unassignedTask = new TaskNodeModel { Title = "Unassigned" };
             var riskNote = new NoteNodeModel { Title = "Risk Note" };
             riskNote.SetTagsFromCsv("risk, review");
@@ -580,7 +588,7 @@ namespace ProjectDesigner.V2.Tests
             document.ViewState.QuickFilterId = BoardQuickFilterIds.Overdue;
             CollectionAssert.AreEquivalent(new[] { overdueTask.Id }, BoardInsights.GetVisibleNodes(document).Select(node => node.Id).ToArray());
 
-            document.ViewState.QuickFilterId = BoardQuickFilterIds.ForAssignee("Aylin");
+            document.ViewState.QuickFilterId = BoardQuickFilterIds.ForAssigneeId("aylin");
             CollectionAssert.AreEquivalent(new[] { overdueTask.Id, soonTask.Id }, BoardInsights.GetVisibleNodes(document).Select(node => node.Id).ToArray());
 
             document.ViewState.QuickFilterId = BoardQuickFilterIds.AtRisk;
@@ -595,7 +603,7 @@ namespace ProjectDesigner.V2.Tests
             {
                 Title = "Audience",
                 Description = "Clarify who the vertical slice is meant to impress.",
-                Assignee = "Producer",
+                AssigneeId = "producer",
                 Status = TaskNodeStatus.InProgress,
                 Priority = TaskNodePriority.High
             };
@@ -603,6 +611,22 @@ namespace ProjectDesigner.V2.Tests
             string preview = definition.GetPreview(task, BoardPresetFactory.CreateEmpty("Preview"));
 
             Assert.AreEqual("Clarify who the vertical slice is meant to impress.", preview);
+        }
+
+        [Test]
+        public void TeamRosterResolver_ResolvesExistingAssignmentsByIdOrDisplayName()
+        {
+            ProjectDesignerTeamRosterAsset roster = CreateRoster(
+                new ProjectDesignerTeamMemberData { Id = "producer", DisplayName = "Producer", Role = "Production" },
+                new ProjectDesignerTeamMemberData { Id = "design-lead", DisplayName = "Design Lead", Role = "Design" });
+
+            ProjectDesignerTeamMemberData byId = ProjectDesignerTeamRosterResolver.ResolveMember(roster, "producer");
+            ProjectDesignerTeamMemberData byDisplayName = ProjectDesignerTeamRosterResolver.ResolveMember(roster, "Design Lead");
+
+            Assert.IsNotNull(byId);
+            Assert.AreEqual("Producer", byId.DisplayName);
+            Assert.IsNotNull(byDisplayName);
+            Assert.AreEqual("design-lead", byDisplayName.Id);
         }
 
         [Test]
@@ -661,6 +685,21 @@ namespace ProjectDesigner.V2.Tests
             StringAssert.Contains("demo board", sampleReadme.ToLowerInvariant());
             StringAssert.Contains("StatusReportNodeModel", sampleBoard);
             StringAssert.Contains("Status Report Demo Board", sampleBoard);
+        }
+
+        private static ProjectDesignerTeamRosterAsset CreateRoster(params ProjectDesignerTeamMemberData[] members)
+        {
+            ProjectDesignerTeamRosterAsset roster = ScriptableObject.CreateInstance<ProjectDesignerTeamRosterAsset>();
+            foreach (ProjectDesignerTeamMemberData member in members)
+            {
+                if (member != null)
+                {
+                    roster.Members.Add(member);
+                }
+            }
+
+            roster.EnsureDefaults();
+            return roster;
         }
     }
 }

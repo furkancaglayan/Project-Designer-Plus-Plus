@@ -253,12 +253,12 @@ namespace ProjectDesigner.V2.Editor
             });
             _inspectorView.Add(summaryField);
 
-            var teamField = new TextField("Team Directory");
+            var teamField = new TextField("Board Team Snapshot");
             teamField.value = string.Join(", ", _boardAsset.Document.TeamMembers);
             teamField.isDelayed = true;
             teamField.RegisterValueChangedCallback(evt =>
             {
-                _commandStack.Execute(BoardMutationCommand.Create(_boardAsset, "Update Team Directory", document =>
+                _commandStack.Execute(BoardMutationCommand.Create(_boardAsset, "Update Board Team Snapshot", document =>
                 {
                     document.TeamMembers.Clear();
                     foreach (string entry in evt.newValue.Split(','))
@@ -272,6 +272,7 @@ namespace ProjectDesigner.V2.Editor
                 }));
             });
             _inspectorView.Add(teamField);
+            _inspectorView.Add(CreateMutedBodyLabel("Use this as board context and shared knowledge. Task assignees come from the project-wide team roster in Project Settings."));
 
             Foldout templatesFoldout = CreateFoldout("Starter Layouts", false);
             templatesFoldout.Add(CreateMutedBodyLabel("Swap the current board structure for a curated layout."));
@@ -777,13 +778,13 @@ namespace ProjectDesigner.V2.Editor
             IReadOnlyList<BoardAssigneeSummary> assigneeSummaries = BoardInsights.GetAssigneeSummaries(_boardAsset.Document);
             if (assigneeSummaries.Count == 0)
             {
-                workloadFoldout.Add(CreateMutedBodyLabel("Assign tasks to teammates to unlock workload summaries."));
+                workloadFoldout.Add(CreateMutedBodyLabel("Assign tasks from the project-wide team roster to unlock workload summaries."));
             }
             else
             {
                 foreach (BoardAssigneeSummary summary in assigneeSummaries.Take(5))
                 {
-                    string detail = summary.Assignee + ": " + summary.OpenTaskCount + " open tasks | " + summary.TotalEstimatePoints + " pts";
+                    string detail = summary.DisplayName + ": " + summary.OpenTaskCount + " open tasks | " + summary.TotalEstimatePoints + " pts";
                     if (summary.BlockedTaskCount > 0)
                     {
                         detail += " | " + summary.BlockedTaskCount + " blocked";
@@ -805,7 +806,7 @@ namespace ProjectDesigner.V2.Editor
                 VisualElement assigneeButtons = CreateActionRow();
                 foreach (BoardAssigneeSummary summary in assigneeSummaries.Take(4))
                 {
-                    assigneeButtons.Add(CreateQuickFilterButton(summary.Assignee, BoardQuickFilterIds.ForAssignee(summary.Assignee)));
+                    assigneeButtons.Add(CreateQuickFilterButton(summary.DisplayName, BoardQuickFilterIds.ForAssigneeId(summary.AssigneeId)));
                 }
 
                 workloadFoldout.Add(assigneeButtons);
@@ -849,7 +850,7 @@ namespace ProjectDesigner.V2.Editor
             return button;
         }
 
-        private static string DescribeQuickFilter(string filterId)
+        private string DescribeQuickFilter(string filterId)
         {
             switch (filterId)
             {
@@ -873,7 +874,9 @@ namespace ProjectDesigner.V2.Editor
 
             if (BoardQuickFilterIds.IsAssigneeFilter(filterId))
             {
-                return "Assignee: " + BoardQuickFilterIds.GetAssigneeName(filterId);
+                string assigneeId = BoardQuickFilterIds.GetAssigneeId(filterId);
+                string displayName = ProjectDesignerTeamRosterResolver.GetDisplayName(ProjectDesignerTeamRosterContext.CurrentRoster, assigneeId);
+                return "Assignee: " + displayName;
             }
 
             return filterId;

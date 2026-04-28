@@ -268,12 +268,22 @@ namespace ProjectDesigner.V2.Editor
             TaskNodeModel task = _node as TaskNodeModel;
             if (task != null)
             {
+                ProjectDesignerTeamRosterAsset roster = ProjectDesignerTeamRosterContext.CurrentRoster;
                 AddSignalChip(task.Status.ToString(), GetTaskStatusColor(task.Status));
                 AddSignalChip(task.Priority.ToString(), GetTaskPriorityColor(task.Priority));
 
-                if (!string.IsNullOrWhiteSpace(task.Assignee))
+                if (!string.IsNullOrWhiteSpace(task.AssigneeId))
                 {
-                    AddSignalChip(task.Assignee.Trim(), new Color(0.2f, 0.52f, 0.88f));
+                    ProjectDesignerTeamMemberData member = ProjectDesignerTeamRosterResolver.ResolveMember(roster, task.AssigneeId);
+                    if (member != null)
+                    {
+                        Color assigneeColor = ProjectDesignerColorUtility.ParseOrFallback(member.AccentColor, new Color(0.2f, 0.52f, 0.88f));
+                        AddSignalChip(member.DisplayName, assigneeColor);
+                    }
+                    else
+                    {
+                        AddSignalChip("Unmapped Assignee", new Color(0.9f, 0.58f, 0.24f));
+                    }
                 }
 
                 if (BoardInsights.IsTaskBlocked(document, task))

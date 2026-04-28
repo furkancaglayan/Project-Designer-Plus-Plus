@@ -65,7 +65,7 @@ namespace ProjectDesigner.V2.Editor
             return path.Replace("\\", "/");
         }
 
-        private static string EnsureAssetFolderExists(string assetFolder)
+        internal static string EnsureAssetFolderExists(string assetFolder)
         {
             string normalizedPath = ProjectDesignerSettings.NormalizeAssetFolder(assetFolder);
             if (AssetDatabase.IsValidFolder(normalizedPath))

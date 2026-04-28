@@ -18,6 +18,10 @@ namespace ProjectDesigner.V2.Data
         public const string PlanningBoardsWindowTitle = ProductName + " " + PlanningBoardsName;
         public const string ProjectBriefTitle = "Project Brief";
         public const string CreateAssetMenuPath = ProductName + "/" + PlanningBoardName;
+        public const string TeamRosterName = "Team Roster";
+        public const string TeamRosterAssetName = ProductName + " " + TeamRosterName;
+        public const string TeamRosterCreateAssetMenuPath = ProductName + "/" + TeamRosterName;
+        public const string SettingsPath = "Project/Project Designer+";
         public const float ToolbarButtonWidth = 96f;
         public const float GridSize = 24f;
     }

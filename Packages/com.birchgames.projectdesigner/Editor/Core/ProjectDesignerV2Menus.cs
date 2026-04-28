@@ -95,6 +95,27 @@ namespace ProjectDesigner.V2.Editor
             SettingsService.OpenProjectSettings(ProjectDesignerPackageInfo.SettingsPath);
         }
 
+        [MenuItem("Tools/Project Designer/Create Team Roster", priority = 12)]
+        public static void CreateTeamRoster()
+        {
+            ProjectDesignerTeamRosterEditorUtility.CreateAndAssignDefaultRoster();
+        }
+
+        [MenuItem("Tools/Project Designer/Open Team Roster", priority = 13)]
+        public static void OpenTeamRoster()
+        {
+            ProjectDesignerTeamRosterAsset roster = ProjectDesignerSettings.instance.DefaultTeamRoster;
+            if (roster == null)
+            {
+                SettingsService.OpenProjectSettings(ProjectDesignerPackageInfo.SettingsPath);
+                EditorUtility.DisplayDialog(ProjectDesignerProductInfo.ProductName, "Create or assign a default team roster in Project Settings first.", "OK");
+                return;
+            }
+
+            ProjectDesignerTeamRosterEditorUtility.SelectRoster(roster);
+            EditorUtility.FocusProjectWindow();
+        }
+
         [MenuItem("Tools/Project Designer/Board Operations/Duplicate Selected", priority = 20)]
         public static void DuplicateSelected()
         {
@@ -219,6 +240,12 @@ namespace ProjectDesigner.V2.Editor
         public static void CreateStakeholderReviewBoardFromAssetsMenu()
         {
             CreateBoard(BoardPresetIds.StakeholderReview, ProjectDesignerProductInfo.StakeholderReviewBoardName);
+        }
+
+        [MenuItem("Assets/Create/Project Designer/Team Roster", priority = 318)]
+        public static void CreateTeamRosterFromAssetsMenu()
+        {
+            ProjectDesignerTeamRosterEditorUtility.CreateAndAssignDefaultRoster();
         }
 
         public static ProjectBoardAsset CreateBoard(string presetId, string boardName)

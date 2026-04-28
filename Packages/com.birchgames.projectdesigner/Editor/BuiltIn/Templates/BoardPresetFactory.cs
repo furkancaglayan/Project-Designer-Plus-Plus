@@ -1182,7 +1182,7 @@ namespace ProjectDesigner.V2.BuiltIn
                 Title = title,
                 Description = description,
                 Position = position,
-                Assignee = assignee,
+                AssigneeId = assignee,
                 EstimatePoints = estimatePoints,
                 Status = status,
                 Priority = priority,

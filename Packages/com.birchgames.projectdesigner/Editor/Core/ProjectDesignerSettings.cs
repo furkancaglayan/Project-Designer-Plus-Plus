@@ -1,3 +1,4 @@
+using ProjectDesigner.V2.Data;
 using System;
 using UnityEditor;
 using UnityEngine;
@@ -24,6 +25,8 @@ namespace ProjectDesigner.V2.Editor
 
         [SerializeField]
         private ProjectDesignerThemeMode _editorTheme = ProjectDesignerThemeConfig.DefaultTheme;
+        [SerializeField]
+        private ProjectDesignerTeamRosterAsset _defaultTeamRoster;
 
         public bool ShowOnboardingOnStartup
         {
@@ -53,6 +56,11 @@ namespace ProjectDesigner.V2.Editor
         public ProjectDesignerThemeMode EditorTheme
         {
             get { return ProjectDesignerThemeConfig.ResolveTheme(_editorTheme); }
+        }
+
+        public ProjectDesignerTeamRosterAsset DefaultTeamRoster
+        {
+            get { return _defaultTeamRoster; }
         }
 
         public bool ShouldShowOnboarding(string currentVersion)
@@ -90,6 +98,12 @@ namespace ProjectDesigner.V2.Editor
         public void SetEditorTheme(ProjectDesignerThemeMode value)
         {
             _editorTheme = ProjectDesignerThemeConfig.ResolveTheme(value);
+            Save(true);
+        }
+
+        public void SetDefaultTeamRoster(ProjectDesignerTeamRosterAsset value)
+        {
+            _defaultTeamRoster = value;
             Save(true);
         }
 

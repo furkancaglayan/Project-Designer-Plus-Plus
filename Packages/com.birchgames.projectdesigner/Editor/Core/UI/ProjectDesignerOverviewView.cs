@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ProjectDesigner.V2.Data;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace ProjectDesigner.V2.Editor
@@ -73,18 +74,22 @@ namespace ProjectDesigner.V2.Editor
 
         private VisualElement CreateWorkloadMetric(BoardAssigneeSummary summary, string activeFilterId)
         {
-            string filterId = BoardQuickFilterIds.ForAssignee(summary.Assignee);
+            string filterId = BoardQuickFilterIds.ForAssigneeId(summary.AssigneeId);
             var card = new VisualElement();
             card.AddToClassList("pd-overview-card");
             card.AddToClassList("pd-overview-workload-card");
             card.AddManipulator(new Clickable(() => ToggleFilter(filterId)));
             card.EnableInClassList("pd-overview-card-active", string.Equals(filterId, activeFilterId, StringComparison.Ordinal));
 
+            Color accent = ProjectDesignerColorUtility.ParseOrFallback(summary.AccentColor, new Color(0.2f, 0.52f, 0.88f));
+            card.style.borderLeftWidth = 3f;
+            card.style.borderLeftColor = accent;
+
             var valueLabel = new Label(summary.OpenTaskCount.ToString());
             valueLabel.AddToClassList("pd-overview-value");
             card.Add(valueLabel);
 
-            var titleLabel = new Label(summary.Assignee);
+            var titleLabel = new Label(summary.DisplayName);
             titleLabel.AddToClassList("pd-overview-label");
             card.Add(titleLabel);
 

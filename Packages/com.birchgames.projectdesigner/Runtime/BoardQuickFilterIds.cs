@@ -11,20 +11,21 @@ namespace ProjectDesigner.V2.Data
         public const string Unassigned = "assignee:unassigned";
         public const string AtRisk = "risk:at-risk";
         public const string Milestones = "milestones";
+        private const string AssigneePrefix = "assignee:";
 
-        public static string ForAssignee(string assignee)
+        public static string ForAssigneeId(string assigneeId)
         {
-            return "assignee:" + (assignee ?? string.Empty).Trim();
+            return AssigneePrefix + (assigneeId ?? string.Empty).Trim();
         }
 
         public static bool IsAssigneeFilter(string filterId)
         {
-            return !string.IsNullOrEmpty(filterId) && filterId.StartsWith("assignee:");
+            return !string.IsNullOrEmpty(filterId) && filterId.StartsWith(AssigneePrefix);
         }
 
-        public static string GetAssigneeName(string filterId)
+        public static string GetAssigneeId(string filterId)
         {
-            return IsAssigneeFilter(filterId) ? filterId.Substring("assignee:".Length) : string.Empty;
+            return IsAssigneeFilter(filterId) ? filterId.Substring(AssigneePrefix.Length) : string.Empty;
         }
     }
 }

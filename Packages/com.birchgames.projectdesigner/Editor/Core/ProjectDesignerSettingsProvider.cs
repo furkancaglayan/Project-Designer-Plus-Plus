@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using ProjectDesigner.V2.Data;
@@ -19,7 +20,10 @@ namespace ProjectDesigner.V2.Editor
                 "Board",
                 "Planner",
                 "Settings",
-                "Planning"
+                "Planning",
+                "Roster",
+                "Assignee",
+                "Team"
             });
         }
 
@@ -53,6 +57,34 @@ namespace ProjectDesigner.V2.Editor
             EditorGUILayout.PropertyField(_settingsObject.FindProperty("_autoOpenWorkspaceAfterBoardCreation"), new GUIContent("Auto Open Planner"));
             EditorGUILayout.PropertyField(_settingsObject.FindProperty("_defaultBoardFolder"), new GUIContent("Default Board Folder"));
             EditorGUILayout.HelpBox("Use an Assets-relative folder such as 'Assets/Project Designer'. When your current selection is outside Assets, new planning boards will be created here.", MessageType.None);
+
+            EditorGUILayout.Space(10f);
+            EditorGUILayout.LabelField("Team Roster", EditorStyles.boldLabel);
+            EditorGUILayout.PropertyField(_settingsObject.FindProperty("_defaultTeamRoster"), new GUIContent("Default Team Roster"));
+            EditorGUILayout.HelpBox("Define assignees once for the whole project, then pick them from task dropdowns instead of typing names per card.", MessageType.Info);
+
+            EditorGUILayout.BeginHorizontal();
+            if (GUILayout.Button("Create Roster"))
+            {
+                ProjectDesignerTeamRosterEditorUtility.CreateAndAssignDefaultRoster();
+                _settingsObject = new SerializedObject(ProjectDesignerSettings.instance);
+            }
+
+            using (new EditorGUI.DisabledScope(ProjectDesignerSettings.instance.DefaultTeamRoster == null))
+            {
+                if (GUILayout.Button("Select Roster"))
+                {
+                    ProjectDesignerTeamRosterEditorUtility.SelectRoster(ProjectDesignerSettings.instance.DefaultTeamRoster);
+                }
+
+                if (GUILayout.Button("Open Roster"))
+                {
+                    ProjectDesignerTeamRosterEditorUtility.SelectRoster(ProjectDesignerSettings.instance.DefaultTeamRoster);
+                    EditorUtility.FocusProjectWindow();
+                }
+            }
+            EditorGUILayout.EndHorizontal();
+            DrawRosterPreview(ProjectDesignerSettings.instance.DefaultTeamRoster);
 
             EditorGUILayout.Space(10f);
             EditorGUILayout.LabelField("Appearance", EditorStyles.boldLabel);
@@ -135,6 +167,56 @@ namespace ProjectDesigner.V2.Editor
                 }
                 EditorGUILayout.EndHorizontal();
                 EditorGUILayout.EndVertical();
+            }
+        }
+
+        private static void DrawRosterPreview(ProjectDesignerTeamRosterAsset roster)
+        {
+            if (roster == null)
+            {
+                EditorGUILayout.HelpBox("No default team roster is assigned yet. Create one here to enable assignee dropdowns and stronger workload summaries.", MessageType.None);
+                return;
+            }
+
+            roster.EnsureDefaults();
+            IReadOnlyList<ProjectDesignerTeamMemberData> members = roster.Members
+                .Where(member => member != null)
+                .OrderBy(member => member.DisplayName)
+                .ToList();
+
+            if (members.Count == 0)
+            {
+                EditorGUILayout.HelpBox("The roster asset exists but has no members yet. Select it and add a few teammates in the Inspector.", MessageType.None);
+                return;
+            }
+
+            EditorGUILayout.LabelField("Current Members", EditorStyles.miniBoldLabel);
+            using (new EditorGUI.DisabledScope(true))
+            {
+                foreach (ProjectDesignerTeamMemberData member in members.Take(8))
+                {
+                    string detail = member.DisplayName;
+                    if (!string.IsNullOrWhiteSpace(member.Role))
+                    {
+                        detail += " | " + member.Role;
+                    }
+                    else if (!string.IsNullOrWhiteSpace(member.Discipline))
+                    {
+                        detail += " | " + member.Discipline;
+                    }
+
+                    if (!member.IsActive)
+                    {
+                        detail += " | inactive";
+                    }
+
+                    EditorGUILayout.TextField(detail);
+                }
+            }
+
+            if (members.Count > 8)
+            {
+                EditorGUILayout.LabelField("+" + (members.Count - 8) + " more members", EditorStyles.miniLabel);
             }
         }
     }
