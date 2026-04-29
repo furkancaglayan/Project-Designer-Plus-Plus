@@ -50,6 +50,16 @@
     border-left-color: rgba(255, 255, 255, 0.08);
 }
 
+.pd-filter-button-technical,
+.pd-library-group-technical {
+    background-color: rgba(117, 128, 152, 0.1);
+    color: rgb(170, 181, 197);
+    border-top-color: rgba(117, 128, 152, 0.18);
+    border-right-color: rgba(117, 128, 152, 0.18);
+    border-bottom-color: rgba(117, 128, 152, 0.18);
+    border-left-color: rgba(117, 128, 152, 0.18);
+}
+
 .pd-canvas {
     background-color: rgb(24, 28, 34);
 }
@@ -83,6 +93,15 @@
 
 .pd-node-signal-chip {
     color: rgb(236, 239, 244);
+}
+
+.pd-node-tag-overflow {
+    background-color: rgba(117, 128, 152, 0.14);
+    color: rgb(187, 196, 208);
+    border-top-color: rgba(117, 128, 152, 0.22);
+    border-right-color: rgba(117, 128, 152, 0.22);
+    border-bottom-color: rgba(117, 128, 152, 0.22);
+    border-left-color: rgba(117, 128, 152, 0.22);
 }
 
 .pd-overview {

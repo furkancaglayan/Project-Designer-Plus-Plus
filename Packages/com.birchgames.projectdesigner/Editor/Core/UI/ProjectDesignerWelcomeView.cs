@@ -31,11 +31,19 @@ namespace ProjectDesigner.V2.Editor
             body.AddToClassList("pd-welcome-body");
             card.Add(body);
 
-            card.Add(CreatePresetButton("New Empty Board", "Start light with a sticky project brief card and build your own structure from there.", BoardPresetIds.Empty, ProjectDesignerProductInfo.DefaultBoardName, createPreset));
-            card.Add(CreatePresetButton("Project Designer+ Redo Board", "Flagship showcase board for this package rewrite, including planner architecture, rollout work, docs, and launch prep.", BoardPresetIds.ProjectDesignerRedo, ProjectDesignerProductInfo.ProjectDesignerRedoBoardName, createPreset));
-            card.Add(CreatePresetButton("Solo Indie Board", "A fuller showcase board with pitch framing, slice planning, references, risks, and milestone links.", BoardPresetIds.SoloIndie, ProjectDesignerProductInfo.SoloBoardName, createPreset));
-            card.Add(CreatePresetButton("Small Team Board", "A denser collaborative example covering design, production, art, engineering, and stakeholder review prep.", BoardPresetIds.SmallTeam, ProjectDesignerProductInfo.SmallTeamBoardName, createPreset));
-            card.Add(CreatePresetButton("Technical Design Board", "A richer technical map with multiple classes, notes, references, and explicit architecture relationships.", BoardPresetIds.TechnicalDesign, ProjectDesignerProductInfo.TechnicalBoardName, createPreset));
+            card.Add(CreatePresetButton("New Empty Board", "Start light with a sticky project brief card and build your own structure from there.", BoardPresetIds.Empty, ProjectDesignerProductInfo.DefaultBoardName, createPreset, true));
+            card.Add(CreatePresetButton("Project Designer+ Redo Board", "Flagship showcase board for this package rewrite, including planner architecture, rollout work, docs, and launch prep.", BoardPresetIds.ProjectDesignerRedo, ProjectDesignerProductInfo.ProjectDesignerRedoBoardName, createPreset, false));
+            card.Add(CreatePresetButton("Solo Indie Board", "A fuller showcase board with pitch framing, slice planning, references, risks, and milestone links.", BoardPresetIds.SoloIndie, ProjectDesignerProductInfo.SoloBoardName, createPreset, false));
+            card.Add(CreatePresetButton("Small Team Board", "A denser collaborative example covering design, production, art, engineering, and stakeholder review prep.", BoardPresetIds.SmallTeam, ProjectDesignerProductInfo.SmallTeamBoardName, createPreset, false));
+            card.Add(CreatePresetButton("Pitch & Vision Board", "Workflow preset for player promise, target audience, and visual direction framing.", BoardPresetIds.PitchVision, ProjectDesignerProductInfo.PitchVisionBoardName, createPreset, false));
+            card.Add(CreatePresetButton("Milestone Roadmap Board", "Workflow preset for shaping the path from pre-production goals to milestone checkpoints.", BoardPresetIds.MilestoneRoadmap, ProjectDesignerProductInfo.MilestoneRoadmapBoardName, createPreset, false));
+            card.Add(CreatePresetButton("Research & Reference Board", "Workflow preset for references, open questions, and research capture.", BoardPresetIds.ResearchReference, ProjectDesignerProductInfo.ResearchReferenceBoardName, createPreset, false));
+            card.Add(CreatePresetButton("Stakeholder Review Board", "Workflow preset for review prep, talking points, risks, and next-step alignment.", BoardPresetIds.StakeholderReview, ProjectDesignerProductInfo.StakeholderReviewBoardName, createPreset, false));
+
+            var technicalTitle = new Label("Technical Design (Optional)");
+            technicalTitle.AddToClassList("pd-section-title");
+            card.Add(technicalTitle);
+            card.Add(CreatePresetButton("Technical Design Board", "A richer technical map with classes, notes, references, and architecture relationships when planning needs technical depth.", BoardPresetIds.TechnicalDesign, ProjectDesignerProductInfo.TechnicalBoardName, createPreset, false));
 
             var openButton = new Button(openSelectedBoard) { text = "Open Selected Planning Board" };
             openButton.AddToClassList("pd-secondary-button");
@@ -58,7 +66,7 @@ namespace ProjectDesigner.V2.Editor
             actionRow.Add(browserButton);
         }
 
-        private static VisualElement CreatePresetButton(string title, string description, string presetId, string boardName, Action<string, string> createPreset)
+        private static VisualElement CreatePresetButton(string title, string description, string presetId, string boardName, Action<string, string> createPreset, bool primary)
         {
             var row = new VisualElement();
             row.AddToClassList("pd-welcome-preset");
@@ -72,7 +80,7 @@ namespace ProjectDesigner.V2.Editor
             row.Add(descriptionLabel);
 
             var button = new Button(() => createPreset(presetId, boardName)) { text = title };
-            button.AddToClassList("pd-primary-button");
+            button.AddToClassList(primary ? "pd-primary-button" : "pd-secondary-button");
             row.Add(button);
             return row;
         }

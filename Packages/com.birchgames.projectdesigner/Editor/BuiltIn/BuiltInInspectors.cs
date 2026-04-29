@@ -64,11 +64,13 @@ namespace ProjectDesigner.V2.BuiltIn
 
         public static Foldout CreateFoldout(string title, bool expanded = false)
         {
-            return new Foldout
+            var foldout = new Foldout
             {
                 text = title,
                 value = expanded
             };
+            foldout.AddToClassList("pd-foldout");
+            return foldout;
         }
     }
 
@@ -114,30 +116,6 @@ namespace ProjectDesigner.V2.BuiltIn
                 repaint();
             }, true);
 
-            BuiltInInspectorUtility.AddEnumField(root, "Status", task.Status, value =>
-            {
-                TaskNodeModel updated = (TaskNodeModel)task.Clone();
-                updated.Status = value;
-                dispatcher.Execute(new UpdateNodeCommand(board, updated));
-                repaint();
-            });
-
-            BuiltInInspectorUtility.AddEnumField(root, "Priority", task.Priority, value =>
-            {
-                TaskNodeModel updated = (TaskNodeModel)task.Clone();
-                updated.Priority = value;
-                dispatcher.Execute(new UpdateNodeCommand(board, updated));
-                repaint();
-            });
-
-            BuiltInInspectorUtility.AddIntegerField(root, "Estimate", task.EstimatePoints, value =>
-            {
-                TaskNodeModel updated = (TaskNodeModel)task.Clone();
-                updated.EstimatePoints = value;
-                dispatcher.Execute(new UpdateNodeCommand(board, updated));
-                repaint();
-            });
-
             ProjectDesignerTeamRosterAsset roster = ProjectDesignerTeamRosterContext.CurrentRoster;
             if (roster == null)
             {
@@ -182,7 +160,36 @@ namespace ProjectDesigner.V2.BuiltIn
                 }
             }
 
-            BuiltInInspectorUtility.AddDelayedTextField(root, "Due Date (YYYY-MM-DD)", task.DueDateIso, value =>
+            BuiltInInspectorUtility.AddEnumField(root, "Status", task.Status, value =>
+            {
+                TaskNodeModel updated = (TaskNodeModel)task.Clone();
+                updated.Status = value;
+                dispatcher.Execute(new UpdateNodeCommand(board, updated));
+                repaint();
+            });
+
+            Foldout advancedFoldout = BuiltInInspectorUtility.CreateFoldout("Advanced", false);
+            var advancedNote = new Label("Use this section for scheduling, sizing, and acceptance details.");
+            advancedNote.AddToClassList("pd-muted-body");
+            advancedFoldout.Add(advancedNote);
+
+            BuiltInInspectorUtility.AddEnumField(advancedFoldout, "Priority", task.Priority, value =>
+            {
+                TaskNodeModel updated = (TaskNodeModel)task.Clone();
+                updated.Priority = value;
+                dispatcher.Execute(new UpdateNodeCommand(board, updated));
+                repaint();
+            });
+
+            BuiltInInspectorUtility.AddIntegerField(advancedFoldout, "Estimate", task.EstimatePoints, value =>
+            {
+                TaskNodeModel updated = (TaskNodeModel)task.Clone();
+                updated.EstimatePoints = value;
+                dispatcher.Execute(new UpdateNodeCommand(board, updated));
+                repaint();
+            });
+
+            BuiltInInspectorUtility.AddDelayedTextField(advancedFoldout, "Due Date (YYYY-MM-DD)", task.DueDateIso, value =>
             {
                 TaskNodeModel updated = (TaskNodeModel)task.Clone();
                 updated.DueDateIso = value;
@@ -191,10 +198,10 @@ namespace ProjectDesigner.V2.BuiltIn
             });
             if (!string.IsNullOrWhiteSpace(task.DueDateIso) && !BoardInsights.TryParseDate(task.DueDateIso, out _))
             {
-                root.Add(new HelpBox("Use a valid date like 2026-05-15 so timeline and milestone health signals stay accurate.", HelpBoxMessageType.Warning));
+                advancedFoldout.Add(new HelpBox("Use a valid date like 2026-05-15 so timeline and milestone health signals stay accurate.", HelpBoxMessageType.Warning));
             }
 
-            BuiltInInspectorUtility.AddDelayedTextField(root, "Acceptance", task.AcceptanceCriteria, value =>
+            BuiltInInspectorUtility.AddDelayedTextField(advancedFoldout, "Acceptance", task.AcceptanceCriteria, value =>
             {
                 TaskNodeModel updated = (TaskNodeModel)task.Clone();
                 updated.AcceptanceCriteria = value;
@@ -202,7 +209,8 @@ namespace ProjectDesigner.V2.BuiltIn
                 repaint();
             }, true);
 
-            BuiltInInspectorUtility.AddTagsField(root, task, board, dispatcher, repaint);
+            BuiltInInspectorUtility.AddTagsField(advancedFoldout, task, board, dispatcher, repaint);
+            root.Add(advancedFoldout);
             return root;
         }
 
@@ -297,7 +305,9 @@ namespace ProjectDesigner.V2.BuiltIn
                 repaint();
             }, true);
 
-            BuiltInInspectorUtility.AddDelayedTextField(root, "Board Team Snapshot", brief.TeamSnapshot, value =>
+            Foldout contextFoldout = BuiltInInspectorUtility.CreateFoldout("Board Context", false);
+
+            BuiltInInspectorUtility.AddDelayedTextField(contextFoldout, "Board Team Snapshot", brief.TeamSnapshot, value =>
             {
                 ProjectBriefNodeModel updated = (ProjectBriefNodeModel)brief.Clone();
                 updated.TeamSnapshot = value;
@@ -305,7 +315,7 @@ namespace ProjectDesigner.V2.BuiltIn
                 repaint();
             }, true);
 
-            BuiltInInspectorUtility.AddDelayedTextField(root, "Project Knowledge", brief.ProjectKnowledge, value =>
+            BuiltInInspectorUtility.AddDelayedTextField(contextFoldout, "Project Knowledge", brief.ProjectKnowledge, value =>
             {
                 ProjectBriefNodeModel updated = (ProjectBriefNodeModel)brief.Clone();
                 updated.ProjectKnowledge = value;
@@ -325,9 +335,10 @@ namespace ProjectDesigner.V2.BuiltIn
                 text = "Sync From Board Context"
             };
             syncButton.AddToClassList("pd-secondary-button");
-            root.Add(syncButton);
+            contextFoldout.Add(syncButton);
 
-            BuiltInInspectorUtility.AddTagsField(root, brief, board, dispatcher, repaint);
+            BuiltInInspectorUtility.AddTagsField(contextFoldout, brief, board, dispatcher, repaint);
+            root.Add(contextFoldout);
             return root;
         }
     }
@@ -370,7 +381,9 @@ namespace ProjectDesigner.V2.BuiltIn
                 repaint();
             });
 
-            BuiltInInspectorUtility.AddTagsField(root, milestone, board, dispatcher, repaint);
+            Foldout detailsFoldout = BuiltInInspectorUtility.CreateFoldout("Advanced", false);
+            BuiltInInspectorUtility.AddTagsField(detailsFoldout, milestone, board, dispatcher, repaint);
+            root.Add(detailsFoldout);
             return root;
         }
     }
@@ -405,7 +418,8 @@ namespace ProjectDesigner.V2.BuiltIn
                 repaint();
             }, true);
 
-            BuiltInInspectorUtility.AddDelayedTextField(root, "Accent Color", note.AccentHex, value =>
+            Foldout advancedFoldout = BuiltInInspectorUtility.CreateFoldout("Advanced", false);
+            BuiltInInspectorUtility.AddDelayedTextField(advancedFoldout, "Accent Color", note.AccentHex, value =>
             {
                 NoteNodeModel updated = (NoteNodeModel)note.Clone();
                 updated.AccentHex = value;
@@ -413,7 +427,8 @@ namespace ProjectDesigner.V2.BuiltIn
                 repaint();
             });
 
-            BuiltInInspectorUtility.AddTagsField(root, note, board, dispatcher, repaint);
+            BuiltInInspectorUtility.AddTagsField(advancedFoldout, note, board, dispatcher, repaint);
+            root.Add(advancedFoldout);
             return root;
         }
     }
@@ -472,7 +487,8 @@ namespace ProjectDesigner.V2.BuiltIn
                 repaint();
             });
 
-            BuiltInInspectorUtility.AddDelayedTextField(root, "Excerpt", reference.TextReference, value =>
+            Foldout detailsFoldout = BuiltInInspectorUtility.CreateFoldout("Reference Details", false);
+            BuiltInInspectorUtility.AddDelayedTextField(detailsFoldout, "Excerpt", reference.TextReference, value =>
             {
                 ReferenceNodeModel updated = (ReferenceNodeModel)reference.Clone();
                 updated.TextReference = value;
@@ -480,7 +496,8 @@ namespace ProjectDesigner.V2.BuiltIn
                 repaint();
             }, true);
 
-            BuiltInInspectorUtility.AddTagsField(root, reference, board, dispatcher, repaint);
+            BuiltInInspectorUtility.AddTagsField(detailsFoldout, reference, board, dispatcher, repaint);
+            root.Add(detailsFoldout);
             return root;
         }
     }
@@ -561,7 +578,9 @@ namespace ProjectDesigner.V2.BuiltIn
             }, true);
             root.Add(methodsFoldout);
 
-            BuiltInInspectorUtility.AddTagsField(root, classNode, board, dispatcher, repaint);
+            Foldout advancedFoldout = BuiltInInspectorUtility.CreateFoldout("Advanced", false);
+            BuiltInInspectorUtility.AddTagsField(advancedFoldout, classNode, board, dispatcher, repaint);
+            root.Add(advancedFoldout);
             return root;
         }
     }

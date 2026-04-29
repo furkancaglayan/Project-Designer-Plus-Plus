@@ -1,16 +1,16 @@
 .pd-workspace {
     flex-grow: 1;
-    background-color: rgb(240, 245, 252);
-    color: rgb(46, 56, 69);
+    background-color: rgb(242, 246, 251);
+    color: rgb(50, 59, 72);
 }
 
 .pd-toolbar {
     min-height: 38px;
     padding-left: 12px;
     padding-right: 12px;
-    background-color: rgb(248, 250, 255);
+    background-color: rgb(247, 249, 253);
     border-bottom-width: 1px;
-    border-bottom-color: rgba(69, 102, 171, 0.12);
+    border-bottom-color: rgba(69, 102, 171, 0.08);
 }
 
 .pd-toolbar-title {
@@ -27,18 +27,18 @@
     margin-bottom: 5px;
     padding-left: 10px;
     padding-right: 10px;
-    background-color: rgb(243, 247, 255);
-    color: rgb(45, 63, 96);
-    border-radius: 10px;
-    -unity-font-style: bold;
+    background-color: rgb(250, 252, 255);
+    color: rgb(64, 78, 99);
+    border-radius: 7px;
+    -unity-font-style: normal;
     border-top-width: 1px;
     border-right-width: 1px;
     border-bottom-width: 1px;
     border-left-width: 1px;
-    border-top-color: rgba(76, 122, 255, 0.18);
-    border-right-color: rgba(76, 122, 255, 0.18);
-    border-bottom-color: rgba(76, 122, 255, 0.18);
-    border-left-color: rgba(76, 122, 255, 0.18);
+    border-top-color: rgba(69, 102, 171, 0.12);
+    border-right-color: rgba(69, 102, 171, 0.12);
+    border-bottom-color: rgba(69, 102, 171, 0.12);
+    border-left-color: rgba(69, 102, 171, 0.12);
 }
 
 .pd-toolbar-menu {
@@ -62,9 +62,9 @@
 .pd-sidebar {
     width: 250px;
     padding: 14px;
-    background-color: rgb(246, 249, 255);
+    background-color: rgb(244, 247, 251);
     border-right-width: 1px;
-    border-right-color: rgba(69, 102, 171, 0.1);
+    border-right-color: rgba(69, 102, 171, 0.08);
 }
 
 .pd-center-column {
@@ -76,9 +76,9 @@
 .pd-inspector {
     width: 336px;
     padding: 14px;
-    background-color: rgb(246, 249, 255);
+    background-color: rgb(244, 247, 251);
     border-left-width: 1px;
-    border-left-color: rgba(69, 102, 171, 0.1);
+    border-left-color: rgba(69, 102, 171, 0.08);
 }
 
 .pd-section-title {
@@ -99,21 +99,21 @@
 .pd-node-library-button {
     margin-top: 4px;
     margin-bottom: 4px;
-    min-height: 32px;
+    min-height: 30px;
     padding-left: 12px;
     padding-right: 12px;
-    background-color: rgb(250, 252, 255);
-    color: rgb(45, 63, 96);
+    background-color: rgb(251, 252, 255);
+    color: rgb(58, 72, 94);
     border-top-width: 1px;
     border-right-width: 1px;
     border-bottom-width: 1px;
     border-left-width: 1px;
-    border-top-color: rgba(76, 122, 255, 0.15);
-    border-right-color: rgba(76, 122, 255, 0.15);
-    border-bottom-color: rgba(76, 122, 255, 0.15);
-    border-left-color: rgba(76, 122, 255, 0.15);
-    border-radius: 10px;
-    -unity-font-style: bold;
+    border-top-color: rgba(69, 102, 171, 0.1);
+    border-right-color: rgba(69, 102, 171, 0.1);
+    border-bottom-color: rgba(69, 102, 171, 0.1);
+    border-left-color: rgba(69, 102, 171, 0.1);
+    border-radius: 7px;
+    -unity-font-style: normal;
 }
 
 .pd-filter-list {
@@ -125,22 +125,31 @@
     min-height: 30px;
     padding-left: 10px;
     padding-right: 10px;
-    background-color: rgb(250, 252, 255);
-    color: rgb(45, 63, 96);
-    border-radius: 10px;
+    background-color: rgb(251, 252, 255);
+    color: rgb(64, 78, 99);
+    border-radius: 7px;
     border-top-width: 1px;
     border-right-width: 1px;
     border-bottom-width: 1px;
     border-left-width: 1px;
-    border-top-color: rgba(76, 122, 255, 0.15);
-    border-right-color: rgba(76, 122, 255, 0.15);
-    border-bottom-color: rgba(76, 122, 255, 0.15);
-    border-left-color: rgba(76, 122, 255, 0.15);
+    border-top-color: rgba(69, 102, 171, 0.1);
+    border-right-color: rgba(69, 102, 171, 0.1);
+    border-bottom-color: rgba(69, 102, 171, 0.1);
+    border-left-color: rgba(69, 102, 171, 0.1);
+}
+
+.pd-filter-button-technical {
+    background-color: rgba(117, 128, 152, 0.08);
+    color: rgb(104, 115, 132);
+    border-top-color: rgba(117, 128, 152, 0.16);
+    border-right-color: rgba(117, 128, 152, 0.16);
+    border-bottom-color: rgba(117, 128, 152, 0.16);
+    border-left-color: rgba(117, 128, 152, 0.16);
 }
 
 .pd-canvas {
     flex-grow: 1;
-    background-color: rgb(235, 242, 250);
+    background-color: rgb(236, 242, 248);
     overflow: hidden;
 }
 
@@ -159,20 +168,20 @@
 
 .pd-node {
     padding: 12px;
-    padding-right: 64px;
+    padding-right: 56px;
     background-color: rgb(255, 255, 255);
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
-    border-bottom-left-radius: 8px;
-    border-bottom-right-radius: 8px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
     border-top-width: 1px;
     border-left-width: 1px;
     border-right-width: 1px;
     border-bottom-width: 1px;
-    border-top-color: rgba(27, 39, 51, 0.08);
-    border-left-color: rgba(27, 39, 51, 0.08);
-    border-right-color: rgba(27, 39, 51, 0.08);
-    border-bottom-color: rgba(27, 39, 51, 0.08);
+    border-top-color: rgba(27, 39, 51, 0.07);
+    border-left-color: rgba(27, 39, 51, 0.07);
+    border-right-color: rgba(27, 39, 51, 0.07);
+    border-bottom-color: rgba(27, 39, 51, 0.07);
 }
 
 .pd-node-selected {
@@ -196,10 +205,10 @@
     border-right-color: rgb(71, 137, 255);
     border-bottom-color: rgb(71, 137, 255);
     border-left-color: rgb(71, 137, 255);
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
-    border-bottom-left-radius: 8px;
-    border-bottom-right-radius: 8px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
 }
 
 .pd-node-link-frame {
@@ -212,10 +221,10 @@
     border-right-width: 2px;
     border-bottom-width: 2px;
     border-left-width: 2px;
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
-    border-bottom-left-radius: 8px;
-    border-bottom-right-radius: 8px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
 }
 
 .pd-node-link-valid {
@@ -238,23 +247,23 @@
     position: absolute;
     top: 10px;
     right: 10px;
-    min-width: 46px;
-    min-height: 24px;
-    padding-left: 10px;
-    padding-right: 10px;
-    padding-top: 3px;
-    padding-bottom: 3px;
-    font-size: 10px;
-    -unity-font-style: bold;
+    min-width: 38px;
+    min-height: 20px;
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    font-size: 9px;
+    -unity-font-style: normal;
     text-align: center;
     border-top-width: 1px;
     border-right-width: 1px;
     border-bottom-width: 1px;
     border-left-width: 1px;
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
-    border-bottom-left-radius: 8px;
-    border-bottom-right-radius: 8px;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
 }
 
 .pd-node-connector-active {
@@ -273,91 +282,103 @@
 
 .pd-node-category-chip {
     align-self: flex-start;
-    padding-left: 8px;
-    padding-right: 8px;
-    padding-top: 3px;
-    padding-bottom: 3px;
+    padding-left: 7px;
+    padding-right: 7px;
+    padding-top: 2px;
+    padding-bottom: 2px;
     border-top-width: 1px;
     border-right-width: 1px;
     border-bottom-width: 1px;
     border-left-width: 1px;
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
-    border-bottom-left-radius: 8px;
-    border-bottom-right-radius: 8px;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
 }
 
 .pd-node-title {
-    margin-top: 4px;
-    margin-bottom: 6px;
+    margin-top: 6px;
+    margin-bottom: 5px;
     -unity-font-style: bold;
-    font-size: 14px;
+    font-size: 15px;
     color: rgb(31, 40, 52);
 }
 
 .pd-node-signal-row {
     flex-direction: row;
     flex-wrap: wrap;
-    margin-bottom: 6px;
+    margin-bottom: 5px;
 }
 
 .pd-node-signal-chip {
     margin-right: 6px;
-    margin-bottom: 6px;
-    padding-left: 8px;
-    padding-right: 8px;
-    padding-top: 3px;
-    padding-bottom: 3px;
+    margin-bottom: 5px;
+    padding-left: 7px;
+    padding-right: 7px;
+    padding-top: 2px;
+    padding-bottom: 2px;
     font-size: 10px;
-    -unity-font-style: bold;
+    -unity-font-style: normal;
     border-top-width: 1px;
     border-right-width: 1px;
     border-bottom-width: 1px;
     border-left-width: 1px;
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
-    border-bottom-left-radius: 8px;
-    border-bottom-right-radius: 8px;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
 }
 
 .pd-node-preview {
     flex-grow: 1;
     white-space: normal;
     color: rgb(78, 91, 107);
-    margin-bottom: 6px;
+    font-size: 12px;
+    max-height: 48px;
+    overflow: hidden;
+    margin-bottom: 4px;
 }
 
 .pd-node-tag-row {
     flex-direction: row;
     flex-wrap: wrap;
-    margin-top: 2px;
+    margin-top: 4px;
 }
 
 .pd-node-tag-chip {
     margin-right: 6px;
-    margin-bottom: 6px;
-    padding-left: 8px;
-    padding-right: 8px;
-    padding-top: 3px;
-    padding-bottom: 3px;
+    margin-bottom: 5px;
+    padding-left: 7px;
+    padding-right: 7px;
+    padding-top: 2px;
+    padding-bottom: 2px;
     font-size: 10px;
     border-top-width: 1px;
     border-right-width: 1px;
     border-bottom-width: 1px;
     border-left-width: 1px;
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
-    border-bottom-left-radius: 8px;
-    border-bottom-right-radius: 8px;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
+}
+
+.pd-node-tag-overflow {
+    background-color: rgba(106, 118, 137, 0.1);
+    color: rgb(98, 109, 126);
+    border-top-color: rgba(106, 118, 137, 0.18);
+    border-right-color: rgba(106, 118, 137, 0.18);
+    border-bottom-color: rgba(106, 118, 137, 0.18);
+    border-left-color: rgba(106, 118, 137, 0.18);
 }
 
 .pd-overview {
     flex-direction: column;
-    min-height: 132px;
+    min-height: 124px;
     padding: 12px;
-    background-color: rgb(246, 249, 255);
+    background-color: rgb(245, 248, 252);
     border-top-width: 1px;
-    border-top-color: rgba(69, 102, 171, 0.1);
+    border-top-color: rgba(69, 102, 171, 0.08);
 }
 
 .pd-overview-row {
@@ -366,10 +387,10 @@
 }
 
 .pd-overview-card {
-    width: 120px;
+    width: 118px;
     margin-right: 8px;
-    padding: 10px;
-    background-color: rgb(255, 255, 255);
+    padding: 9px;
+    background-color: rgb(252, 253, 255);
     border-radius: 8px;
     border-top-width: 1px;
     border-right-width: 1px;
@@ -432,7 +453,7 @@
     padding-right: 12px;
     background-color: rgb(91, 127, 245);
     color: rgb(255, 255, 255);
-    border-radius: 10px;
+    border-radius: 8px;
     -unity-font-style: bold;
     border-top-width: 1px;
     border-right-width: 1px;
@@ -449,17 +470,17 @@
     min-height: 30px;
     padding-left: 12px;
     padding-right: 12px;
-    background-color: rgb(243, 247, 255);
-    color: rgb(45, 63, 96);
-    border-radius: 10px;
+    background-color: rgb(250, 252, 255);
+    color: rgb(64, 78, 99);
+    border-radius: 8px;
     border-top-width: 1px;
     border-right-width: 1px;
     border-bottom-width: 1px;
     border-left-width: 1px;
-    border-top-color: rgba(76, 122, 255, 0.18);
-    border-right-color: rgba(76, 122, 255, 0.18);
-    border-bottom-color: rgba(76, 122, 255, 0.18);
-    border-left-color: rgba(76, 122, 255, 0.18);
+    border-top-color: rgba(69, 102, 171, 0.12);
+    border-right-color: rgba(69, 102, 171, 0.12);
+    border-bottom-color: rgba(69, 102, 171, 0.12);
+    border-left-color: rgba(69, 102, 171, 0.12);
 }
 
 .pd-secondary-button.pd-overview-card-active {
@@ -509,7 +530,7 @@
     margin-top: 8px;
     margin-bottom: 8px;
     padding: 12px;
-    background-color: rgb(245, 248, 251);
+    background-color: rgb(247, 249, 252);
     border-radius: 8px;
 }
 
@@ -689,7 +710,7 @@
 .pd-foldout {
     margin-bottom: 8px;
     padding: 8px;
-    background-color: rgba(255, 255, 255, 0.86);
+    background-color: rgba(255, 255, 255, 0.74);
     border-radius: 8px;
     border-top-width: 1px;
     border-right-width: 1px;
@@ -699,6 +720,10 @@
     border-right-color: rgba(69, 102, 171, 0.1);
     border-bottom-color: rgba(69, 102, 171, 0.1);
     border-left-color: rgba(69, 102, 171, 0.1);
+}
+
+.pd-library-group-technical {
+    background-color: rgba(117, 128, 152, 0.06);
 }
 
 .pd-canvas-hint {

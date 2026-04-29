@@ -635,6 +635,51 @@ namespace ProjectDesigner.V2.Tests
         }
 
         [Test]
+        public void CardPresentation_TaskSignalsStayFocusedOnStatusAssigneeAndUrgency()
+        {
+            BoardDocument document = BoardPresetFactory.CreateEmpty("Card Signals");
+            ProjectDesignerTeamRosterAsset roster = CreateRoster(
+                new ProjectDesignerTeamMemberData { Id = "producer", DisplayName = "Producer", Role = "Production", AccentColor = "#55AAFF" });
+
+            var task = new TaskNodeModel
+            {
+                Title = "Audience",
+                Status = TaskNodeStatus.InProgress,
+                Priority = TaskNodePriority.Critical,
+                AssigneeId = "producer",
+                DueDateIso = DateTime.Today.AddDays(2).ToString("yyyy-MM-dd")
+            };
+            var blocker = new TaskNodeModel
+            {
+                Title = "Blocker",
+                Status = TaskNodeStatus.InProgress
+            };
+
+            document.AddNode(task);
+            document.AddNode(blocker);
+            document.AddEdge(new BoardEdgeModel(BoardEdgeTypeIds.Dependency, task.Id, blocker.Id));
+
+            IReadOnlyList<ProjectDesignerCardSignal> signals = ProjectDesignerCardPresentation.GetTaskSignals(task, document, roster);
+
+            CollectionAssert.AreEqual(
+                new[] { "In Progress", "Producer", "Blocked" },
+                signals.Select(signal => signal.Text).ToArray());
+        }
+
+        [Test]
+        public void CardPresentation_TagSummaryCapsVisibleTagsAndShowsOverflow()
+        {
+            var task = new TaskNodeModel();
+            task.SetTagsFromCsv("slice, audience, pitch, audience");
+
+            ProjectDesignerCardTagSummary summary = ProjectDesignerCardPresentation.GetTagSummary(task);
+
+            CollectionAssert.AreEqual(new[] { "slice", "audience" }, summary.VisibleTags.ToArray());
+            Assert.AreEqual(1, summary.HiddenCount);
+            Assert.AreEqual("+1", ProjectDesignerCardPresentation.FormatTagOverflowLabel(summary.HiddenCount));
+        }
+
+        [Test]
         public void TaskDefinition_PreviewUsesDescriptionBeforePlannerMetadata()
         {
             var definition = new TaskNodeDefinition();
@@ -650,6 +695,20 @@ namespace ProjectDesigner.V2.Tests
             string preview = definition.GetPreview(task, BoardPresetFactory.CreateEmpty("Preview"));
 
             Assert.AreEqual("Clarify who the vertical slice is meant to impress.", preview);
+        }
+
+        [Test]
+        public void ReferenceDefinition_PreviewUsesFriendlySourceText()
+        {
+            var definition = new ReferenceNodeDefinition();
+            var reference = new ReferenceNodeModel
+            {
+                AssetPath = "Assets/References/Mood Board.png"
+            };
+
+            string preview = definition.GetPreview(reference, BoardPresetFactory.CreateEmpty("Reference Preview"));
+
+            Assert.AreEqual("Unity asset: Mood Board.png", preview);
         }
 
         [Test]

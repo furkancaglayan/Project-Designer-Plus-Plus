@@ -118,14 +118,14 @@ namespace ProjectDesigner.V2.Editor
             card.Add(firstRow);
 
             VisualElement secondRow = CreateActionRow();
-            secondRow.Add(CreatePresetButton("Technical Design", BoardPresetIds.TechnicalDesign, ProjectDesignerProductInfo.TechnicalBoardName, false));
             secondRow.Add(CreatePresetButton("Pitch & Vision", BoardPresetIds.PitchVision, ProjectDesignerProductInfo.PitchVisionBoardName, false));
             secondRow.Add(CreatePresetButton("Milestone Roadmap", BoardPresetIds.MilestoneRoadmap, ProjectDesignerProductInfo.MilestoneRoadmapBoardName, false));
             secondRow.Add(CreatePresetButton("Research & Reference", BoardPresetIds.ResearchReference, ProjectDesignerProductInfo.ResearchReferenceBoardName, false));
+            secondRow.Add(CreatePresetButton("Stakeholder Review", BoardPresetIds.StakeholderReview, ProjectDesignerProductInfo.StakeholderReviewBoardName, false));
             card.Add(secondRow);
 
             VisualElement thirdRow = CreateActionRow();
-            thirdRow.Add(CreatePresetButton("Stakeholder Review", BoardPresetIds.StakeholderReview, ProjectDesignerProductInfo.StakeholderReviewBoardName, false));
+            thirdRow.Add(CreatePresetButton("Technical Design", BoardPresetIds.TechnicalDesign, ProjectDesignerProductInfo.TechnicalBoardName, false));
             card.Add(thirdRow);
 
             card.Add(CreateSectionLabel("Team Roster"));

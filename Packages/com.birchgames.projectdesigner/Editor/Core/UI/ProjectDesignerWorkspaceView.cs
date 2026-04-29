@@ -180,6 +180,11 @@ namespace ProjectDesigner.V2.Editor
                     text = localFilter.Name
                 };
                 button.AddToClassList("pd-filter-button");
+                if (string.Equals(localFilter.Category, BoardNodeCategories.TechnicalDesign, StringComparison.Ordinal))
+                {
+                    button.AddToClassList("pd-filter-button-technical");
+                }
+
                 _savedFiltersContainer.Add(button);
             }
         }
@@ -597,6 +602,11 @@ namespace ProjectDesigner.V2.Editor
         {
             bool defaultOpen = group.Key != BoardNodeCategories.TechnicalDesign;
             Foldout foldout = CreateFoldout(group.Key, defaultOpen);
+            if (string.Equals(group.Key, BoardNodeCategories.TechnicalDesign, StringComparison.Ordinal))
+            {
+                foldout.AddToClassList("pd-library-group-technical");
+            }
+
             foreach (IProjectDesignerNodeDefinition definition in group)
             {
                 foldout.Add(CreateNodeLibraryButton(definition));

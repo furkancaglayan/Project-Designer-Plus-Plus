@@ -63,13 +63,7 @@ namespace ProjectDesigner.V2.BuiltIn
         public string GetPreview(BoardNodeModel node, BoardDocument document)
         {
             ProjectBriefNodeModel brief = node as ProjectBriefNodeModel;
-            if (brief == null)
-            {
-                return string.Empty;
-            }
-
-            string team = string.IsNullOrWhiteSpace(brief.TeamSnapshot) ? "Team snapshot pending" : brief.TeamSnapshot;
-            return team + " | " + brief.Overview;
+            return ProjectDesignerCardPresentation.GetProjectBriefPreview(brief);
         }
     }
 
@@ -93,29 +87,7 @@ namespace ProjectDesigner.V2.BuiltIn
         public string GetPreview(BoardNodeModel node, BoardDocument document)
         {
             MilestoneNodeModel milestone = node as MilestoneNodeModel;
-            if (milestone == null)
-            {
-                return string.Empty;
-            }
-
-            BoardMilestoneHealthReport health = BoardInsights.GetMilestoneHealth(document, milestone);
-            string state;
-            switch (health.State)
-            {
-                case BoardMilestoneHealthState.NoLinkedTasks:
-                    state = "Needs tasks";
-                    break;
-                case BoardMilestoneHealthState.OffTrack:
-                    state = "Off Track";
-                    break;
-                case BoardMilestoneHealthState.AtRisk:
-                    state = "At Risk";
-                    break;
-                default:
-                    state = health.State.ToString();
-                    break;
-            }
-            return state + " | " + Mathf.RoundToInt(health.Completion * 100f) + "% complete";
+            return ProjectDesignerCardPresentation.GetMilestonePreview(milestone, document);
         }
     }
 
@@ -163,22 +135,7 @@ namespace ProjectDesigner.V2.BuiltIn
         public string GetPreview(BoardNodeModel node, BoardDocument document)
         {
             ReferenceNodeModel reference = node as ReferenceNodeModel;
-            if (reference == null)
-            {
-                return string.Empty;
-            }
-
-            if (!string.IsNullOrEmpty(reference.AssetPath))
-            {
-                return reference.AssetPath;
-            }
-
-            if (!string.IsNullOrEmpty(reference.ExternalUrl))
-            {
-                return reference.ExternalUrl;
-            }
-
-            return reference.Summary;
+            return ProjectDesignerCardPresentation.GetReferencePreview(reference);
         }
     }
 
@@ -202,12 +159,7 @@ namespace ProjectDesigner.V2.BuiltIn
         public string GetPreview(BoardNodeModel node, BoardDocument document)
         {
             ClassNodeModel classNode = node as ClassNodeModel;
-            if (classNode == null)
-            {
-                return string.Empty;
-            }
-
-            return classNode.NamespaceName + " | " + classNode.Fields.Count + " fields | " + classNode.Methods.Count + " methods";
+            return ProjectDesignerCardPresentation.GetClassPreview(classNode);
         }
     }
 

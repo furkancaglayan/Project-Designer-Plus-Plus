@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using ProjectDesigner.V2.BuiltIn;
 using ProjectDesigner.V2.Data;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -75,12 +77,12 @@ namespace ProjectDesigner.V2.Editor
             _connectHandle = new Label("Link");
             _connectHandle.AddToClassList("pd-node-connector");
             _connectHandle.pickingMode = PickingMode.Position;
-            _connectHandle.style.backgroundColor = ProjectDesignerColorUtility.WithAlpha(_accentColor, 0.12f);
-            _connectHandle.style.borderTopColor = ProjectDesignerColorUtility.WithAlpha(_accentColor, 0.24f);
-            _connectHandle.style.borderRightColor = ProjectDesignerColorUtility.WithAlpha(_accentColor, 0.24f);
-            _connectHandle.style.borderBottomColor = ProjectDesignerColorUtility.WithAlpha(_accentColor, 0.24f);
-            _connectHandle.style.borderLeftColor = ProjectDesignerColorUtility.WithAlpha(_accentColor, 0.24f);
-            _connectHandle.style.color = ProjectDesignerColorUtility.Blend(_accentColor, new Color(0.18f, 0.22f, 0.26f), 0.28f);
+            _connectHandle.style.backgroundColor = ProjectDesignerColorUtility.WithAlpha(_accentColor, 0.06f);
+            _connectHandle.style.borderTopColor = ProjectDesignerColorUtility.WithAlpha(_accentColor, 0.14f);
+            _connectHandle.style.borderRightColor = ProjectDesignerColorUtility.WithAlpha(_accentColor, 0.14f);
+            _connectHandle.style.borderBottomColor = ProjectDesignerColorUtility.WithAlpha(_accentColor, 0.14f);
+            _connectHandle.style.borderLeftColor = ProjectDesignerColorUtility.WithAlpha(_accentColor, 0.14f);
+            _connectHandle.style.color = ProjectDesignerColorUtility.Blend(_accentColor, new Color(0.18f, 0.22f, 0.26f), 0.22f);
             _connectHandle.RegisterCallback<PointerDownEvent>(OnConnectionPointerDown);
             Add(_connectHandle);
 
@@ -107,7 +109,7 @@ namespace ProjectDesigner.V2.Editor
             _signalContainer.pickingMode = PickingMode.Ignore;
             Add(_signalContainer);
 
-            _previewLabel = new Label(_definition == null ? string.Empty : _definition.GetPreview(_node, document));
+            _previewLabel = new Label(ProjectDesignerCardPresentation.GetPreviewText(_node, _definition, document));
             _previewLabel.AddToClassList("pd-node-preview");
             _previewLabel.pickingMode = PickingMode.Ignore;
             Add(_previewLabel);
@@ -127,7 +129,7 @@ namespace ProjectDesigner.V2.Editor
             _titleLabel.text = _node.Title;
             _categoryLabel.text = _node.Category;
             RefreshSignals(document);
-            _previewLabel.text = _definition == null ? string.Empty : _definition.GetPreview(_node, document);
+            _previewLabel.text = ProjectDesignerCardPresentation.GetPreviewText(_node, _definition, document);
             RefreshTagChips();
 
             style.left = _node.Position.x;
@@ -165,12 +167,12 @@ namespace ProjectDesigner.V2.Editor
                 return;
             }
 
-            _connectHandle.style.backgroundColor = ProjectDesignerColorUtility.WithAlpha(_accentColor, 0.12f);
-            _connectHandle.style.borderTopColor = ProjectDesignerColorUtility.WithAlpha(_accentColor, 0.24f);
-            _connectHandle.style.borderRightColor = ProjectDesignerColorUtility.WithAlpha(_accentColor, 0.24f);
-            _connectHandle.style.borderBottomColor = ProjectDesignerColorUtility.WithAlpha(_accentColor, 0.24f);
-            _connectHandle.style.borderLeftColor = ProjectDesignerColorUtility.WithAlpha(_accentColor, 0.24f);
-            _connectHandle.style.color = ProjectDesignerColorUtility.Blend(_accentColor, new Color(0.18f, 0.22f, 0.26f), 0.28f);
+            _connectHandle.style.backgroundColor = ProjectDesignerColorUtility.WithAlpha(_accentColor, 0.06f);
+            _connectHandle.style.borderTopColor = ProjectDesignerColorUtility.WithAlpha(_accentColor, 0.14f);
+            _connectHandle.style.borderRightColor = ProjectDesignerColorUtility.WithAlpha(_accentColor, 0.14f);
+            _connectHandle.style.borderBottomColor = ProjectDesignerColorUtility.WithAlpha(_accentColor, 0.14f);
+            _connectHandle.style.borderLeftColor = ProjectDesignerColorUtility.WithAlpha(_accentColor, 0.14f);
+            _connectHandle.style.color = ProjectDesignerColorUtility.Blend(_accentColor, new Color(0.18f, 0.22f, 0.26f), 0.22f);
         }
 
         public void SetPreviewPosition(Vector2 position)
@@ -234,21 +236,17 @@ namespace ProjectDesigner.V2.Editor
         {
             _tagsContainer.Clear();
 
-            if (_node.Tags == null || _node.Tags.Count == 0)
+            ProjectDesignerCardTagSummary tagSummary = ProjectDesignerCardPresentation.GetTagSummary(_node);
+            if (tagSummary.VisibleTags.Count == 0 && tagSummary.HiddenCount == 0)
             {
                 _tagsContainer.style.display = DisplayStyle.None;
                 return;
             }
 
             _tagsContainer.style.display = DisplayStyle.Flex;
-            foreach (string tag in _node.Tags)
+            foreach (string tag in tagSummary.VisibleTags)
             {
-                if (string.IsNullOrWhiteSpace(tag))
-                {
-                    continue;
-                }
-
-                var chip = new Label(tag.Trim());
+                var chip = new Label(tag);
                 chip.AddToClassList("pd-node-tag-chip");
                 chip.style.backgroundColor = ProjectDesignerColorUtility.WithAlpha(_accentColor, 0.1f);
                 chip.style.borderTopColor = ProjectDesignerColorUtility.WithAlpha(_accentColor, 0.18f);
@@ -259,61 +257,25 @@ namespace ProjectDesigner.V2.Editor
                 chip.pickingMode = PickingMode.Ignore;
                 _tagsContainer.Add(chip);
             }
+
+            if (tagSummary.HiddenCount > 0)
+            {
+                var overflowChip = new Label(ProjectDesignerCardPresentation.FormatTagOverflowLabel(tagSummary.HiddenCount));
+                overflowChip.AddToClassList("pd-node-tag-chip");
+                overflowChip.AddToClassList("pd-node-tag-overflow");
+                overflowChip.pickingMode = PickingMode.Ignore;
+                _tagsContainer.Add(overflowChip);
+            }
         }
 
         private void RefreshSignals(BoardDocument document)
         {
             _signalContainer.Clear();
-
-            TaskNodeModel task = _node as TaskNodeModel;
-            if (task != null)
+            IReadOnlyList<ProjectDesignerCardSignal> signals = ProjectDesignerCardPresentation.GetSignals(_node, document);
+            _signalContainer.style.display = signals.Count == 0 ? DisplayStyle.None : DisplayStyle.Flex;
+            foreach (ProjectDesignerCardSignal signal in signals)
             {
-                ProjectDesignerTeamRosterAsset roster = ProjectDesignerTeamRosterContext.CurrentRoster;
-                AddSignalChip(task.Status.ToString(), GetTaskStatusColor(task.Status));
-                AddSignalChip(task.Priority.ToString(), GetTaskPriorityColor(task.Priority));
-
-                if (!string.IsNullOrWhiteSpace(task.AssigneeId))
-                {
-                    ProjectDesignerTeamMemberData member = ProjectDesignerTeamRosterResolver.ResolveMember(roster, task.AssigneeId);
-                    if (member != null)
-                    {
-                        Color assigneeColor = ProjectDesignerColorUtility.ParseOrFallback(member.AccentColor, new Color(0.2f, 0.52f, 0.88f));
-                        AddSignalChip(member.DisplayName, assigneeColor);
-                    }
-                    else
-                    {
-                        AddSignalChip("Unmapped Assignee", new Color(0.9f, 0.58f, 0.24f));
-                    }
-                }
-
-                if (BoardInsights.IsTaskBlocked(document, task))
-                {
-                    AddSignalChip("Blocked", new Color(0.88f, 0.37f, 0.26f));
-                }
-
-                if (BoardInsights.IsTaskOverdue(task))
-                {
-                    AddSignalChip("Overdue", new Color(0.84f, 0.25f, 0.27f));
-                }
-                else if (BoardInsights.IsTaskDueSoon(task))
-                {
-                    AddSignalChip("Due Soon", new Color(0.92f, 0.67f, 0.22f));
-                }
-
-                return;
-            }
-
-            MilestoneNodeModel milestone = _node as MilestoneNodeModel;
-            if (milestone != null)
-            {
-                BoardMilestoneHealthReport health = BoardInsights.GetMilestoneHealth(document, milestone);
-                AddSignalChip(GetMilestoneHealthLabel(health.State), GetMilestoneHealthColor(health.State));
-                if (!string.IsNullOrWhiteSpace(milestone.TargetDateIso))
-                {
-                    AddSignalChip(milestone.TargetDateIso, new Color(0.32f, 0.45f, 0.82f));
-                }
-
-                return;
+                AddSignalChip(signal.Text, signal.Color);
             }
         }
 
@@ -336,68 +298,5 @@ namespace ProjectDesigner.V2.Editor
             _signalContainer.Add(chip);
         }
 
-        private static Color GetTaskStatusColor(TaskNodeStatus status)
-        {
-            switch (status)
-            {
-                case TaskNodeStatus.InProgress:
-                    return new Color(0.24f, 0.55f, 0.88f);
-                case TaskNodeStatus.Blocked:
-                    return new Color(0.88f, 0.37f, 0.26f);
-                case TaskNodeStatus.Done:
-                    return new Color(0.28f, 0.66f, 0.4f);
-                default:
-                    return new Color(0.53f, 0.59f, 0.66f);
-            }
-        }
-
-        private static Color GetTaskPriorityColor(TaskNodePriority priority)
-        {
-            switch (priority)
-            {
-                case TaskNodePriority.Critical:
-                    return new Color(0.83f, 0.25f, 0.3f);
-                case TaskNodePriority.High:
-                    return new Color(0.95f, 0.58f, 0.22f);
-                case TaskNodePriority.Medium:
-                    return new Color(0.33f, 0.53f, 0.92f);
-                default:
-                    return new Color(0.47f, 0.67f, 0.41f);
-            }
-        }
-
-        private static string GetMilestoneHealthLabel(BoardMilestoneHealthState state)
-        {
-            switch (state)
-            {
-                case BoardMilestoneHealthState.Complete:
-                    return "Complete";
-                case BoardMilestoneHealthState.OffTrack:
-                    return "Off Track";
-                case BoardMilestoneHealthState.AtRisk:
-                    return "At Risk";
-                case BoardMilestoneHealthState.NoLinkedTasks:
-                    return "Needs Tasks";
-                default:
-                    return "On Track";
-            }
-        }
-
-        private static Color GetMilestoneHealthColor(BoardMilestoneHealthState state)
-        {
-            switch (state)
-            {
-                case BoardMilestoneHealthState.Complete:
-                    return new Color(0.28f, 0.66f, 0.4f);
-                case BoardMilestoneHealthState.OffTrack:
-                    return new Color(0.83f, 0.25f, 0.3f);
-                case BoardMilestoneHealthState.AtRisk:
-                    return new Color(0.95f, 0.58f, 0.22f);
-                case BoardMilestoneHealthState.NoLinkedTasks:
-                    return new Color(0.53f, 0.59f, 0.66f);
-                default:
-                    return new Color(0.24f, 0.55f, 0.88f);
-            }
-        }
     }
 }
