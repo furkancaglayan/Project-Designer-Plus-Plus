@@ -10,6 +10,8 @@ namespace ProjectDesigner.V2.BuiltIn
         {
             switch (presetId)
             {
+                case BoardPresetIds.ProjectDesignerRedo:
+                    return CreateProjectDesignerRedo(boardName);
                 case BoardPresetIds.SoloIndie:
                     return CreateSoloIndie(boardName);
                 case BoardPresetIds.SmallTeam:
@@ -48,6 +50,248 @@ namespace ProjectDesigner.V2.BuiltIn
                 document.ViewState.SelectedNodeId = brief.Id;
             }
 
+            return document;
+        }
+
+        public static BoardDocument CreateProjectDesignerRedo(string boardName = null)
+        {
+            BoardDocument document = CreateEmpty(boardName ?? ProjectDesignerProductInfo.ProjectDesignerRedoBoardName, false);
+            document.Summary = "Flagship showcase board for the Project Designer+ rewrite, covering planner architecture, interaction polish, docs, demo content, and launch prep.";
+            document.TeamMembers.Clear();
+            document.TeamMembers.AddRange(new[] { "Product Design", "Tools Engineering", "Documentation", "Launch Producer" });
+            ApplySavedFilters(document,
+                new BoardSavedFilter("Core Planner", string.Empty, BoardNodeCategories.All, "planner-core", true),
+                new BoardSavedFilter("Launch", string.Empty, BoardNodeCategories.All, "launch", true),
+                new BoardSavedFilter("Samples", string.Empty, BoardNodeCategories.All, "sample", true),
+                new BoardSavedFilter("Polish", string.Empty, BoardNodeCategories.All, "polish", true));
+
+            ProjectBriefNodeModel brief = CreateProjectBriefNode(
+                document,
+                new Vector2(120f, 100f),
+                "Rebuild the legacy asset into a UPM-first planner that is easier to understand, easier to extend, and strong enough to demo on its own. Keep technical design present, but make planning the obvious center of gravity.");
+
+            MilestoneNodeModel plannerCore = CreateMilestone(
+                "Planner Core Stable",
+                "Board interactions, package architecture, and day-to-day planning workflows feel trustworthy enough to use continuously.",
+                new Vector2(760f, 100f),
+                "2026-05-06",
+                "planner-core, milestone");
+
+            MilestoneNodeModel showcaseReady = CreateMilestone(
+                "Showcase & Docs Ready",
+                "Examples, onboarding, docs, and sample surfaces clearly show what the planner can do.",
+                new Vector2(1140f, 100f),
+                "2026-05-13",
+                "showcase, docs, milestone");
+
+            MilestoneNodeModel launchReady = CreateMilestone(
+                "Store Submission Ready",
+                "Package messaging, screenshots, demo boards, and final review prep are aligned for launch.",
+                new Vector2(1520f, 100f),
+                "2026-05-20",
+                "launch, milestone");
+
+            TaskNodeModel repositioning = CreateTask(
+                "Reposition package as planner",
+                "Rewrite the product story so teams understand this as a pre-production planner first, with technical design as a secondary workflow.",
+                new Vector2(120f, 420f),
+                "product-design",
+                3,
+                TaskNodeStatus.Done,
+                TaskNodePriority.Critical,
+                "2026-05-01",
+                "The README, onboarding, and listing draft all lead with planning instead of UML.",
+                "launch, positioning");
+
+            TaskNodeModel packageRewrite = CreateTask(
+                "Ship UPM-first package structure",
+                "Move the rewrite into a package layout with clearer runtime, editor, sample, and test boundaries.",
+                new Vector2(460f, 420f),
+                "tools-engineering",
+                5,
+                TaskNodeStatus.Done,
+                TaskNodePriority.Critical,
+                "2026-05-03",
+                "The package imports cleanly and stops depending on the legacy asset folder for v2 behavior.",
+                "planner-core, package, technical");
+
+            TaskNodeModel interactionPolish = CreateTask(
+                "Polish board interactions",
+                "Tighten drag, selection, connection flow, and board operations until the planner feels fast instead of fragile.",
+                new Vector2(800f, 420f),
+                "tools-engineering",
+                8,
+                TaskNodeStatus.InProgress,
+                TaskNodePriority.Critical,
+                "2026-05-08",
+                "Daily planning actions work without needing workaround explanations in the docs.",
+                "planner-core, polish");
+
+            TaskNodeModel onboardingAndFinder = CreateTask(
+                "Add onboarding and project finder",
+                "Create the product shell around the planner so first-run discovery feels intentional.",
+                new Vector2(1140f, 420f),
+                "product-design",
+                5,
+                TaskNodeStatus.Done,
+                TaskNodePriority.High,
+                "2026-05-07",
+                "The user can create, find, and reopen boards without hunting around the Project window.",
+                "planner-core, discoverability");
+
+            TaskNodeModel rosterAndInsights = CreateTask(
+                "Add roster-backed workload views",
+                "Move assignment into a project-wide roster and use that data for board summaries, filters, and insight cards.",
+                new Vector2(800f, 700f),
+                "tools-engineering",
+                5,
+                TaskNodeStatus.InProgress,
+                TaskNodePriority.High,
+                "2026-05-10",
+                "Assignees come from one roster, and workload summaries stop drifting into duplicate names.",
+                "planner-core, insights");
+
+            TaskNodeModel showcaseBoards = CreateTask(
+                "Produce showcase boards",
+                "Seed richer examples, a flagship redo board, and clearer sample packaging so users can inspect real planning density quickly.",
+                new Vector2(1140f, 700f),
+                "documentation",
+                5,
+                TaskNodeStatus.InProgress,
+                TaskNodePriority.High,
+                "2026-05-12",
+                "The package ships with examples that demonstrate planning depth, not just empty starter content.",
+                "showcase, sample, docs");
+
+            TaskNodeModel launchMaterials = CreateTask(
+                "Finalize launch copy and media checklist",
+                "Align package messaging, screenshots, and release notes around the same planner-first story.",
+                new Vector2(1480f, 420f),
+                "launch-producer",
+                3,
+                TaskNodeStatus.NotStarted,
+                TaskNodePriority.High,
+                "2026-05-16",
+                "The Asset Store draft, screenshots, and release checklist promise only what the shipped package really does.",
+                "launch, docs, marketing");
+
+            NoteNodeModel guardrails = CreateNote(
+                "Product Guardrails",
+                "- Keep planning as the headline.\n- Treat extensibility as a strong advanced path, not the default story.\n- Keep technical design useful but secondary.\n- Avoid demo boards that look like tiny tutorial scraps.",
+                new Vector2(120f, 760f),
+                "#F28C38",
+                "decision, launch");
+
+            NoteNodeModel openQuestions = CreateNote(
+                "Open Questions",
+                "- Do we need a stronger review/export path before launch?\n- Which finder polish items can wait without hurting first-run clarity?\n- Should smart left-to-right layout become the post-launch hero feature?",
+                new Vector2(460f, 760f),
+                "#2B90D9",
+                "question, risk, launch");
+
+            ReferenceNodeModel listingDraft = CreateReference(
+                "Launch Positioning Draft",
+                "Current package and store messaging centered on planner-first positioning, workflow presets, and extension hooks.",
+                new Vector2(1840f, 240f),
+                string.Empty,
+                "Use this as the source for README copy, onboarding messaging, and store-ready language.",
+                "launch, docs");
+
+            ReferenceNodeModel uiDirection = CreateReference(
+                "Planner UI Direction",
+                "Notes for keeping the board readable: stronger accents, simpler chips, lighter surfaces in light mode, and a darker but not muddy dark mode.",
+                new Vector2(1840f, 500f),
+                string.Empty,
+                "Tie the board look back to the onboarding shell so the product feels consistent.",
+                "polish, ui");
+
+            ReferenceNodeModel sampleGoals = CreateReference(
+                "Sample Board Goals",
+                "Examples should prove planning depth, launch readiness, extensibility, and the package-friendly architecture in one pass.",
+                new Vector2(1840f, 760f),
+                string.Empty,
+                "Use this as a checklist when deciding whether a sample board is explanatory enough.",
+                "showcase, sample");
+
+            ClassNodeModel workspaceView = CreateClass(
+                "ProjectDesignerWorkspaceView",
+                "ProjectDesigner.V2.Editor",
+                "Coordinates the planner shell, board canvas, inspector refresh, and overview surfaces.",
+                new Vector2(1480f, 780f),
+                new[]
+                {
+                    new BoardClassMemberData("_board: ProjectBoardAsset", "private"),
+                    new BoardClassMemberData("_commandStack: ProjectDesignerCommandStack", "private")
+                },
+                new[]
+                {
+                    new BoardClassMemberData("BindBoard(ProjectBoardAsset)", "public"),
+                    new BoardClassMemberData("RefreshBoard()", "public"),
+                    new BoardClassMemberData("RebuildInspector()", "private")
+                },
+                "technical, planner-core");
+
+            ClassNodeModel boardInsights = CreateClass(
+                "BoardInsights",
+                "ProjectDesigner.V2.Data",
+                "Derives workload, risk, dependency, milestone, and quick-filter signals from the board document.",
+                new Vector2(1140f, 980f),
+                new[]
+                {
+                    new BoardClassMemberData("AssigneeSummaries: IReadOnlyList<BoardAssigneeSummary>", "public"),
+                    new BoardClassMemberData("MilestoneReports: IReadOnlyList<BoardMilestoneHealthReport>", "public")
+                },
+                new[]
+                {
+                    new BoardClassMemberData("GetVisibleNodes(BoardDocument)", "public"),
+                    new BoardClassMemberData("GetAssigneeSummaries(BoardDocument)", "public"),
+                    new BoardClassMemberData("GetMilestoneHealth(BoardDocument, MilestoneNodeModel)", "public")
+                },
+                "technical, insights");
+
+            document.AddNode(brief);
+            document.AddNode(plannerCore);
+            document.AddNode(showcaseReady);
+            document.AddNode(launchReady);
+            document.AddNode(repositioning);
+            document.AddNode(packageRewrite);
+            document.AddNode(interactionPolish);
+            document.AddNode(onboardingAndFinder);
+            document.AddNode(rosterAndInsights);
+            document.AddNode(showcaseBoards);
+            document.AddNode(launchMaterials);
+            document.AddNode(guardrails);
+            document.AddNode(openQuestions);
+            document.AddNode(listingDraft);
+            document.AddNode(uiDirection);
+            document.AddNode(sampleGoals);
+            document.AddNode(workspaceView);
+            document.AddNode(boardInsights);
+
+            Connect(document, BoardEdgeTypeIds.Dependency, packageRewrite, repositioning);
+            Connect(document, BoardEdgeTypeIds.Dependency, interactionPolish, packageRewrite);
+            Connect(document, BoardEdgeTypeIds.Dependency, interactionPolish, onboardingAndFinder);
+            Connect(document, BoardEdgeTypeIds.Dependency, rosterAndInsights, interactionPolish);
+            Connect(document, BoardEdgeTypeIds.Dependency, showcaseBoards, interactionPolish);
+            Connect(document, BoardEdgeTypeIds.Dependency, launchMaterials, showcaseBoards);
+
+            Connect(document, BoardEdgeTypeIds.Milestone, repositioning, plannerCore);
+            Connect(document, BoardEdgeTypeIds.Milestone, packageRewrite, plannerCore);
+            Connect(document, BoardEdgeTypeIds.Milestone, interactionPolish, plannerCore);
+            Connect(document, BoardEdgeTypeIds.Milestone, onboardingAndFinder, plannerCore);
+            Connect(document, BoardEdgeTypeIds.Milestone, rosterAndInsights, plannerCore);
+            Connect(document, BoardEdgeTypeIds.Milestone, showcaseBoards, showcaseReady);
+            Connect(document, BoardEdgeTypeIds.Milestone, launchMaterials, launchReady);
+
+            Connect(document, BoardEdgeTypeIds.Reference, guardrails, interactionPolish);
+            Connect(document, BoardEdgeTypeIds.Reference, openQuestions, launchMaterials);
+            Connect(document, BoardEdgeTypeIds.Reference, listingDraft, repositioning);
+            Connect(document, BoardEdgeTypeIds.Reference, listingDraft, launchMaterials);
+            Connect(document, BoardEdgeTypeIds.Reference, uiDirection, interactionPolish);
+            Connect(document, BoardEdgeTypeIds.Reference, sampleGoals, showcaseBoards);
+            Connect(document, BoardEdgeTypeIds.TechnicalRelation, workspaceView, boardInsights);
+
+            document.ViewState.SelectedNodeId = brief.Id;
             return document;
         }
 
@@ -1134,6 +1378,7 @@ namespace ProjectDesigner.V2.BuiltIn
             document.Templates.AddRange(new List<BoardTemplateDefinition>
             {
                 new BoardTemplateDefinition(BoardPresetIds.Empty, "Empty", "Start light with a pinned project brief card, then add your own structure."),
+                new BoardTemplateDefinition(BoardPresetIds.ProjectDesignerRedo, "Project Designer+ Redo", "Flagship showcase board for the package rewrite, planner architecture, docs, and launch prep."),
                 new BoardTemplateDefinition(BoardPresetIds.SoloIndie, "Solo Indie", "A fuller solo-dev sample with slice planning, risks, references, and milestone progress."),
                 new BoardTemplateDefinition(BoardPresetIds.SmallTeam, "Small Team", "A denser collaborative sample for design, production, art, and stakeholder review prep."),
                 new BoardTemplateDefinition(BoardPresetIds.TechnicalDesign, "Technical Design", "A richer architecture sample with multiple class relationships, notes, and package-thinking."),

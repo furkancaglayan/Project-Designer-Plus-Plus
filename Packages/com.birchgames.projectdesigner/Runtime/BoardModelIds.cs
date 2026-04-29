@@ -30,6 +30,7 @@ namespace ProjectDesigner.V2.Data
     public static class BoardPresetIds
     {
         public const string Empty = "project-designer.preset.empty";
+        public const string ProjectDesignerRedo = "project-designer.preset.project-designer-redo";
         public const string SoloIndie = "project-designer.preset.solo";
         public const string SmallTeam = "project-designer.preset.small-team";
         public const string TechnicalDesign = "project-designer.preset.technical";

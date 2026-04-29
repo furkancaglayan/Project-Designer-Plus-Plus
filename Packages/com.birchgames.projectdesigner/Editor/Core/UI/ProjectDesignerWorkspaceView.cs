@@ -312,6 +312,7 @@ namespace ProjectDesigner.V2.Editor
             _inspectorView.Add(firstRow);
 
             VisualElement secondRow = CreateActionRow();
+            secondRow.Add(CreateInspectorButton("Auto Layout", AutoLayoutSelectionOrVisible));
             secondRow.Add(CreateInspectorButton("Align Left", () => ArrangeSelection(BoardArrangeMode.AlignLeft)));
             secondRow.Add(CreateInspectorButton("Align Top", () => ArrangeSelection(BoardArrangeMode.AlignTop)));
             secondRow.Add(CreateInspectorButton("Distribute H", () => ArrangeSelection(BoardArrangeMode.DistributeHorizontal)));
@@ -664,6 +665,8 @@ namespace ProjectDesigner.V2.Editor
             menu.style.marginBottom = 5f;
             menu.style.alignSelf = Align.Center;
 
+            menu.menu.AppendAction("Auto Layout Left To Right", _ => AutoLayoutSelectionOrVisible());
+            menu.menu.AppendSeparator();
             menu.menu.AppendAction("Align Left", _ => ArrangeSelection(BoardArrangeMode.AlignLeft));
             menu.menu.AppendAction("Align Center", _ => ArrangeSelection(BoardArrangeMode.AlignCenter));
             menu.menu.AppendAction("Align Right", _ => ArrangeSelection(BoardArrangeMode.AlignRight));
@@ -736,6 +739,29 @@ namespace ProjectDesigner.V2.Editor
             }
 
             _commandStack.Execute(new ArrangeNodesCommand(_boardAsset, selectedIds, arrangeMode));
+        }
+
+        internal void AutoLayoutSelectionOrVisible()
+        {
+            List<string> targetIds = _boardAsset.Document.ViewState.SelectedNodeIds
+                .Where(id => !string.IsNullOrEmpty(id))
+                .Distinct()
+                .ToList();
+
+            if (targetIds.Count < 2)
+            {
+                targetIds = BoardInsights.GetVisibleNodes(_boardAsset.Document)
+                    .Select(node => node.Id)
+                    .Distinct()
+                    .ToList();
+            }
+
+            if (targetIds.Count < 2)
+            {
+                return;
+            }
+
+            _commandStack.Execute(new ArrangeNodesCommand(_boardAsset, targetIds, BoardArrangeMode.AutoLayoutLeftToRight));
         }
 
         internal void ToggleSnapToGrid()

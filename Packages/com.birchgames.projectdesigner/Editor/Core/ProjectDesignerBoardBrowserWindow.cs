@@ -13,6 +13,11 @@ namespace ProjectDesigner.V2.Editor
     {
         private string _searchQuery = string.Empty;
         private ProjectDesignerBoardFinderSortMode _sortMode;
+        private Label _resultCountLabel;
+        private VisualElement _quickAccessContent;
+        private VisualElement _boardListContent;
+        private ScrollView _scrollView;
+        private TextField _searchField;
 
         public static void RefreshOpenBrowsers()
         {
@@ -62,20 +67,19 @@ namespace ProjectDesigner.V2.Editor
             ProjectDesignerThemeConfig.ApplyTheme(rootVisualElement);
             rootVisualElement.Clear();
 
-            IReadOnlyList<ProjectDesignerBoardCatalogEntry> entries = GetFilteredEntries();
-
-            var scrollView = new ScrollView();
-            scrollView.AddToClassList("pd-onboarding-window");
-            rootVisualElement.Add(scrollView);
+            _scrollView = new ScrollView();
+            _scrollView.AddToClassList("pd-onboarding-window");
+            rootVisualElement.Add(_scrollView);
 
             var container = new VisualElement();
             container.AddToClassList("pd-onboarding-content");
-            scrollView.Add(container);
+            _scrollView.Add(container);
 
             container.Add(CreateHeaderCard());
-            container.Add(CreateFinderControlsCard(entries.Count));
-            container.Add(CreateQuickAccessCard(entries));
-            container.Add(CreateBoardListCard(entries));
+            container.Add(CreateFinderControlsCard());
+            container.Add(CreateQuickAccessCard());
+            container.Add(CreateBoardListCard());
+            RefreshFinderSections();
         }
 
         private IReadOnlyList<ProjectDesignerBoardCatalogEntry> GetFilteredEntries()
@@ -108,17 +112,21 @@ namespace ProjectDesigner.V2.Editor
 
             VisualElement firstRow = CreateActionRow();
             firstRow.Add(CreatePresetButton("New Board", BoardPresetIds.Empty, ProjectDesignerProductInfo.DefaultBoardName, true));
+            firstRow.Add(CreatePresetButton("Project Designer+ Redo", BoardPresetIds.ProjectDesignerRedo, ProjectDesignerProductInfo.ProjectDesignerRedoBoardName, false));
             firstRow.Add(CreatePresetButton("Solo Indie", BoardPresetIds.SoloIndie, ProjectDesignerProductInfo.SoloBoardName, false));
             firstRow.Add(CreatePresetButton("Small Team", BoardPresetIds.SmallTeam, ProjectDesignerProductInfo.SmallTeamBoardName, false));
-            firstRow.Add(CreatePresetButton("Technical Design", BoardPresetIds.TechnicalDesign, ProjectDesignerProductInfo.TechnicalBoardName, false));
             card.Add(firstRow);
 
             VisualElement secondRow = CreateActionRow();
+            secondRow.Add(CreatePresetButton("Technical Design", BoardPresetIds.TechnicalDesign, ProjectDesignerProductInfo.TechnicalBoardName, false));
             secondRow.Add(CreatePresetButton("Pitch & Vision", BoardPresetIds.PitchVision, ProjectDesignerProductInfo.PitchVisionBoardName, false));
             secondRow.Add(CreatePresetButton("Milestone Roadmap", BoardPresetIds.MilestoneRoadmap, ProjectDesignerProductInfo.MilestoneRoadmapBoardName, false));
             secondRow.Add(CreatePresetButton("Research & Reference", BoardPresetIds.ResearchReference, ProjectDesignerProductInfo.ResearchReferenceBoardName, false));
-            secondRow.Add(CreatePresetButton("Stakeholder Review", BoardPresetIds.StakeholderReview, ProjectDesignerProductInfo.StakeholderReviewBoardName, false));
             card.Add(secondRow);
+
+            VisualElement thirdRow = CreateActionRow();
+            thirdRow.Add(CreatePresetButton("Stakeholder Review", BoardPresetIds.StakeholderReview, ProjectDesignerProductInfo.StakeholderReviewBoardName, false));
+            card.Add(thirdRow);
 
             card.Add(CreateSectionLabel("Team Roster"));
             card.Add(CreateRosterPreview());
@@ -132,7 +140,7 @@ namespace ProjectDesigner.V2.Editor
             return card;
         }
 
-        private VisualElement CreateFinderControlsCard(int resultCount)
+        private VisualElement CreateFinderControlsCard()
         {
             var card = new VisualElement();
             card.AddToClassList("pd-welcome-card");
@@ -144,20 +152,23 @@ namespace ProjectDesigner.V2.Editor
             var body = new Label("Search by board name, summary, path, or board team snapshot. Sorting preference is remembered for this Unity project.");
             body.AddToClassList("pd-muted-body");
             card.Add(body);
+            card.Add(CreateMutedBodyLabel("Type your search, then press Enter to apply it."));
 
             var controlsRow = new VisualElement();
             controlsRow.AddToClassList("pd-browser-toolbar");
             card.Add(controlsRow);
 
-            var searchField = new ToolbarSearchField();
-            searchField.value = _searchQuery;
-            searchField.AddToClassList("pd-browser-search");
-            searchField.RegisterValueChangedCallback(evt =>
+            _searchField = new TextField();
+            _searchField.value = _searchQuery;
+            _searchField.label = string.Empty;
+            _searchField.isDelayed = true;
+            _searchField.AddToClassList("pd-browser-search");
+            _searchField.RegisterValueChangedCallback(evt =>
             {
                 _searchQuery = evt.newValue ?? string.Empty;
-                Rebuild();
+                RefreshFinderSections(false);
             });
-            controlsRow.Add(searchField);
+            controlsRow.Add(_searchField);
 
             List<string> sortChoices = GetSortLabels();
             var sortField = new PopupField<string>(sortChoices, GetSortLabel(_sortMode));
@@ -166,23 +177,25 @@ namespace ProjectDesigner.V2.Editor
             {
                 _sortMode = GetSortMode(evt.newValue);
                 ProjectDesignerSettings.instance.SetProjectFinderSortMode(_sortMode);
-                Rebuild();
+                RefreshFinderSections();
             });
             controlsRow.Add(sortField);
 
             controlsRow.Add(CreateActionButton("Clear Search", () =>
             {
                 _searchQuery = string.Empty;
-                Rebuild();
+                _searchField.SetValueWithoutNotify(string.Empty);
+                RefreshFinderSections(true);
             }, false));
 
-            controlsRow.Add(CreateActionButton("Refresh", Rebuild, false));
+            controlsRow.Add(CreateActionButton("Refresh", RefreshFinderSections, false));
 
-            card.Add(CreateMutedBodyLabel(resultCount + " board" + (resultCount == 1 ? string.Empty : "s") + " match the current finder view."));
+            _resultCountLabel = CreateMutedBodyLabel(string.Empty);
+            card.Add(_resultCountLabel);
             return card;
         }
 
-        private VisualElement CreateQuickAccessCard(IReadOnlyList<ProjectDesignerBoardCatalogEntry> entries)
+        private VisualElement CreateQuickAccessCard()
         {
             var card = new VisualElement();
             card.AddToClassList("pd-welcome-card");
@@ -191,43 +204,13 @@ namespace ProjectDesigner.V2.Editor
             title.AddToClassList("pd-section-title");
             card.Add(title);
 
-            List<ProjectDesignerBoardCatalogEntry> pinnedBoards = entries
-                .Where(entry => entry.IsPinned)
-                .ToList();
-            List<ProjectDesignerBoardCatalogEntry> recentBoards = entries
-                .Where(entry => entry.IsRecent && !entry.IsPinned)
-                .OrderBy(entry => entry.RecentIndex)
-                .Take(6)
-                .ToList();
-
-            if (pinnedBoards.Count == 0 && recentBoards.Count == 0)
-            {
-                card.Add(CreateMutedBodyLabel("Pin a few planning boards or open boards from this finder to build a quick-access layer."));
-                return card;
-            }
-
-            if (pinnedBoards.Count > 0)
-            {
-                card.Add(CreateSubsectionLabel("Pinned Boards"));
-                foreach (ProjectDesignerBoardCatalogEntry entry in pinnedBoards)
-                {
-                    card.Add(CreateBoardRow(entry));
-                }
-            }
-
-            if (recentBoards.Count > 0)
-            {
-                card.Add(CreateSubsectionLabel("Recently Opened"));
-                foreach (ProjectDesignerBoardCatalogEntry entry in recentBoards)
-                {
-                    card.Add(CreateBoardRow(entry));
-                }
-            }
+            _quickAccessContent = new VisualElement();
+            card.Add(_quickAccessContent);
 
             return card;
         }
 
-        private VisualElement CreateBoardListCard(IReadOnlyList<ProjectDesignerBoardCatalogEntry> entries)
+        private VisualElement CreateBoardListCard()
         {
             var card = new VisualElement();
             card.AddToClassList("pd-welcome-card");
@@ -237,17 +220,8 @@ namespace ProjectDesigner.V2.Editor
             card.Add(title);
 
             card.Add(CreateMutedBodyLabel("Boards are discovered through AssetDatabase and sorted by your current finder preference."));
-
-            if (entries.Count == 0)
-            {
-                card.Add(new Label("No planning boards match the current finder filters yet."));
-                return card;
-            }
-
-            foreach (ProjectDesignerBoardCatalogEntry entry in entries)
-            {
-                card.Add(CreateBoardRow(entry));
-            }
+            _boardListContent = new VisualElement();
+            card.Add(_boardListContent);
 
             return card;
         }
@@ -310,7 +284,7 @@ namespace ProjectDesigner.V2.Editor
             actions.Add(CreateActionButton(pinText, () =>
             {
                 ProjectDesignerSettings.instance.TogglePinnedBoard(entry.Guid);
-                Rebuild();
+                RefreshFinderSections();
             }, false));
 
             actions.Add(CreateActionButton("Select", () =>
@@ -322,7 +296,7 @@ namespace ProjectDesigner.V2.Editor
             actions.Add(CreateActionButton("Open Planner", () =>
             {
                 ProjectDesignerV2Window.Open(entry.Board);
-                Rebuild();
+                RefreshFinderSections();
             }, true));
 
             return row;
@@ -366,8 +340,124 @@ namespace ProjectDesigner.V2.Editor
             return CreateActionButton(label, () =>
             {
                 ProjectDesignerV2Menus.CreateBoard(presetId, boardName);
-                Rebuild();
+                RefreshFinderSections();
             }, primary);
+        }
+
+        private void RefreshFinderSections()
+        {
+            RefreshFinderSections(false);
+        }
+
+        private void RefreshFinderSections(bool keepSearchFocus)
+        {
+            Vector2 scrollOffset = _scrollView != null ? _scrollView.scrollOffset : Vector2.zero;
+            IReadOnlyList<ProjectDesignerBoardCatalogEntry> entries = GetFilteredEntries();
+            if (_resultCountLabel != null)
+            {
+                _resultCountLabel.text = entries.Count + " board" + (entries.Count == 1 ? string.Empty : "s") + " match the current finder view.";
+            }
+
+            RefreshQuickAccess(entries);
+            RefreshBoardList(entries);
+
+            if (_scrollView != null)
+            {
+                _scrollView.schedule.Execute(() =>
+                {
+                    _scrollView.scrollOffset = scrollOffset;
+                });
+            }
+
+            if (keepSearchFocus && _searchField != null)
+            {
+                RestoreSearchFieldFocus();
+                EditorApplication.delayCall += RestoreSearchFieldFocus;
+            }
+        }
+
+        private void RestoreSearchFieldFocus()
+        {
+            if (_searchField == null || _searchField.panel == null)
+            {
+                return;
+            }
+
+            _searchField.schedule.Execute(() =>
+            {
+                if (_searchField != null && _searchField.panel != null)
+                {
+                    _searchField.Focus();
+                    VisualElement textInput = _searchField.Q(className: "unity-text-input");
+                    if (textInput != null)
+                    {
+                        textInput.Focus();
+                    }
+                }
+            });
+        }
+
+        private void RefreshQuickAccess(IReadOnlyList<ProjectDesignerBoardCatalogEntry> entries)
+        {
+            if (_quickAccessContent == null)
+            {
+                return;
+            }
+
+            _quickAccessContent.Clear();
+
+            List<ProjectDesignerBoardCatalogEntry> pinnedBoards = entries
+                .Where(entry => entry.IsPinned)
+                .ToList();
+            List<ProjectDesignerBoardCatalogEntry> recentBoards = entries
+                .Where(entry => entry.IsRecent && !entry.IsPinned)
+                .OrderBy(entry => entry.RecentIndex)
+                .Take(6)
+                .ToList();
+
+            if (pinnedBoards.Count == 0 && recentBoards.Count == 0)
+            {
+                _quickAccessContent.Add(CreateMutedBodyLabel("Pin a few planning boards or open boards from this finder to build a quick-access layer."));
+                return;
+            }
+
+            if (pinnedBoards.Count > 0)
+            {
+                _quickAccessContent.Add(CreateSubsectionLabel("Pinned Boards"));
+                foreach (ProjectDesignerBoardCatalogEntry entry in pinnedBoards)
+                {
+                    _quickAccessContent.Add(CreateBoardRow(entry));
+                }
+            }
+
+            if (recentBoards.Count > 0)
+            {
+                _quickAccessContent.Add(CreateSubsectionLabel("Recently Opened"));
+                foreach (ProjectDesignerBoardCatalogEntry entry in recentBoards)
+                {
+                    _quickAccessContent.Add(CreateBoardRow(entry));
+                }
+            }
+        }
+
+        private void RefreshBoardList(IReadOnlyList<ProjectDesignerBoardCatalogEntry> entries)
+        {
+            if (_boardListContent == null)
+            {
+                return;
+            }
+
+            _boardListContent.Clear();
+            if (entries.Count == 0)
+            {
+                _boardListContent.Add(new Label("No planning boards match the current finder filters yet."));
+                return;
+            }
+
+            foreach (ProjectDesignerBoardCatalogEntry entry in entries)
+            {
+                _boardListContent.Add(CreateBoardRow(entry));
+            }
         }
 
         private static Button CreateActionButton(string text, Action onClick, bool primary)

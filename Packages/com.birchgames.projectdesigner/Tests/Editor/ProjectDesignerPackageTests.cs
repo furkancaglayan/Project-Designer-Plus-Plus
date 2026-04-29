@@ -273,10 +273,14 @@ namespace ProjectDesigner.V2.Tests
         [Test]
         public void BoardPresetFactory_CreatesPresetBoardsWithTemplates()
         {
+            BoardDocument redo = BoardPresetFactory.Create(BoardPresetIds.ProjectDesignerRedo, "Redo");
             BoardDocument smallTeam = BoardPresetFactory.Create(BoardPresetIds.SmallTeam, "Team");
             BoardDocument technical = BoardPresetFactory.Create(BoardPresetIds.TechnicalDesign, "Tech");
 
-            Assert.IsTrue(smallTeam.Templates.Count >= 8);
+            Assert.IsTrue(redo.Templates.Count >= 9);
+            Assert.IsTrue(redo.Nodes.OfType<ProjectBriefNodeModel>().Any());
+            Assert.IsTrue(redo.Nodes.OfType<ClassNodeModel>().Any());
+            Assert.IsTrue(redo.SavedFilters.Any(filter => filter.Name == "Launch"));
             Assert.IsTrue(smallTeam.Nodes.OfType<TaskNodeModel>().Any());
             Assert.IsTrue(smallTeam.Nodes.OfType<ReferenceNodeModel>().Any());
             Assert.IsTrue(technical.Nodes.OfType<ClassNodeModel>().Any());
@@ -469,6 +473,41 @@ namespace ProjectDesigner.V2.Tests
             float thirdX = board.Document.GetNode(third.Id).Position.x;
             Assert.Less(firstX, secondX);
             Assert.Less(secondX, thirdX);
+        }
+
+        [Test]
+        public void ArrangeNodesCommand_AutoLayoutLeftToRightRespectsPlannerEdgeSemantics()
+        {
+            ProjectBoardAsset board = ProjectBoardAsset.CreateTransient(BoardPresetFactory.CreateEmpty("Auto Layout"));
+            board.Document.ViewState.SnapToGrid = true;
+
+            var blocker = new TaskNodeModel { Title = "Blocker", Position = new Vector2(760f, 460f) };
+            var dependent = new TaskNodeModel { Title = "Dependent", Position = new Vector2(180f, 160f) };
+            var milestone = new MilestoneNodeModel { Title = "Milestone", Position = new Vector2(360f, 720f) };
+            var reference = new ReferenceNodeModel { Title = "Reference", Position = new Vector2(980f, 120f) };
+
+            board.Document.AddNode(blocker);
+            board.Document.AddNode(dependent);
+            board.Document.AddNode(milestone);
+            board.Document.AddNode(reference);
+
+            board.Document.AddEdge(new BoardEdgeModel(BoardEdgeTypeIds.Dependency, dependent.Id, blocker.Id));
+            board.Document.AddEdge(new BoardEdgeModel(BoardEdgeTypeIds.Milestone, dependent.Id, milestone.Id));
+            board.Document.AddEdge(new BoardEdgeModel(BoardEdgeTypeIds.Reference, reference.Id, blocker.Id));
+
+            new ArrangeNodesCommand(board, new[] { blocker.Id, dependent.Id, milestone.Id, reference.Id }, BoardArrangeMode.AutoLayoutLeftToRight).Execute(board);
+
+            Vector2 blockerPosition = board.Document.GetNode(blocker.Id).Position;
+            Vector2 dependentPosition = board.Document.GetNode(dependent.Id).Position;
+            Vector2 milestonePosition = board.Document.GetNode(milestone.Id).Position;
+            Vector2 referencePosition = board.Document.GetNode(reference.Id).Position;
+
+            Assert.Less(referencePosition.x, blockerPosition.x);
+            Assert.Less(blockerPosition.x, dependentPosition.x);
+            Assert.Less(dependentPosition.x, milestonePosition.x);
+            Assert.Less(Mathf.Abs(Mathf.Repeat(blockerPosition.x, ProjectDesignerProductInfo.GridSize)), 0.001f);
+            Assert.Less(Mathf.Abs(Mathf.Repeat(dependentPosition.x, ProjectDesignerProductInfo.GridSize)), 0.001f);
+            Assert.Less(Mathf.Abs(Mathf.Repeat(milestonePosition.x, ProjectDesignerProductInfo.GridSize)), 0.001f);
         }
 
         [Test]
@@ -718,23 +757,33 @@ namespace ProjectDesigner.V2.Tests
         }
 
         [Test]
-        public void Package_DeclaresStatusReportSampleAndDemoBoard()
+        public void Package_DeclaresSamplesAndDemoBoards()
         {
             string packageJsonPath = "Packages/com.birchgames.projectdesigner/package.json";
+            string showcaseReadmePath = "Packages/com.birchgames.projectdesigner/Samples~/ShowcaseBoards/README.md";
+            string showcaseBoardPath = "Packages/com.birchgames.projectdesigner/Samples~/ShowcaseBoards/Project Designer+ Redo Demo Board.asset";
             string sampleCodePath = "Packages/com.birchgames.projectdesigner/Samples~/StatusReportExtension/StatusReportExtension.cs";
             string sampleReadmePath = "Packages/com.birchgames.projectdesigner/Samples~/StatusReportExtension/README.md";
             string sampleBoardPath = "Packages/com.birchgames.projectdesigner/Samples~/StatusReportExtension/Status Report Demo Board.asset";
 
             Assert.IsTrue(File.Exists(packageJsonPath));
+            Assert.IsTrue(File.Exists(showcaseReadmePath));
+            Assert.IsTrue(File.Exists(showcaseBoardPath));
             Assert.IsTrue(File.Exists(sampleCodePath));
             Assert.IsTrue(File.Exists(sampleReadmePath));
             Assert.IsTrue(File.Exists(sampleBoardPath));
 
             string packageJson = File.ReadAllText(packageJsonPath);
+            string showcaseReadme = File.ReadAllText(showcaseReadmePath);
+            string showcaseBoard = File.ReadAllText(showcaseBoardPath);
             string sampleCode = File.ReadAllText(sampleCodePath);
             string sampleReadme = File.ReadAllText(sampleReadmePath);
             string sampleBoard = File.ReadAllText(sampleBoardPath);
 
+            StringAssert.Contains("Showcase Boards", packageJson);
+            StringAssert.Contains("Project Designer+ Redo Demo Board", showcaseReadme);
+            StringAssert.Contains("ProjectDesignerWorkspaceView", showcaseBoard);
+            StringAssert.Contains("Project Designer+ Redo Demo Board", showcaseBoard);
             StringAssert.Contains("Status Report Extension", packageJson);
             StringAssert.Contains("StatusReportNodeModel", sampleCode);
             StringAssert.Contains("StatusReportExtensionRegistration", sampleCode);

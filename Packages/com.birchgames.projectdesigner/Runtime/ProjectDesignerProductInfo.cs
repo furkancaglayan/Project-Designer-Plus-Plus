@@ -8,6 +8,7 @@ namespace ProjectDesigner.V2.Data
         public const string PlanningBoardName = "Planning Board";
         public const string PlanningBoardsName = "Planning Boards";
         public const string DefaultBoardName = "Planning Board";
+        public const string ProjectDesignerRedoBoardName = "Project Designer+ Redo Board";
         public const string SoloBoardName = "Solo Indie Board";
         public const string SmallTeamBoardName = "Small Team Board";
         public const string TechnicalBoardName = "Technical Design Board";

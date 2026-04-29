@@ -16,6 +16,7 @@ The package includes:
 - a dedicated `Project Finder` for searching, pinning, reopening, and creating boards
 - built-in planning cards for tasks, milestones, notes, references, and technical class cards
 - workflow presets for pitch, roadmap, research, and stakeholder review
+- a flagship `Project Designer+ Redo` showcase board plus richer built-in examples
 - richer showcase boards for solo, small-team, and technical planning scenarios
 - asset drag-drop importers for scripts, text assets, sprites, and textures
 - public extension hooks plus a sample extension with a demo board
@@ -40,6 +41,7 @@ The package includes:
 - New package card image with the planner and lighter board treatment
 - New cover image focused on planning, references, and saved views
 - Screenshot: `Solo Indie Board` with milestone chains, risks, and references
+- Screenshot: `Project Designer+ Redo Board` showing planner depth, launch work, and technical cards together
 - Screenshot: `Pitch & Vision Board` or `Milestone Roadmap Board` as a workflow starter
 - Screenshot: `Small Team Board` with cross-discipline planning density
 - Screenshot: asset drag-drop creating reference and class cards

@@ -147,8 +147,17 @@
 }
 
 .pd-welcome-preset,
-.pd-foldout {
+.pd-foldout,
+.pd-board-browser-card {
     background-color: rgb(34, 40, 49);
+    border-top-color: rgba(255, 255, 255, 0.08);
+    border-right-color: rgba(255, 255, 255, 0.08);
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+    border-left-color: rgba(255, 255, 255, 0.08);
+}
+
+.pd-onboarding-window .pd-board-browser-card {
+    background-color: rgb(30, 36, 44);
     border-top-color: rgba(255, 255, 255, 0.08);
     border-right-color: rgba(255, 255, 255, 0.08);
     border-bottom-color: rgba(255, 255, 255, 0.08);

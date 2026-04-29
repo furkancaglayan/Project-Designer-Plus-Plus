@@ -34,43 +34,49 @@ namespace ProjectDesigner.V2.Editor
             CreateBoard(BoardPresetIds.Empty, ProjectDesignerProductInfo.DefaultBoardName);
         }
 
-        [MenuItem("Tools/Project Designer/New Solo Indie Board", priority = -6)]
+        [MenuItem("Tools/Project Designer/New Project Designer+ Redo Board", priority = -6)]
+        public static void CreateProjectDesignerRedoBoard()
+        {
+            CreateBoard(BoardPresetIds.ProjectDesignerRedo, ProjectDesignerProductInfo.ProjectDesignerRedoBoardName);
+        }
+
+        [MenuItem("Tools/Project Designer/New Solo Indie Board", priority = -5)]
         public static void CreateSoloIndieBoard()
         {
             CreateBoard(BoardPresetIds.SoloIndie, ProjectDesignerProductInfo.SoloBoardName);
         }
 
-        [MenuItem("Tools/Project Designer/New Small Team Board", priority = -5)]
+        [MenuItem("Tools/Project Designer/New Small Team Board", priority = -4)]
         public static void CreateSmallTeamBoard()
         {
             CreateBoard(BoardPresetIds.SmallTeam, ProjectDesignerProductInfo.SmallTeamBoardName);
         }
 
-        [MenuItem("Tools/Project Designer/New Technical Design Board", priority = -4)]
+        [MenuItem("Tools/Project Designer/New Technical Design Board", priority = -3)]
         public static void CreateTechnicalDesignBoard()
         {
             CreateBoard(BoardPresetIds.TechnicalDesign, ProjectDesignerProductInfo.TechnicalBoardName);
         }
 
-        [MenuItem("Tools/Project Designer/New Pitch & Vision Board", priority = -3)]
+        [MenuItem("Tools/Project Designer/New Pitch & Vision Board", priority = -2)]
         public static void CreatePitchVisionBoard()
         {
             CreateBoard(BoardPresetIds.PitchVision, ProjectDesignerProductInfo.PitchVisionBoardName);
         }
 
-        [MenuItem("Tools/Project Designer/New Milestone Roadmap Board", priority = -2)]
+        [MenuItem("Tools/Project Designer/New Milestone Roadmap Board", priority = -1)]
         public static void CreateMilestoneRoadmapBoard()
         {
             CreateBoard(BoardPresetIds.MilestoneRoadmap, ProjectDesignerProductInfo.MilestoneRoadmapBoardName);
         }
 
-        [MenuItem("Tools/Project Designer/New Research & Reference Board", priority = -1)]
+        [MenuItem("Tools/Project Designer/New Research & Reference Board", priority = 0)]
         public static void CreateResearchReferenceBoard()
         {
             CreateBoard(BoardPresetIds.ResearchReference, ProjectDesignerProductInfo.ResearchReferenceBoardName);
         }
 
-        [MenuItem("Tools/Project Designer/New Stakeholder Review Board", priority = 0)]
+        [MenuItem("Tools/Project Designer/New Stakeholder Review Board", priority = 1)]
         public static void CreateStakeholderReviewBoard()
         {
             CreateBoard(BoardPresetIds.StakeholderReview, ProjectDesignerProductInfo.StakeholderReviewBoardName);
@@ -146,49 +152,55 @@ namespace ProjectDesigner.V2.Editor
             RunWorkspaceAction(workspace => workspace.SelectAllVisibleNodes());
         }
 
-        [MenuItem("Tools/Project Designer/Board Operations/Arrange/Align Left", priority = 25)]
+        [MenuItem("Tools/Project Designer/Board Operations/Arrange/Auto Layout Left To Right", priority = 25)]
+        public static void AutoLayoutLeftToRight()
+        {
+            RunWorkspaceAction(workspace => workspace.AutoLayoutSelectionOrVisible());
+        }
+
+        [MenuItem("Tools/Project Designer/Board Operations/Arrange/Align Left", priority = 26)]
         public static void AlignLeft()
         {
             RunWorkspaceAction(workspace => workspace.ArrangeSelection(BoardArrangeMode.AlignLeft));
         }
 
-        [MenuItem("Tools/Project Designer/Board Operations/Arrange/Align Center", priority = 26)]
+        [MenuItem("Tools/Project Designer/Board Operations/Arrange/Align Center", priority = 27)]
         public static void AlignCenter()
         {
             RunWorkspaceAction(workspace => workspace.ArrangeSelection(BoardArrangeMode.AlignCenter));
         }
 
-        [MenuItem("Tools/Project Designer/Board Operations/Arrange/Align Right", priority = 27)]
+        [MenuItem("Tools/Project Designer/Board Operations/Arrange/Align Right", priority = 28)]
         public static void AlignRight()
         {
             RunWorkspaceAction(workspace => workspace.ArrangeSelection(BoardArrangeMode.AlignRight));
         }
 
-        [MenuItem("Tools/Project Designer/Board Operations/Arrange/Align Top", priority = 28)]
+        [MenuItem("Tools/Project Designer/Board Operations/Arrange/Align Top", priority = 29)]
         public static void AlignTop()
         {
             RunWorkspaceAction(workspace => workspace.ArrangeSelection(BoardArrangeMode.AlignTop));
         }
 
-        [MenuItem("Tools/Project Designer/Board Operations/Arrange/Align Middle", priority = 29)]
+        [MenuItem("Tools/Project Designer/Board Operations/Arrange/Align Middle", priority = 30)]
         public static void AlignMiddle()
         {
             RunWorkspaceAction(workspace => workspace.ArrangeSelection(BoardArrangeMode.AlignMiddle));
         }
 
-        [MenuItem("Tools/Project Designer/Board Operations/Arrange/Align Bottom", priority = 30)]
+        [MenuItem("Tools/Project Designer/Board Operations/Arrange/Align Bottom", priority = 31)]
         public static void AlignBottom()
         {
             RunWorkspaceAction(workspace => workspace.ArrangeSelection(BoardArrangeMode.AlignBottom));
         }
 
-        [MenuItem("Tools/Project Designer/Board Operations/Arrange/Distribute Horizontal", priority = 31)]
+        [MenuItem("Tools/Project Designer/Board Operations/Arrange/Distribute Horizontal", priority = 32)]
         public static void DistributeHorizontal()
         {
             RunWorkspaceAction(workspace => workspace.ArrangeSelection(BoardArrangeMode.DistributeHorizontal));
         }
 
-        [MenuItem("Tools/Project Designer/Board Operations/Arrange/Distribute Vertical", priority = 32)]
+        [MenuItem("Tools/Project Designer/Board Operations/Arrange/Distribute Vertical", priority = 33)]
         public static void DistributeVertical()
         {
             RunWorkspaceAction(workspace => workspace.ArrangeSelection(BoardArrangeMode.DistributeVertical));
@@ -200,49 +212,55 @@ namespace ProjectDesigner.V2.Editor
             CreateBoard(BoardPresetIds.Empty, ProjectDesignerProductInfo.DefaultBoardName);
         }
 
-        [MenuItem("Assets/Create/Project Designer/Solo Indie Board", priority = 311)]
+        [MenuItem("Assets/Create/Project Designer/Project Designer+ Redo Board", priority = 311)]
+        public static void CreateProjectDesignerRedoBoardFromAssetsMenu()
+        {
+            CreateBoard(BoardPresetIds.ProjectDesignerRedo, ProjectDesignerProductInfo.ProjectDesignerRedoBoardName);
+        }
+
+        [MenuItem("Assets/Create/Project Designer/Solo Indie Board", priority = 312)]
         public static void CreateSoloIndieBoardFromAssetsMenu()
         {
             CreateBoard(BoardPresetIds.SoloIndie, ProjectDesignerProductInfo.SoloBoardName);
         }
 
-        [MenuItem("Assets/Create/Project Designer/Small Team Board", priority = 312)]
+        [MenuItem("Assets/Create/Project Designer/Small Team Board", priority = 313)]
         public static void CreateSmallTeamBoardFromAssetsMenu()
         {
             CreateBoard(BoardPresetIds.SmallTeam, ProjectDesignerProductInfo.SmallTeamBoardName);
         }
 
-        [MenuItem("Assets/Create/Project Designer/Technical Design Board", priority = 313)]
+        [MenuItem("Assets/Create/Project Designer/Technical Design Board", priority = 314)]
         public static void CreateTechnicalDesignBoardFromAssetsMenu()
         {
             CreateBoard(BoardPresetIds.TechnicalDesign, ProjectDesignerProductInfo.TechnicalBoardName);
         }
 
-        [MenuItem("Assets/Create/Project Designer/Pitch & Vision Board", priority = 314)]
+        [MenuItem("Assets/Create/Project Designer/Pitch & Vision Board", priority = 315)]
         public static void CreatePitchVisionBoardFromAssetsMenu()
         {
             CreateBoard(BoardPresetIds.PitchVision, ProjectDesignerProductInfo.PitchVisionBoardName);
         }
 
-        [MenuItem("Assets/Create/Project Designer/Milestone Roadmap Board", priority = 315)]
+        [MenuItem("Assets/Create/Project Designer/Milestone Roadmap Board", priority = 316)]
         public static void CreateMilestoneRoadmapBoardFromAssetsMenu()
         {
             CreateBoard(BoardPresetIds.MilestoneRoadmap, ProjectDesignerProductInfo.MilestoneRoadmapBoardName);
         }
 
-        [MenuItem("Assets/Create/Project Designer/Research & Reference Board", priority = 316)]
+        [MenuItem("Assets/Create/Project Designer/Research & Reference Board", priority = 317)]
         public static void CreateResearchReferenceBoardFromAssetsMenu()
         {
             CreateBoard(BoardPresetIds.ResearchReference, ProjectDesignerProductInfo.ResearchReferenceBoardName);
         }
 
-        [MenuItem("Assets/Create/Project Designer/Stakeholder Review Board", priority = 317)]
+        [MenuItem("Assets/Create/Project Designer/Stakeholder Review Board", priority = 318)]
         public static void CreateStakeholderReviewBoardFromAssetsMenu()
         {
             CreateBoard(BoardPresetIds.StakeholderReview, ProjectDesignerProductInfo.StakeholderReviewBoardName);
         }
 
-        [MenuItem("Assets/Create/Project Designer/Team Roster", priority = 318)]
+        [MenuItem("Assets/Create/Project Designer/Team Roster", priority = 319)]
         public static void CreateTeamRosterFromAssetsMenu()
         {
             ProjectDesignerTeamRosterEditorUtility.CreateAndAssignDefaultRoster();

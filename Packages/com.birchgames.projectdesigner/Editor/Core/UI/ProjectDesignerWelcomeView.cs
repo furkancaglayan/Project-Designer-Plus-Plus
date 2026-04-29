@@ -32,6 +32,7 @@ namespace ProjectDesigner.V2.Editor
             card.Add(body);
 
             card.Add(CreatePresetButton("New Empty Board", "Start light with a sticky project brief card and build your own structure from there.", BoardPresetIds.Empty, ProjectDesignerProductInfo.DefaultBoardName, createPreset));
+            card.Add(CreatePresetButton("Project Designer+ Redo Board", "Flagship showcase board for this package rewrite, including planner architecture, rollout work, docs, and launch prep.", BoardPresetIds.ProjectDesignerRedo, ProjectDesignerProductInfo.ProjectDesignerRedoBoardName, createPreset));
             card.Add(CreatePresetButton("Solo Indie Board", "A fuller showcase board with pitch framing, slice planning, references, risks, and milestone links.", BoardPresetIds.SoloIndie, ProjectDesignerProductInfo.SoloBoardName, createPreset));
             card.Add(CreatePresetButton("Small Team Board", "A denser collaborative example covering design, production, art, engineering, and stakeholder review prep.", BoardPresetIds.SmallTeam, ProjectDesignerProductInfo.SmallTeamBoardName, createPreset));
             card.Add(CreatePresetButton("Technical Design Board", "A richer technical map with multiple classes, notes, references, and explicit architecture relationships.", BoardPresetIds.TechnicalDesign, ProjectDesignerProductInfo.TechnicalBoardName, createPreset));

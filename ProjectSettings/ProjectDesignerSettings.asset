@@ -19,10 +19,11 @@ MonoBehaviour:
   _lastSeenOnboardingVersion: 2.0.0-pre.1
   _editorTheme: 1
   _defaultTeamRoster: {fileID: 11400000, guid: a485b74c24f68fa4994bd60b7d4f0106, type: 2}
-  _projectFinderSortMode: 0
+  _projectFinderSortMode: 2
   _pinnedBoardGuids:
   - 5c6ca521fd6d96e4ea11aac6afac7781
   _recentBoardGuids:
+  - 45404a3349f87e4468041348a5aa5e4c
   - 7ceac16e1b1d7af48a880e2f7abbffff
   - d488ff4ba17c0da49a5c4340f51024b6
   - 2176a6a45d2c47b43b412d25506bdffc

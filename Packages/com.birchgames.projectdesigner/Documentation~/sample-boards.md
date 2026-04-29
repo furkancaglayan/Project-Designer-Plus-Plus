@@ -15,6 +15,23 @@ Use when you want:
 - starter saved views
 - the lightest possible setup
 
+### Project Designer+ Redo
+
+Focuses on:
+
+- how this package rewrite can be planned inside the planner itself
+- launch prep, docs, showcase content, and product guardrails
+- package architecture staying visible without taking over the whole board
+- a flagship example that feels closer to a real internal planning board than a tutorial
+
+What to inspect:
+
+- milestone chains across planner core, showcase readiness, and launch readiness
+- how notes and references support real rollout work
+- technical cards staying secondary but still informative
+- how `Auto Layout Left To Right` reorganizes the board around dependency and milestone flow
+- saved views such as `Core Planner`, `Launch`, `Samples`, and `Polish`
+
 ### Solo Indie
 
 Focuses on:
@@ -104,3 +121,13 @@ That sample shows:
 - a custom inspector in the right panel
 - a sample importer path
 - how custom content can live inside the planner without changing package core code
+
+## Showcase Sample Package
+
+Import the `Showcase Boards` sample from Package Manager and open `Project Designer+ Redo Demo Board.asset`.
+
+Use that sample when you want:
+
+- one dense built-in board that demonstrates how the planner can organize a real product rewrite
+- a concrete board for screenshots, onboarding references, or team walkthroughs
+- a baseline to compare against workflow presets like `Pitch & Vision` or `Milestone Roadmap`

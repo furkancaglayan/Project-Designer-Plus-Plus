@@ -15,6 +15,7 @@ That window is the fastest way to:
 
 Pick one of these on purpose:
 
+- `Project Designer+ Redo Board` if you want one flagship board that shows how deep the planner can go
 - `Solo Indie Board` if you want to evaluate board depth quickly
 - `Small Team Board` if you need cross-discipline examples
 - `Pitch & Vision Board` if you are still defining the project story
@@ -67,6 +68,8 @@ Good first saved views:
 ## 7. Decide Whether You Need Extensions
 
 If built-in cards are close but not quite right, import the `Status Report Extension` sample and open its demo board.
+
+If you want a denser built-in example for screenshots, team onboarding, or product review, import the `Showcase Boards` sample and open `Project Designer+ Redo Demo Board.asset`.
 
 That will show the full path from:
 

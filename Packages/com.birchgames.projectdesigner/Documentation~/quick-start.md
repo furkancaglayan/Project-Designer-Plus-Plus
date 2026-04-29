@@ -19,6 +19,8 @@ Project Designer+ opens as a planning-first Unity editor package for pre-product
 
 - `New Board`
   Light starting point with a pinned `Project Brief` card.
+- `Project Designer+ Redo Board`
+  Flagship showcase board for planner architecture, rollout work, docs, and launch prep.
 - `Solo Indie Board`
   Rich showcase board for solo slice planning and references.
 - `Small Team Board`
@@ -39,7 +41,7 @@ Project Designer+ opens as a planning-first Unity editor package for pre-product
 - Left sidebar:
   add cards and jump between saved views.
 - Center board:
-  pan, zoom, drag cards, drag from `Link` on a card to create relationships, and drop Unity assets onto the planner.
+  pan, zoom, drag cards, drag from `Link` on a card to create relationships, use `Arrange > Auto Layout Left To Right` when a board gets messy, and drop Unity assets onto the planner.
 - Right inspector:
   edit the selected card or planning board details and use the manual link fallback when you need more control.
 - Bottom overview:
@@ -65,4 +67,5 @@ Sticky context card for pitch, board team snapshot, and project knowledge.
 - Drop a `TextAsset` to create a reference card.
 - Drop a `Texture2D` or `Sprite` to create a visual reference card.
 - Drop a `MonoScript` to create a class card.
+- Import the `Showcase Boards` sample if you want a ready-made dense board for screenshots and team walkthroughs.
 - Import the `Status Report Extension` sample to see how a custom importer adds a new card type.

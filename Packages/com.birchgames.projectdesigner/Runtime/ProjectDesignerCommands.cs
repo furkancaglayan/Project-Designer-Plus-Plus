@@ -304,7 +304,9 @@ namespace ProjectDesigner.V2.Data
                 .Where(node => node != null)
                 .ToList();
 
-            Dictionary<string, Vector2> positions = BoardLayoutUtility.Arrange(nodes, arrangeMode, after.ViewState.SnapToGrid);
+            Dictionary<string, Vector2> positions = arrangeMode == BoardArrangeMode.AutoLayoutLeftToRight
+                ? BoardLayoutUtility.AutoArrange(after, nodes, after.ViewState.SnapToGrid)
+                : BoardLayoutUtility.Arrange(nodes, arrangeMode, after.ViewState.SnapToGrid);
             foreach (KeyValuePair<string, Vector2> pair in positions)
             {
                 BoardNodeModel node = after.GetNode(pair.Key);

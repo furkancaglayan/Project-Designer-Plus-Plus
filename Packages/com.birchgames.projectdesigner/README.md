@@ -9,6 +9,8 @@ It ships as a UPM-friendly editor package with a custom UI Toolkit planner, type
 - Plan tasks, milestones, notes, references, project context, and technical design in one board.
 - Open a dedicated `Project Finder` to search, pin, reopen, and create boards quickly.
 - Start from showcase boards and workflow presets, not just empty templates.
+- Inspect the flagship `Project Designer+ Redo` board to see how the planner can carry a real package rewrite and launch-prep effort.
+- Use board operations like multi-select, align/distribute, and edge-aware left-to-right auto layout to clean up busy boards quickly.
 - Drag Unity assets into the planner to generate reference or class cards.
 - Extend the package with your own cards, links, inspectors, and importers.
 
@@ -20,6 +22,8 @@ It ships as a UPM-friendly editor package with a custom UI Toolkit planner, type
   UI Toolkit planner, board browser, onboarding, built-in definitions, inspectors, importers, and board tooling.
 - `Samples~/StatusReportExtension`
   Example custom card, inspector, importer, README, and demo board built on the public registry.
+- `Samples~/ShowcaseBoards`
+  Built-in demo content, including the `Project Designer+ Redo Demo Board`.
 - `Tests/Editor`
   Edit mode tests for document behavior, presets, commands, importers, board discovery, and extension registration.
 - `Documentation~`
@@ -34,6 +38,7 @@ It ships as a UPM-friendly editor package with a custom UI Toolkit planner, type
 - `Tools/Project Designer/Open Planner`
 - `Tools/Project Designer/Project Finder`
 - `Tools/Project Designer/New Board`
+- `Tools/Project Designer/New Project Designer+ Redo Board`
 - `Tools/Project Designer/New Solo Indie Board`
 - `Tools/Project Designer/New Small Team Board`
 - `Tools/Project Designer/New Technical Design Board`

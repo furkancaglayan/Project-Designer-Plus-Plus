@@ -19,6 +19,11 @@
   "documentationUrl": "https://github.com/furkancaglayan/Project-Designer-Plus-Plus/tree/main/Packages/com.birchgames.projectdesigner/Documentation~",
   "samples": [
     {
+      "displayName": "Showcase Boards",
+      "description": "Built-in showcase content, including the Project Designer+ Redo demo board for inspecting planner depth, launch prep, and package architecture in context.",
+      "path": "Samples~/ShowcaseBoards"
+    },
+    {
       "displayName": "Status Report Extension",
       "description": "A sample custom node, inspector, asset importer, and demo planning board built on top of the Project Designer+ registry.",
       "path": "Samples~/StatusReportExtension"
