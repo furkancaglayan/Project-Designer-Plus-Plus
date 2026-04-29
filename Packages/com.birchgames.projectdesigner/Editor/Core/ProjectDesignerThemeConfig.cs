@@ -13,7 +13,7 @@ namespace ProjectDesigner.V2.Editor
             ProjectDesignerPackageInfo.DarkStyleSheetPath
         };
 
-        public const ProjectDesignerThemeMode DefaultTheme = ProjectDesignerThemeMode.Light;
+        public const ProjectDesignerThemeMode DefaultTheme = ProjectDesignerThemeMode.Dark;
         public const bool SupportsDarkTheme = true;
 
         public static ProjectDesignerThemeMode ResolveTheme(ProjectDesignerThemeMode requestedTheme)

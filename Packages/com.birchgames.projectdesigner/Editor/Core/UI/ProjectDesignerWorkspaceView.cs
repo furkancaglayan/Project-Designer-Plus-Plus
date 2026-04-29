@@ -15,7 +15,7 @@ namespace ProjectDesigner.V2.Editor
         private const string LibraryExpandedSessionKey = "ProjectDesigner.V2.LibraryExpanded";
         private const string InspectorExpandedSessionKey = "ProjectDesigner.V2.InspectorExpanded";
         internal const int ToolbarTitleMaxLength = 40;
-        internal const int InspectorSummaryMaxLength = 30;
+        internal const int InspectorSummaryMaxLength = 22;
 
         private readonly ProjectBoardAsset _boardAsset;
         private readonly Action<ProjectBoardAsset> _setBoard;
@@ -232,31 +232,37 @@ namespace ProjectDesigner.V2.Editor
             if (_boardAsset.Document.SavedFilters.Count == 0)
             {
                 _savedFiltersContainer.Add(CreateMutedBodyLabel("Save the current search and category filters to jump back to a view later."));
-                return;
             }
-
-            foreach (BoardSavedFilter filter in _boardAsset.Document.SavedFilters)
+            else
             {
-                BoardSavedFilter localFilter = filter;
-                bool isActive = IsSavedViewActive(_boardAsset.Document.ViewState.ActiveFilterId, localFilter);
-                var button = new Button(() => ApplySavedFilter(localFilter))
+                foreach (BoardSavedFilter filter in _boardAsset.Document.SavedFilters)
                 {
-                    text = BuildSavedViewButtonText(localFilter.Name, isActive)
-                };
-                button.AddToClassList("pd-filter-button");
-                button.tooltip = BuildSavedViewTooltip(localFilter, isActive);
-                if (string.Equals(localFilter.Category, BoardNodeCategories.TechnicalDesign, StringComparison.Ordinal))
-                {
-                    button.AddToClassList("pd-filter-button-technical");
-                }
+                    BoardSavedFilter localFilter = filter;
+                    bool isActive = IsSavedViewActive(_boardAsset.Document.ViewState.ActiveFilterId, localFilter);
+                    var button = new Button(() => ApplySavedFilter(localFilter))
+                    {
+                        text = BuildSavedViewButtonText(localFilter.Name, isActive)
+                    };
+                    button.AddToClassList("pd-filter-button");
+                    button.tooltip = BuildSavedViewTooltip(localFilter, isActive);
+                    if (string.Equals(localFilter.Category, BoardNodeCategories.TechnicalDesign, StringComparison.Ordinal))
+                    {
+                        button.AddToClassList("pd-filter-button-technical");
+                    }
 
-                if (isActive)
-                {
-                    button.AddToClassList("pd-filter-button-active");
-                }
+                    if (isActive)
+                    {
+                        button.AddToClassList("pd-filter-button-active");
+                    }
 
-                _savedFiltersContainer.Add(button);
+                    _savedFiltersContainer.Add(button);
+                }
             }
+
+            Button clearViewButton = CreateLibraryActionButton("Clear View", ClearCurrentFilter);
+            clearViewButton.tooltip = "Reset the active saved view, search, category, and quick filters.";
+            clearViewButton.SetEnabled(CanClearCurrentFilter());
+            _savedFiltersContainer.Add(clearViewButton);
         }
 
         private void RefreshInspector()
@@ -706,6 +712,15 @@ namespace ProjectDesigner.V2.Editor
             RefreshAll();
         }
 
+        private bool CanClearCurrentFilter()
+        {
+            BoardViewState viewState = _boardAsset.Document.ViewState;
+            return !string.IsNullOrWhiteSpace(viewState.ActiveFilterId) ||
+                   !string.IsNullOrWhiteSpace(viewState.SearchQuery) ||
+                   !string.Equals(viewState.Category, BoardNodeCategories.All, StringComparison.Ordinal) ||
+                   !string.IsNullOrWhiteSpace(viewState.QuickFilterId);
+        }
+
         private void ReplaceBoardWithTemplate(BoardTemplateDefinition template)
         {
             _boardAsset.ResetDocument(BoardPresetFactory.Create(template.Id, _boardAsset.Document.BoardName));
@@ -795,10 +810,21 @@ namespace ProjectDesigner.V2.Editor
 
         private static Label CreateActiveViewLabel(string activeViewName)
         {
-            var label = new Label("Active View: " + activeViewName);
+            string safeName = string.IsNullOrWhiteSpace(activeViewName) ? "Saved View" : activeViewName.Trim();
+            var label = new Label("Active View: " + safeName);
             label.AddToClassList("pd-filter-active-label");
-            label.tooltip = activeViewName;
+            label.tooltip = safeName;
             return label;
+        }
+
+        private static Button CreateLibraryActionButton(string text, Action onClick)
+        {
+            var button = new Button(onClick)
+            {
+                text = text
+            };
+            button.AddToClassList("pd-secondary-button");
+            return button;
         }
 
         private VisualElement CreateLibraryGroup(IGrouping<string, IProjectDesignerNodeDefinition> group)
@@ -1028,7 +1054,7 @@ namespace ProjectDesigner.V2.Editor
         internal static string BuildSavedViewButtonText(string filterName, bool isActive)
         {
             string name = string.IsNullOrWhiteSpace(filterName) ? "Saved View" : filterName.Trim();
-            return isActive ? "Active  " + name : name;
+            return name;
         }
 
         private static string BuildSavedViewTooltip(BoardSavedFilter filter, bool isActive)

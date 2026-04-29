@@ -185,11 +185,6 @@ namespace ProjectDesigner.V2.BuiltIn
                 return string.Empty;
             }
 
-            if (!string.IsNullOrWhiteSpace(reference.Summary))
-            {
-                return reference.Summary.Trim();
-            }
-
             if (!string.IsNullOrWhiteSpace(reference.AssetPath))
             {
                 return "Unity asset: " + Path.GetFileName(reference.AssetPath);
@@ -211,6 +206,11 @@ namespace ProjectDesigner.V2.BuiltIn
             if (!string.IsNullOrWhiteSpace(reference.TextReference))
             {
                 return reference.TextReference.Trim();
+            }
+
+            if (!string.IsNullOrWhiteSpace(reference.Summary))
+            {
+                return reference.Summary.Trim();
             }
 
             return string.Empty;

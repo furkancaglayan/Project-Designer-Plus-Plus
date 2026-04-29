@@ -158,6 +158,8 @@ There are now two doc audiences:
   user-facing guidance
 - this guide in `Assets`
   maintainer-facing architecture and workflow notes
+- `Project Designer+ Future Work and Ideas.md` in `Assets`
+  maintainer-facing backlog and post-release idea bank
 
 If you change the product shape, update both sides when needed:
 

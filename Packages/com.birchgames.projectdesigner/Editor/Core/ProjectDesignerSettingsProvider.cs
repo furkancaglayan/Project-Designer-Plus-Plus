@@ -114,7 +114,7 @@ namespace ProjectDesigner.V2.Editor
             }
             EditorGUILayout.HelpBox(
                 ProjectDesignerThemeConfig.SupportsDarkTheme
-                    ? "Light is the default. Dark is available as an optional editor theme."
+                    ? "Dark is the default. Light is available as an optional editor theme."
                     : "The package is currently locked to light mode.",
                 MessageType.None);
 

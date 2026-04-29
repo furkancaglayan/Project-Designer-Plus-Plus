@@ -834,7 +834,7 @@ namespace ProjectDesigner.V2.Tests
 
             Assert.IsTrue(ProjectDesignerWorkspaceView.IsSavedViewActive(activeFilter.Id, activeFilter));
             Assert.IsFalse(ProjectDesignerWorkspaceView.IsSavedViewActive(activeFilter.Id, inactiveFilter));
-            Assert.AreEqual("Active  Planning", ProjectDesignerWorkspaceView.BuildSavedViewButtonText(activeFilter.Name, true));
+            Assert.AreEqual("Planning", ProjectDesignerWorkspaceView.BuildSavedViewButtonText(activeFilter.Name, true));
             Assert.AreEqual("References", ProjectDesignerWorkspaceView.BuildSavedViewButtonText(inactiveFilter.Name, false));
         }
 
