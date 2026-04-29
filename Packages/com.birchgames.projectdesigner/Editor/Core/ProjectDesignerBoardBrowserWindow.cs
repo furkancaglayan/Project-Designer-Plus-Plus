@@ -99,41 +99,27 @@ namespace ProjectDesigner.V2.Editor
             eyebrow.AddToClassList("pd-welcome-eyebrow");
             card.Add(eyebrow);
 
-            var title = new Label("Open the right planning board fast");
+            var title = new Label("Find current planning boards fast");
             title.AddToClassList("pd-welcome-title");
             card.Add(title);
 
-            var body = new Label("Search across boards, pin the ones you revisit most, jump back into recent work, or start a fresh planning board from a workflow preset.");
+            var body = new Label("Use Project Finder to search across existing boards, pin the ones you revisit most, and jump back into recent work without hunting through the Project window.");
             body.AddToClassList("pd-welcome-body");
             card.Add(body);
 
-            card.Add(CreateSectionLabel("Quick Create"));
-            card.Add(CreateMutedBodyLabel("Start with a light board or jump directly into one of the stronger workflow presets."));
+            card.Add(CreateSectionLabel("Use Onboarding For New Boards"));
+            card.Add(CreateMutedBodyLabel("When you want a fresh board from a template, open Onboarding instead. That surface is now responsible for starter templates and first-use guidance."));
 
-            VisualElement firstRow = CreateActionRow();
-            firstRow.Add(CreatePresetButton("New Board", BoardPresetIds.Empty, ProjectDesignerProductInfo.DefaultBoardName, true));
-            firstRow.Add(CreatePresetButton("Project Designer+ Redo", BoardPresetIds.ProjectDesignerRedo, ProjectDesignerProductInfo.ProjectDesignerRedoBoardName, false));
-            firstRow.Add(CreatePresetButton("Solo Indie", BoardPresetIds.SoloIndie, ProjectDesignerProductInfo.SoloBoardName, false));
-            firstRow.Add(CreatePresetButton("Small Team", BoardPresetIds.SmallTeam, ProjectDesignerProductInfo.SmallTeamBoardName, false));
-            card.Add(firstRow);
-
-            VisualElement secondRow = CreateActionRow();
-            secondRow.Add(CreatePresetButton("Pitch & Vision", BoardPresetIds.PitchVision, ProjectDesignerProductInfo.PitchVisionBoardName, false));
-            secondRow.Add(CreatePresetButton("Milestone Roadmap", BoardPresetIds.MilestoneRoadmap, ProjectDesignerProductInfo.MilestoneRoadmapBoardName, false));
-            secondRow.Add(CreatePresetButton("Research & Reference", BoardPresetIds.ResearchReference, ProjectDesignerProductInfo.ResearchReferenceBoardName, false));
-            secondRow.Add(CreatePresetButton("Stakeholder Review", BoardPresetIds.StakeholderReview, ProjectDesignerProductInfo.StakeholderReviewBoardName, false));
-            card.Add(secondRow);
-
-            VisualElement thirdRow = CreateActionRow();
-            thirdRow.Add(CreatePresetButton("Technical Design", BoardPresetIds.TechnicalDesign, ProjectDesignerProductInfo.TechnicalBoardName, false));
-            card.Add(thirdRow);
+            VisualElement setupActions = CreateActionRow();
+            setupActions.Add(CreateActionButton("Open Onboarding", ProjectDesignerOnboardingWindow.Open, true));
+            setupActions.Add(CreateActionButton("Quick Start", ProjectDesignerV2Menus.OpenQuickStartGuide, false));
+            setupActions.Add(CreateActionButton("Project Settings", ProjectDesignerV2Menus.OpenProjectSettings, false));
+            card.Add(setupActions);
 
             card.Add(CreateSectionLabel("Team Roster"));
             card.Add(CreateRosterPreview());
 
             VisualElement actions = CreateActionRow();
-            actions.Add(CreateActionButton("Quick Start", ProjectDesignerV2Menus.OpenQuickStartGuide, false));
-            actions.Add(CreateActionButton("Project Settings", ProjectDesignerV2Menus.OpenProjectSettings, false));
             actions.Add(CreateActionButton("Open Team Roster", ProjectDesignerV2Menus.OpenTeamRoster, false));
             card.Add(actions);
 
@@ -333,15 +319,6 @@ namespace ProjectDesigner.V2.Editor
 
             container.Add(CreateMutedBodyLabel(preview));
             return container;
-        }
-
-        private Button CreatePresetButton(string label, string presetId, string boardName, bool primary)
-        {
-            return CreateActionButton(label, () =>
-            {
-                ProjectDesignerV2Menus.CreateBoard(presetId, boardName);
-                RefreshFinderSections();
-            }, primary);
         }
 
         private void RefreshFinderSections()

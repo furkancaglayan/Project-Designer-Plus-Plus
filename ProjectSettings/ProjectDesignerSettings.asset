@@ -18,7 +18,7 @@ MonoBehaviour:
   _defaultBoardFolder: Assets/Project Designer
   _lastSeenOnboardingVersion: 2.0.0-pre.1
   _editorTheme: 1
-  _defaultTeamRoster: {fileID: 11400000, guid: a485b74c24f68fa4994bd60b7d4f0106, type: 2}
+  _defaultTeamRoster: {fileID: 0}
   _projectFinderSortMode: 1
   _pinnedBoardGuids:
   - 5c6ca521fd6d96e4ea11aac6afac7781

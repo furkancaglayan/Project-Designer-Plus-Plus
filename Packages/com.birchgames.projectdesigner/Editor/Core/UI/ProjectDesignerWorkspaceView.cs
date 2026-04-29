@@ -12,18 +12,30 @@ namespace ProjectDesigner.V2.Editor
 {
     internal sealed class ProjectDesignerWorkspaceView : VisualElement
     {
+        private const string LibraryExpandedSessionKey = "ProjectDesigner.V2.LibraryExpanded";
+        private const string InspectorExpandedSessionKey = "ProjectDesigner.V2.InspectorExpanded";
+        internal const int ToolbarTitleMaxLength = 40;
+        internal const int InspectorSummaryMaxLength = 30;
+
         private readonly ProjectBoardAsset _boardAsset;
         private readonly Action<ProjectBoardAsset> _setBoard;
         private readonly ProjectDesignerCommandStack _commandStack;
         private readonly BoardCanvasView _canvasView;
+        private readonly VisualElement _libraryPanel;
         private readonly ScrollView _libraryView;
+        private readonly Label _librarySummaryLabel;
+        private readonly Button _libraryToggleButton;
+        private readonly VisualElement _inspectorPanel;
         private readonly ScrollView _inspectorView;
+        private readonly Label _inspectorSummaryLabel;
+        private readonly Button _inspectorToggleButton;
         private readonly VisualElement _savedFiltersContainer;
         private readonly ProjectDesignerOverviewView _overviewView;
         private readonly ToolbarSearchField _searchField;
         private readonly PopupField<string> _categoryField;
-        private readonly ToolbarButton _snapButton;
         private Label _toolbarTitle;
+        private bool _libraryExpanded;
+        private bool _inspectorExpanded;
         private int _createSequence;
 
         public ProjectDesignerWorkspaceView(ProjectBoardAsset boardAsset, Action<ProjectBoardAsset> setBoard)
@@ -34,7 +46,8 @@ namespace ProjectDesigner.V2.Editor
             ProjectDesignerBuiltInRegistration.Register();
             _commandStack = new ProjectDesignerCommandStack(_boardAsset, PersistBoard);
             _commandStack.Changed += RefreshAll;
-            _snapButton = CreateToolbarButton("Snap Off", ToggleSnapToGrid);
+            _libraryExpanded = SessionState.GetBool(LibraryExpandedSessionKey, true);
+            _inspectorExpanded = SessionState.GetBool(InspectorExpandedSessionKey, false);
 
             AddToClassList("pd-workspace");
 
@@ -45,9 +58,29 @@ namespace ProjectDesigner.V2.Editor
             body.AddToClassList("pd-workspace-body");
             Add(body);
 
+            _libraryPanel = new VisualElement();
+            _libraryPanel.AddToClassList("pd-sidebar-panel");
+            body.Add(_libraryPanel);
+
+            var libraryHeader = new VisualElement();
+            libraryHeader.AddToClassList("pd-sidebar-header");
+            _libraryPanel.Add(libraryHeader);
+
+            var libraryTitle = new Label("Library");
+            libraryTitle.AddToClassList("pd-sidebar-header-title");
+            libraryHeader.Add(libraryTitle);
+
+            _librarySummaryLabel = new Label();
+            _librarySummaryLabel.AddToClassList("pd-sidebar-summary");
+            libraryHeader.Add(_librarySummaryLabel);
+
+            _libraryToggleButton = new Button(() => ToggleLibraryExpanded(true));
+            _libraryToggleButton.AddToClassList("pd-sidebar-toggle");
+            libraryHeader.Add(_libraryToggleButton);
+
             _libraryView = new ScrollView();
             _libraryView.AddToClassList("pd-sidebar");
-            body.Add(_libraryView);
+            _libraryPanel.Add(_libraryView);
 
             var centerColumn = new VisualElement();
             centerColumn.AddToClassList("pd-center-column");
@@ -55,14 +88,35 @@ namespace ProjectDesigner.V2.Editor
 
             _canvasView = new BoardCanvasView(_boardAsset, _commandStack);
             _canvasView.SelectionChanged += OnSelectionChanged;
+            _canvasView.AddManipulator(new ContextualMenuManipulator(BuildCanvasContextMenu));
             centerColumn.Add(_canvasView);
 
             _overviewView = new ProjectDesignerOverviewView(ToggleQuickFilter);
             centerColumn.Add(_overviewView);
 
+            _inspectorPanel = new VisualElement();
+            _inspectorPanel.AddToClassList("pd-inspector-panel");
+            body.Add(_inspectorPanel);
+
+            var inspectorHeader = new VisualElement();
+            inspectorHeader.AddToClassList("pd-inspector-header");
+            _inspectorPanel.Add(inspectorHeader);
+
+            var inspectorTitle = new Label("Details");
+            inspectorTitle.AddToClassList("pd-inspector-header-title");
+            inspectorHeader.Add(inspectorTitle);
+
+            _inspectorSummaryLabel = new Label("Board");
+            _inspectorSummaryLabel.AddToClassList("pd-inspector-summary");
+            inspectorHeader.Add(_inspectorSummaryLabel);
+
+            _inspectorToggleButton = new Button(() => ToggleInspectorExpanded(true));
+            _inspectorToggleButton.AddToClassList("pd-inspector-toggle");
+            inspectorHeader.Add(_inspectorToggleButton);
+
             _inspectorView = new ScrollView();
             _inspectorView.AddToClassList("pd-inspector");
-            body.Add(_inspectorView);
+            _inspectorPanel.Add(_inspectorView);
 
             _savedFiltersContainer = new VisualElement();
             _savedFiltersContainer.AddToClassList("pd-filter-list");
@@ -127,23 +181,15 @@ namespace ProjectDesigner.V2.Editor
             _toolbarTitle.AddToClassList("pd-toolbar-title");
             toolbar.Add(_toolbarTitle);
 
-            toolbar.Add(CreateToolbarButton("Undo", () => _commandStack.Undo()));
-            toolbar.Add(CreateToolbarButton("Redo", () => _commandStack.Redo()));
-            toolbar.Add(CreateToolbarButton("Duplicate", DuplicateSelection));
-            toolbar.Add(CreateToolbarButton("Frame Sel", FrameSelection));
-            toolbar.Add(CreateToolbarButton("Delete", DeleteSelectedNode));
             toolbar.Add(CreateArrangeMenu());
-            toolbar.Add(_snapButton);
-            toolbar.Add(CreateToolbarButton("Save View", SaveCurrentFilter));
-            toolbar.Add(CreateToolbarButton("Clear View", ClearCurrentFilter));
             toolbar.Add(CreateToolbarButton("All Boards", () => _setBoard(null)));
             return toolbar;
         }
 
         private void RefreshAll()
         {
-            _toolbarTitle.text = _boardAsset.Document.BoardName;
-            _snapButton.text = _boardAsset.Document.ViewState.SnapToGrid ? "Snap On" : "Snap Off";
+            _toolbarTitle.text = BuildToolbarTitle(_boardAsset.Document.BoardName);
+            _toolbarTitle.tooltip = _boardAsset.Document.BoardName;
             RefreshLibrary();
             RefreshInspector();
             _canvasView.Refresh();
@@ -152,10 +198,20 @@ namespace ProjectDesigner.V2.Editor
 
         private void RefreshLibrary()
         {
+            UpdateLibraryPanelState();
+
+            if (!_libraryExpanded)
+            {
+                _libraryView.Clear();
+                _libraryView.style.display = DisplayStyle.None;
+                return;
+            }
+
+            _libraryView.style.display = DisplayStyle.Flex;
             _libraryView.Clear();
 
             _libraryView.Add(CreateSectionLabel("Add Cards"));
-            _libraryView.Add(CreateMutedBodyLabel("Start with planning cards, add references as you gather material, and only dip into technical design when you need it."));
+            _libraryView.Add(CreateMutedBodyLabel("Start with planning cards. Add references as you gather material."));
 
             foreach (IGrouping<string, IProjectDesignerNodeDefinition> group in ProjectDesignerRegistry.GetNodeDefinitions().GroupBy(definition => definition.Category))
             {
@@ -163,6 +219,13 @@ namespace ProjectDesigner.V2.Editor
             }
 
             _libraryView.Add(CreateSectionLabel("Saved Views"));
+
+            BoardSavedFilter activeSavedFilter = GetActiveSavedFilter();
+            if (activeSavedFilter != null)
+            {
+                _libraryView.Add(CreateActiveViewLabel(activeSavedFilter.Name));
+            }
+
             _libraryView.Add(_savedFiltersContainer);
             _savedFiltersContainer.Clear();
 
@@ -175,14 +238,21 @@ namespace ProjectDesigner.V2.Editor
             foreach (BoardSavedFilter filter in _boardAsset.Document.SavedFilters)
             {
                 BoardSavedFilter localFilter = filter;
+                bool isActive = IsSavedViewActive(_boardAsset.Document.ViewState.ActiveFilterId, localFilter);
                 var button = new Button(() => ApplySavedFilter(localFilter))
                 {
-                    text = localFilter.Name
+                    text = BuildSavedViewButtonText(localFilter.Name, isActive)
                 };
                 button.AddToClassList("pd-filter-button");
+                button.tooltip = BuildSavedViewTooltip(localFilter, isActive);
                 if (string.Equals(localFilter.Category, BoardNodeCategories.TechnicalDesign, StringComparison.Ordinal))
                 {
                     button.AddToClassList("pd-filter-button-technical");
+                }
+
+                if (isActive)
+                {
+                    button.AddToClassList("pd-filter-button-active");
                 }
 
                 _savedFiltersContainer.Add(button);
@@ -194,6 +264,15 @@ namespace ProjectDesigner.V2.Editor
             _inspectorView.Clear();
 
             List<BoardNodeModel> selectedNodes = GetSelectedNodes();
+            UpdateInspectorPanelState(selectedNodes);
+
+            if (!_inspectorExpanded)
+            {
+                _inspectorView.style.display = DisplayStyle.None;
+                return;
+            }
+
+            _inspectorView.style.display = DisplayStyle.Flex;
             if (selectedNodes.Count == 0)
             {
                 BuildBoardInspector();
@@ -443,11 +522,127 @@ namespace ProjectDesigner.V2.Editor
             _canvasView.RefreshSelection();
         }
 
+        private void CreateNodeAtPosition(IProjectDesignerNodeDefinition definition, Vector2 boardPosition)
+        {
+            if (definition == null)
+            {
+                return;
+            }
+
+            Vector2 spawnPosition = _boardAsset.Document.ViewState.SnapToGrid
+                ? BoardLayoutUtility.SnapPosition(boardPosition)
+                : boardPosition;
+            BoardNodeModel node = definition.CreateDefaultNode(spawnPosition);
+            _commandStack.Execute(new CreateNodeCommand(_boardAsset, node));
+            _boardAsset.Document.ViewState.SelectSingle(node.Id);
+            PersistBoard();
+            RefreshInspector();
+            _canvasView.RefreshSelection();
+        }
+
         private void OnSelectionChanged()
         {
             PersistBoard();
             RefreshInspector();
             _canvasView.RefreshSelection();
+        }
+
+        private void UpdateInspectorPanelState(List<BoardNodeModel> selectedNodes)
+        {
+            string expandedSummary = BuildFullInspectorSummary(selectedNodes);
+            _inspectorSummaryLabel.text = BuildInspectorSummaryLabel(_inspectorExpanded, selectedNodes);
+            _inspectorSummaryLabel.tooltip = _inspectorExpanded ? expandedSummary : "Details panel";
+            _inspectorPanel.EnableInClassList("pd-inspector-panel-collapsed", !_inspectorExpanded);
+            _inspectorToggleButton.text = _inspectorExpanded ? "Hide" : "Show";
+        }
+
+        private void ToggleInspectorExpanded(bool persist)
+        {
+            SetInspectorExpanded(!_inspectorExpanded, persist);
+            RefreshInspector();
+        }
+
+        private void SetInspectorExpanded(bool expanded, bool persist)
+        {
+            _inspectorExpanded = expanded;
+            if (persist)
+            {
+                SessionState.SetBool(InspectorExpandedSessionKey, expanded);
+            }
+        }
+
+        private static string BuildInspectorSummary(List<BoardNodeModel> selectedNodes)
+        {
+            return TruncateShellLabel(BuildFullInspectorSummary(selectedNodes), InspectorSummaryMaxLength);
+        }
+
+        private static string BuildFullInspectorSummary(List<BoardNodeModel> selectedNodes)
+        {
+            if (selectedNodes == null || selectedNodes.Count == 0)
+            {
+                return "Board";
+            }
+
+            if (selectedNodes.Count == 1)
+            {
+                return selectedNodes[0].Title;
+            }
+
+            return selectedNodes.Count + " cards";
+        }
+
+        private void UpdateLibraryPanelState()
+        {
+            _librarySummaryLabel.text = BuildLibrarySummaryLabel(_libraryExpanded);
+            _librarySummaryLabel.tooltip = _libraryExpanded ? "Add cards and saved views" : "Library";
+            _libraryPanel.EnableInClassList("pd-sidebar-panel-collapsed", !_libraryExpanded);
+            _libraryToggleButton.text = _libraryExpanded ? "Hide" : "Show";
+        }
+
+        private void ToggleLibraryExpanded(bool persist)
+        {
+            _libraryExpanded = !_libraryExpanded;
+            if (persist)
+            {
+                SessionState.SetBool(LibraryExpandedSessionKey, _libraryExpanded);
+            }
+
+            RefreshLibrary();
+        }
+
+        internal void ToggleLibraryPanel()
+        {
+            ToggleLibraryExpanded(true);
+        }
+
+        internal void ToggleDetailsPanel()
+        {
+            ToggleInspectorExpanded(true);
+        }
+
+        internal void UndoAction()
+        {
+            _commandStack.Undo();
+        }
+
+        internal void RedoAction()
+        {
+            _commandStack.Redo();
+        }
+
+        internal void SaveCurrentView()
+        {
+            SaveCurrentFilter();
+        }
+
+        internal void ClearCurrentView()
+        {
+            ClearCurrentFilter();
+        }
+
+        internal void FrameAll()
+        {
+            _canvasView.FrameAll();
         }
 
         internal void DeleteSelectedNode()
@@ -598,6 +793,14 @@ namespace ProjectDesigner.V2.Editor
             return label;
         }
 
+        private static Label CreateActiveViewLabel(string activeViewName)
+        {
+            var label = new Label("Active View: " + activeViewName);
+            label.AddToClassList("pd-filter-active-label");
+            label.tooltip = activeViewName;
+            return label;
+        }
+
         private VisualElement CreateLibraryGroup(IGrouping<string, IProjectDesignerNodeDefinition> group)
         {
             bool defaultOpen = group.Key != BoardNodeCategories.TechnicalDesign;
@@ -690,6 +893,202 @@ namespace ProjectDesigner.V2.Editor
             menu.menu.AppendSeparator();
             menu.menu.AppendAction("Frame All", _ => _canvasView.FrameAll());
             return menu;
+        }
+
+        private void BuildCanvasContextMenu(ContextualMenuPopulateEvent evt)
+        {
+            string nodeId = _canvasView.GetNodeIdFromTarget(evt.target);
+            if (!string.IsNullOrEmpty(nodeId))
+            {
+                EnsureContextNodeSelection(nodeId);
+                PopulateNodeContextMenu(evt.menu);
+                return;
+            }
+
+            PopulateCanvasContextMenu(evt.menu, _canvasView.GetBoardPositionFromCanvas(evt.localMousePosition));
+        }
+
+        private void EnsureContextNodeSelection(string nodeId)
+        {
+            if (string.IsNullOrEmpty(nodeId))
+            {
+                return;
+            }
+
+            if (_boardAsset.Document.ViewState.SelectedNodeIds.Contains(nodeId))
+            {
+                return;
+            }
+
+            _boardAsset.Document.ViewState.SelectSingle(nodeId);
+            PersistBoard();
+            RefreshInspector();
+            _canvasView.RefreshSelection();
+        }
+
+        private void PopulateNodeContextMenu(DropdownMenu menu)
+        {
+            AppendAction(menu, "Duplicate", _ => DuplicateSelection(), HasSelection());
+            AppendAction(menu, "Delete", _ => DeleteSelectedNode(), HasSelection());
+            AppendAction(menu, "Frame Selection", _ => FrameSelection(), HasSelection());
+            menu.AppendSeparator();
+            AppendAction(menu, "Arrange/Auto Layout Left To Right", _ => AutoLayoutSelectionOrVisible(), HasSelection());
+            AppendArrangeActions(menu, GetSelectedNodes().Count > 1);
+            menu.AppendSeparator();
+            AppendAction(menu, _libraryExpanded ? "Hide Library" : "Show Library", _ => ToggleLibraryExpanded(true), true);
+            AppendAction(menu, _inspectorExpanded ? "Hide Details" : "Show Details", _ => ToggleInspectorExpanded(true), true);
+        }
+
+        private void PopulateCanvasContextMenu(DropdownMenu menu, Vector2 boardPosition)
+        {
+            foreach (IGrouping<string, IProjectDesignerNodeDefinition> group in ProjectDesignerRegistry.GetNodeDefinitions()
+                         .OrderBy(definition => GetCategorySortOrder(definition.Category))
+                         .ThenBy(definition => definition.DisplayName)
+                         .GroupBy(definition => definition.Category))
+            {
+                foreach (IProjectDesignerNodeDefinition definition in group)
+                {
+                    IProjectDesignerNodeDefinition localDefinition = definition;
+                    AppendAction(menu,
+                        "Add Card/" + group.Key + "/" + localDefinition.DisplayName,
+                        _ => CreateNodeAtPosition(localDefinition, boardPosition),
+                        true);
+                }
+            }
+
+            menu.AppendSeparator();
+            AppendAction(menu, "Undo", _ => _commandStack.Undo(), _commandStack.CanUndo);
+            AppendAction(menu, "Redo", _ => _commandStack.Redo(), _commandStack.CanRedo);
+            AppendAction(menu, "Select All Visible", _ => SelectAllVisibleNodes(), true);
+            AppendAction(menu, "Frame All", _ => _canvasView.FrameAll(), true);
+            AppendAction(menu, "Arrange/Auto Layout Left To Right", _ => AutoLayoutSelectionOrVisible(), _boardAsset.Document.Nodes.Count > 1);
+            AppendAction(menu,
+                _boardAsset.Document.ViewState.SnapToGrid ? "Snap To Grid/Turn Off" : "Snap To Grid/Turn On",
+                _ => ToggleSnapToGrid(),
+                true);
+            menu.AppendSeparator();
+            AppendAction(menu, "Save View", _ => SaveCurrentFilter(), true);
+            AppendAction(menu, "Clear View", _ => ClearCurrentFilter(), true);
+            AppendAction(menu, _libraryExpanded ? "Hide Library" : "Show Library", _ => ToggleLibraryExpanded(true), true);
+            AppendAction(menu, _inspectorExpanded ? "Hide Details" : "Show Details", _ => ToggleInspectorExpanded(true), true);
+        }
+
+        private void AppendArrangeActions(DropdownMenu menu, bool enabled)
+        {
+            AppendAction(menu, "Arrange/Align Left", _ => ArrangeSelection(BoardArrangeMode.AlignLeft), enabled);
+            AppendAction(menu, "Arrange/Align Center", _ => ArrangeSelection(BoardArrangeMode.AlignCenter), enabled);
+            AppendAction(menu, "Arrange/Align Right", _ => ArrangeSelection(BoardArrangeMode.AlignRight), enabled);
+            AppendAction(menu, "Arrange/Align Top", _ => ArrangeSelection(BoardArrangeMode.AlignTop), enabled);
+            AppendAction(menu, "Arrange/Align Middle", _ => ArrangeSelection(BoardArrangeMode.AlignMiddle), enabled);
+            AppendAction(menu, "Arrange/Align Bottom", _ => ArrangeSelection(BoardArrangeMode.AlignBottom), enabled);
+            AppendAction(menu, "Arrange/Distribute Horizontal", _ => ArrangeSelection(BoardArrangeMode.DistributeHorizontal), enabled);
+            AppendAction(menu, "Arrange/Distribute Vertical", _ => ArrangeSelection(BoardArrangeMode.DistributeVertical), enabled);
+        }
+
+        private static void AppendAction(DropdownMenu menu, string path, Action<DropdownMenuAction> action, bool enabled)
+        {
+            menu.AppendAction(
+                path,
+                action,
+                _ => enabled ? DropdownMenuAction.Status.Normal : DropdownMenuAction.Status.Disabled);
+        }
+
+        private static int GetCategorySortOrder(string category)
+        {
+            if (string.Equals(category, BoardNodeCategories.Planning, StringComparison.Ordinal))
+            {
+                return 0;
+            }
+
+            if (string.Equals(category, BoardNodeCategories.Reference, StringComparison.Ordinal))
+            {
+                return 1;
+            }
+
+            if (string.Equals(category, BoardNodeCategories.TechnicalDesign, StringComparison.Ordinal))
+            {
+                return 2;
+            }
+
+            return 3;
+        }
+
+        internal static string BuildToolbarTitle(string boardName)
+        {
+            return TruncateShellLabel(string.IsNullOrWhiteSpace(boardName) ? "Planning Board" : boardName, ToolbarTitleMaxLength);
+        }
+
+        internal static bool IsSavedViewActive(string activeFilterId, BoardSavedFilter filter)
+        {
+            return filter != null &&
+                   !string.IsNullOrWhiteSpace(activeFilterId) &&
+                   string.Equals(activeFilterId, filter.Id, StringComparison.Ordinal);
+        }
+
+        internal static string BuildSavedViewButtonText(string filterName, bool isActive)
+        {
+            string name = string.IsNullOrWhiteSpace(filterName) ? "Saved View" : filterName.Trim();
+            return isActive ? "Active  " + name : name;
+        }
+
+        private static string BuildSavedViewTooltip(BoardSavedFilter filter, bool isActive)
+        {
+            if (filter == null)
+            {
+                return string.Empty;
+            }
+
+            string tooltip = filter.Name;
+            if (!string.IsNullOrWhiteSpace(filter.SearchQuery))
+            {
+                tooltip += "\nSearch: " + filter.SearchQuery;
+            }
+
+            if (!string.IsNullOrWhiteSpace(filter.Category) &&
+                !string.Equals(filter.Category, BoardNodeCategories.All, StringComparison.Ordinal))
+            {
+                tooltip += "\nCategory: " + filter.Category;
+            }
+
+            if (isActive)
+            {
+                tooltip += "\nCurrently applied";
+            }
+
+            return tooltip;
+        }
+
+        internal static string BuildInspectorSummaryLabel(bool expanded, List<BoardNodeModel> selectedNodes)
+        {
+            return expanded ? BuildInspectorSummary(selectedNodes) : string.Empty;
+        }
+
+        internal static string BuildLibrarySummaryLabel(bool expanded)
+        {
+            return expanded ? "Add cards and views" : string.Empty;
+        }
+
+        internal static string TruncateShellLabel(string text, int maxLength)
+        {
+            string value = string.IsNullOrWhiteSpace(text) ? string.Empty : text.Trim();
+            if (maxLength < 4 || value.Length <= maxLength)
+            {
+                return value;
+            }
+
+            return value.Substring(0, maxLength - 1) + "…";
+        }
+
+        private BoardSavedFilter GetActiveSavedFilter()
+        {
+            string activeFilterId = _boardAsset.Document.ViewState.ActiveFilterId;
+            if (string.IsNullOrWhiteSpace(activeFilterId))
+            {
+                return null;
+            }
+
+            return _boardAsset.Document.SavedFilters
+                .FirstOrDefault(filter => IsSavedViewActive(activeFilterId, filter));
         }
 
         private List<BoardNodeModel> GetSelectedNodes()
@@ -810,7 +1209,7 @@ namespace ProjectDesigner.V2.Editor
 
         private void BuildPlannerInsights()
         {
-            Foldout workloadFoldout = CreateFoldout("Workload", true);
+            Foldout workloadFoldout = CreateFoldout("Workload", false);
             IReadOnlyList<BoardAssigneeSummary> assigneeSummaries = BoardInsights.GetAssigneeSummaries(_boardAsset.Document);
             if (assigneeSummaries.Count == 0)
             {

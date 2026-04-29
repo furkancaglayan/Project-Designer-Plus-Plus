@@ -23,8 +23,8 @@ The active package lives at [Packages/com.birchgames.projectdesigner](Packages/c
 ## Getting Started
 
 1. Open the project in Unity.
-2. Use `Tools/Project Designer/Open Planning Boards` to browse or create boards.
-3. Start from a workflow preset or one of the richer showcase boards.
+2. Use `Tools/Project Designer/Onboarding` if you want to learn the tool or start from a template.
+3. Use `Tools/Project Designer/Project Finder` to reopen current boards.
 4. Import the `Status Report Extension` sample if you want to evaluate custom-card extensibility immediately.
 
 ## Documentation
@@ -36,6 +36,7 @@ The active package lives at [Packages/com.birchgames.projectdesigner](Packages/c
 - [Migration From v1](Packages/com.birchgames.projectdesigner/Documentation~/migration-from-v1.md)
 - [Sample Boards](Packages/com.birchgames.projectdesigner/Documentation~/sample-boards.md)
 - [Asset Store Listing Draft](Packages/com.birchgames.projectdesigner/Documentation~/asset-store-listing.md)
+- [Maintainer Guide](Assets/Project%20Designer%20Docs/Project%20Designer%2B%20Maintainer%20Guide.md)
 
 ## Current Status
 

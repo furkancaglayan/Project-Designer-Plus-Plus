@@ -43,10 +43,9 @@ namespace ProjectDesigner.V2.Editor
 
             var welcomeView = new ProjectDesignerWelcomeView(
                 CreatePresetBoard,
-                OpenSelectedBoard,
+                ProjectDesignerBoardBrowserWindow.Open,
                 ProjectDesignerV2Menus.OpenQuickStartGuide,
-                ProjectDesignerV2Menus.OpenProjectSettings,
-                ProjectDesignerV2Menus.OpenPlanningBoards);
+                ProjectDesignerV2Menus.OpenProjectSettings);
             container.Add(welcomeView);
 
             var footer = new VisualElement();
@@ -67,9 +66,13 @@ namespace ProjectDesigner.V2.Editor
             actions.AddToClassList("pd-action-row");
             footer.Add(actions);
 
-            var continueButton = new Button(ContinueToWorkspace) { text = "Continue to Planner" };
+            var continueButton = new Button(ContinueToWorkspace) { text = "Open Planner" };
             continueButton.AddToClassList("pd-primary-button");
             actions.Add(continueButton);
+
+            var finderButton = new Button(OpenProjectFinder) { text = "Open Project Finder" };
+            finderButton.AddToClassList("pd-secondary-button");
+            actions.Add(finderButton);
 
             var disableAutoShowButton = new Button(DisableAutomaticOnboarding) { text = "Don't Show Automatically" };
             disableAutoShowButton.AddToClassList("pd-secondary-button");
@@ -92,17 +95,16 @@ namespace ProjectDesigner.V2.Editor
             Close();
         }
 
-        private void OpenSelectedBoard()
+        private void ContinueToWorkspace()
         {
             ProjectBoardAsset selectedBoard = Selection.activeObject as ProjectBoardAsset;
             ProjectDesignerV2Window.Open(selectedBoard);
             Close();
         }
 
-        private void ContinueToWorkspace()
+        private void OpenProjectFinder()
         {
-            ProjectBoardAsset selectedBoard = Selection.activeObject as ProjectBoardAsset;
-            ProjectDesignerV2Window.Open(selectedBoard);
+            ProjectDesignerBoardBrowserWindow.Open();
             Close();
         }
 

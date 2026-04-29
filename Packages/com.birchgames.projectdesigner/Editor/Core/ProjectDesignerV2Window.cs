@@ -51,12 +51,12 @@ namespace ProjectDesigner.V2.Editor
 
             if (_boardAsset == null)
             {
-                rootVisualElement.Add(new ProjectDesignerWelcomeView(
-                    CreatePresetBoard,
-                    TryOpenSelectedBoard,
+                rootVisualElement.Add(new ProjectDesignerPlannerStartView(
+                    ProjectDesignerV2Menus.OpenPlanningBoards,
+                    ProjectDesignerOnboardingWindow.Open,
                     ProjectDesignerV2Menus.OpenQuickStartGuide,
                     ProjectDesignerV2Menus.OpenProjectSettings,
-                    ProjectDesignerV2Menus.OpenPlanningBoards));
+                    TryOpenSelectedBoard));
             }
             else
             {
@@ -74,11 +74,6 @@ namespace ProjectDesigner.V2.Editor
         {
             _boardAsset = boardAsset;
             Rebuild();
-        }
-
-        private void CreatePresetBoard(string presetId, string boardName)
-        {
-            SetBoard(ProjectDesignerBoardUtility.CreateBoardAsset(presetId, boardName));
         }
 
         private void TryOpenSelectedBoard()

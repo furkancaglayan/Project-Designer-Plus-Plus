@@ -8,10 +8,9 @@ namespace ProjectDesigner.V2.Editor
     {
         public ProjectDesignerWelcomeView(
             Action<string, string> createPreset,
-            Action openSelectedBoard,
+            Action openProjectFinder,
             Action openQuickStart,
-            Action openProjectSettings,
-            Action openBoardBrowser)
+            Action openProjectSettings)
         {
             AddToClassList("pd-welcome");
 
@@ -23,13 +22,22 @@ namespace ProjectDesigner.V2.Editor
             eyebrow.AddToClassList("pd-welcome-eyebrow");
             card.Add(eyebrow);
 
-            var title = new Label("Node-based pre-production planning for indie Unity teams");
+            var title = new Label("Learn the planner and start from the right board");
             title.AddToClassList("pd-welcome-title");
             card.Add(title);
 
-            var body = new Label("Use the planner to arrange planning boards, capture references from Unity assets, map milestones and tasks, and keep technical design as a secondary workflow instead of the main event.");
+            var body = new Label("Project Designer+ is split into three simple surfaces: onboarding for learning and templates, Project Finder for current boards, and the planner for actual editing.");
             body.AddToClassList("pd-welcome-body");
             card.Add(body);
+
+            card.Add(CreateInfoPanel("1. Start Here", "Use onboarding to understand the workflow, learn the main interactions, and create a board from a template when you are starting fresh."));
+            card.Add(CreateInfoPanel("2. Use Project Finder For Current Boards", "Project Finder is for reopening work that already exists in the project, pinning boards you revisit, and searching by board name, summary, or team snapshot."));
+            card.Add(CreateInfoPanel("3. Work Inside The Planner", "Right-click for board actions, drag cards to arrange them, drag from Link to create relationships, and use Ctrl+D, Ctrl+A, Delete, and F for the most common edits."));
+
+            var templateTitle = new Label("Choose A Starting Template");
+            templateTitle.AddToClassList("pd-section-title");
+            card.Add(templateTitle);
+            card.Add(CreateMutedBodyLabel("Use an empty board when you want a clean start. Use workflow presets and showcase boards when you want stronger structure or a denser example to inspect."));
 
             card.Add(CreatePresetButton("New Empty Board", "Start light with a sticky project brief card and build your own structure from there.", BoardPresetIds.Empty, ProjectDesignerProductInfo.DefaultBoardName, createPreset, true));
             card.Add(CreatePresetButton("Project Designer+ Redo Board", "Flagship showcase board for this package rewrite, including planner architecture, rollout work, docs, and launch prep.", BoardPresetIds.ProjectDesignerRedo, ProjectDesignerProductInfo.ProjectDesignerRedoBoardName, createPreset, false));
@@ -45,7 +53,7 @@ namespace ProjectDesigner.V2.Editor
             card.Add(technicalTitle);
             card.Add(CreatePresetButton("Technical Design Board", "A richer technical map with classes, notes, references, and architecture relationships when planning needs technical depth.", BoardPresetIds.TechnicalDesign, ProjectDesignerProductInfo.TechnicalBoardName, createPreset, false));
 
-            var openButton = new Button(openSelectedBoard) { text = "Open Selected Planning Board" };
+            var openButton = new Button(openProjectFinder) { text = "Open Project Finder" };
             openButton.AddToClassList("pd-secondary-button");
             card.Add(openButton);
 
@@ -61,9 +69,6 @@ namespace ProjectDesigner.V2.Editor
             settingsButton.AddToClassList("pd-secondary-button");
             actionRow.Add(settingsButton);
 
-            var browserButton = new Button(openBoardBrowser) { text = "Browse Boards" };
-            browserButton.AddToClassList("pd-secondary-button");
-            actionRow.Add(browserButton);
         }
 
         private static VisualElement CreatePresetButton(string title, string description, string presetId, string boardName, Action<string, string> createPreset, bool primary)
@@ -83,6 +88,28 @@ namespace ProjectDesigner.V2.Editor
             button.AddToClassList(primary ? "pd-primary-button" : "pd-secondary-button");
             row.Add(button);
             return row;
+        }
+
+        private static VisualElement CreateInfoPanel(string title, string description)
+        {
+            var row = new VisualElement();
+            row.AddToClassList("pd-welcome-preset");
+
+            var label = new Label(title);
+            label.AddToClassList("pd-welcome-preset-title");
+            row.Add(label);
+
+            var descriptionLabel = new Label(description);
+            descriptionLabel.AddToClassList("pd-welcome-preset-description");
+            row.Add(descriptionLabel);
+            return row;
+        }
+
+        private static Label CreateMutedBodyLabel(string text)
+        {
+            var label = new Label(text);
+            label.AddToClassList("pd-muted-body");
+            return label;
         }
     }
 }

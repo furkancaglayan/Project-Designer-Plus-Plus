@@ -7,7 +7,7 @@ It ships as a UPM-friendly editor package with a custom UI Toolkit planner, type
 ## Highlights
 
 - Plan tasks, milestones, notes, references, project context, and technical design in one board.
-- Open a dedicated `Project Finder` to search, pin, reopen, and create boards quickly.
+- Use onboarding to learn the tool and start from templates, then use `Project Finder` to search, pin, and reopen current boards quickly.
 - Start from showcase boards and workflow presets, not just empty templates.
 - Inspect the flagship `Project Designer+ Redo` board to see how the planner can carry a real package rewrite and launch-prep effort.
 - Use board operations like multi-select, align/distribute, and edge-aware left-to-right auto layout to clean up busy boards quickly.
@@ -37,15 +37,10 @@ It ships as a UPM-friendly editor package with a custom UI Toolkit planner, type
 
 - `Tools/Project Designer/Open Planner`
 - `Tools/Project Designer/Project Finder`
-- `Tools/Project Designer/New Board`
-- `Tools/Project Designer/New Project Designer+ Redo Board`
-- `Tools/Project Designer/New Solo Indie Board`
-- `Tools/Project Designer/New Small Team Board`
-- `Tools/Project Designer/New Technical Design Board`
-- `Tools/Project Designer/New Pitch & Vision Board`
-- `Tools/Project Designer/New Milestone Roadmap Board`
-- `Tools/Project Designer/New Research & Reference Board`
-- `Tools/Project Designer/New Stakeholder Review Board`
+- `Tools/Project Designer/Onboarding`
+- `Tools/Project Designer/Documentation/Quick Start`
+- `Tools/Project Designer/Project Settings`
+- `Assets/Create/Project Designer/...` for direct board and roster asset creation
 
 ## Documentation
 

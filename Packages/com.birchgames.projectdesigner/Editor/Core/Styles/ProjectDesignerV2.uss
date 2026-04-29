@@ -17,6 +17,10 @@
     -unity-font-style: bold;
     margin-right: 10px;
     color: rgb(32, 42, 54);
+    flex-shrink: 1;
+    overflow: hidden;
+    white-space: nowrap;
+    max-width: 360px;
 }
 
 .pd-toolbar-button {
@@ -59,12 +63,65 @@
     flex-direction: row;
 }
 
-.pd-sidebar {
+.pd-sidebar-panel {
     width: 250px;
-    padding: 14px;
     background-color: rgb(244, 247, 251);
     border-right-width: 1px;
     border-right-color: rgba(69, 102, 171, 0.08);
+    flex-direction: column;
+}
+
+.pd-sidebar-panel-collapsed {
+    width: 144px;
+}
+
+.pd-sidebar-header {
+    min-height: 42px;
+    padding-left: 14px;
+    padding-right: 10px;
+    flex-direction: row;
+    align-items: center;
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(69, 102, 171, 0.08);
+}
+
+.pd-sidebar-header-title {
+    -unity-font-style: bold;
+    color: rgb(32, 42, 54);
+    margin-right: 8px;
+}
+
+.pd-sidebar-summary {
+    flex-grow: 1;
+    color: rgb(95, 109, 126);
+    font-size: 11px;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.pd-sidebar-toggle {
+    min-width: 58px;
+    min-height: 26px;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-left: 10px;
+    padding-right: 10px;
+    background-color: rgb(250, 252, 255);
+    color: rgb(64, 78, 99);
+    border-radius: 8px;
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    border-top-color: rgba(69, 102, 171, 0.12);
+    border-right-color: rgba(69, 102, 171, 0.12);
+    border-bottom-color: rgba(69, 102, 171, 0.12);
+    border-left-color: rgba(69, 102, 171, 0.12);
+}
+
+.pd-sidebar {
+    flex-grow: 1;
+    padding: 14px;
 }
 
 .pd-center-column {
@@ -73,12 +130,65 @@
     overflow: hidden;
 }
 
-.pd-inspector {
+.pd-inspector-panel {
     width: 336px;
-    padding: 14px;
     background-color: rgb(244, 247, 251);
     border-left-width: 1px;
     border-left-color: rgba(69, 102, 171, 0.08);
+    flex-direction: column;
+}
+
+.pd-inspector-panel-collapsed {
+    width: 154px;
+}
+
+.pd-inspector-header {
+    min-height: 42px;
+    padding-left: 14px;
+    padding-right: 10px;
+    flex-direction: row;
+    align-items: center;
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(69, 102, 171, 0.08);
+}
+
+.pd-inspector-header-title {
+    -unity-font-style: bold;
+    color: rgb(32, 42, 54);
+    margin-right: 8px;
+}
+
+.pd-inspector-summary {
+    flex-grow: 1;
+    color: rgb(95, 109, 126);
+    font-size: 11px;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.pd-inspector-toggle {
+    min-width: 58px;
+    min-height: 26px;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-left: 10px;
+    padding-right: 10px;
+    background-color: rgb(250, 252, 255);
+    color: rgb(64, 78, 99);
+    border-radius: 8px;
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    border-top-color: rgba(69, 102, 171, 0.12);
+    border-right-color: rgba(69, 102, 171, 0.12);
+    border-bottom-color: rgba(69, 102, 171, 0.12);
+    border-left-color: rgba(69, 102, 171, 0.12);
+}
+
+.pd-inspector {
+    flex-grow: 1;
+    padding: 14px;
 }
 
 .pd-section-title {
@@ -120,6 +230,30 @@
     flex-direction: column;
 }
 
+.pd-filter-active-label {
+    margin-top: 2px;
+    margin-bottom: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    background-color: rgba(76, 122, 255, 0.14);
+    color: rgb(32, 60, 108);
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 4px;
+    border-top-color: rgba(76, 122, 255, 0.24);
+    border-right-color: rgba(76, 122, 255, 0.24);
+    border-bottom-color: rgba(76, 122, 255, 0.24);
+    border-left-color: rgb(76, 122, 255);
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
+    border-bottom-left-radius: 7px;
+    border-bottom-right-radius: 7px;
+    -unity-font-style: bold;
+}
+
 .pd-filter-button {
     margin-bottom: 4px;
     min-height: 30px;
@@ -136,6 +270,17 @@
     border-right-color: rgba(69, 102, 171, 0.1);
     border-bottom-color: rgba(69, 102, 171, 0.1);
     border-left-color: rgba(69, 102, 171, 0.1);
+}
+
+.pd-filter-button-active {
+    background-color: rgba(76, 122, 255, 0.18);
+    color: rgb(30, 57, 103);
+    -unity-font-style: bold;
+    border-top-color: rgba(76, 122, 255, 0.36);
+    border-right-color: rgba(76, 122, 255, 0.36);
+    border-bottom-color: rgba(76, 122, 255, 0.36);
+    border-left-width: 4px;
+    border-left-color: rgb(76, 122, 255);
 }
 
 .pd-filter-button-technical {
@@ -379,6 +524,41 @@
     background-color: rgb(245, 248, 252);
     border-top-width: 1px;
     border-top-color: rgba(69, 102, 171, 0.08);
+}
+
+.pd-overview-collapsed {
+    min-height: 58px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+.pd-overview-header {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.pd-overview-collapsed .pd-overview-header {
+    margin-bottom: 0;
+}
+
+.pd-overview-header .pd-section-title {
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-right: 10px;
+}
+
+.pd-overview-summary {
+    flex-grow: 1;
+    color: rgb(95, 109, 126);
+    font-size: 11px;
+}
+
+.pd-overview-toggle {
+    min-width: 64px;
+    min-height: 26px;
+    margin-top: 0;
+    margin-bottom: 0;
 }
 
 .pd-overview-row {
@@ -730,21 +910,22 @@
     position: absolute;
     left: 14px;
     top: 14px;
-    padding-left: 10px;
-    padding-right: 10px;
-    padding-top: 6px;
-    padding-bottom: 6px;
-    background-color: rgba(247, 250, 255, 0.96);
-    color: rgb(65, 82, 110);
-    border-radius: 8px;
+    padding-left: 9px;
+    padding-right: 9px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    background-color: rgba(247, 250, 255, 0.76);
+    color: rgb(88, 101, 121);
+    border-radius: 6px;
+    font-size: 11px;
     border-top-width: 1px;
     border-right-width: 1px;
     border-bottom-width: 1px;
     border-left-width: 1px;
-    border-top-color: rgba(76, 122, 255, 0.16);
-    border-right-color: rgba(76, 122, 255, 0.16);
-    border-bottom-color: rgba(76, 122, 255, 0.16);
-    border-left-color: rgba(76, 122, 255, 0.16);
+    border-top-color: rgba(76, 122, 255, 0.1);
+    border-right-color: rgba(76, 122, 255, 0.1);
+    border-bottom-color: rgba(76, 122, 255, 0.1);
+    border-left-color: rgba(76, 122, 255, 0.1);
 }
 
 .pd-inline-link-menu {

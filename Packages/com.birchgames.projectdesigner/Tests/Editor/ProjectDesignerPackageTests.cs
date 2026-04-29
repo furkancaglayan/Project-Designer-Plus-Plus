@@ -816,6 +816,46 @@ namespace ProjectDesigner.V2.Tests
         }
 
         [Test]
+        public void WorkspaceHelpers_TruncateShellLabelsForStableChrome()
+        {
+            string title = ProjectDesignerWorkspaceView.BuildToolbarTitle("Project Designer+ Redo Demo Board With A Very Long Name");
+            string trimmed = ProjectDesignerWorkspaceView.TruncateShellLabel("This label should definitely be shortened", 18);
+
+            Assert.LessOrEqual(title.Length, ProjectDesignerWorkspaceView.ToolbarTitleMaxLength);
+            Assert.IsTrue(title.EndsWith("…"));
+            Assert.AreEqual("This label should…", trimmed);
+        }
+
+        [Test]
+        public void WorkspaceHelpers_SavedViewHelpersExposeClearActiveState()
+        {
+            var activeFilter = new BoardSavedFilter("Planning", "slice", BoardNodeCategories.Planning, string.Empty, true);
+            var inactiveFilter = new BoardSavedFilter("References", string.Empty, BoardNodeCategories.Reference, string.Empty, true);
+
+            Assert.IsTrue(ProjectDesignerWorkspaceView.IsSavedViewActive(activeFilter.Id, activeFilter));
+            Assert.IsFalse(ProjectDesignerWorkspaceView.IsSavedViewActive(activeFilter.Id, inactiveFilter));
+            Assert.AreEqual("Active  Planning", ProjectDesignerWorkspaceView.BuildSavedViewButtonText(activeFilter.Name, true));
+            Assert.AreEqual("References", ProjectDesignerWorkspaceView.BuildSavedViewButtonText(inactiveFilter.Name, false));
+        }
+
+        [Test]
+        public void WorkspaceHelpers_UseStableCollapsedShellSummaries()
+        {
+            var selectedNodes = new List<BoardNodeModel>
+            {
+                new TaskNodeModel { Title = "A very long task title that should not leak into a collapsed header" }
+            };
+
+            Assert.AreEqual(string.Empty, ProjectDesignerWorkspaceView.BuildInspectorSummaryLabel(false, selectedNodes));
+            Assert.AreEqual(string.Empty, ProjectDesignerWorkspaceView.BuildLibrarySummaryLabel(false));
+
+            string expandedSummary = ProjectDesignerWorkspaceView.BuildInspectorSummaryLabel(true, selectedNodes);
+            Assert.IsTrue(expandedSummary.EndsWith("…"));
+            Assert.LessOrEqual(expandedSummary.Length, ProjectDesignerWorkspaceView.InspectorSummaryMaxLength);
+            Assert.AreEqual("Add cards and views", ProjectDesignerWorkspaceView.BuildLibrarySummaryLabel(true));
+        }
+
+        [Test]
         public void Package_DeclaresSamplesAndDemoBoards()
         {
             string packageJsonPath = "Packages/com.birchgames.projectdesigner/package.json";

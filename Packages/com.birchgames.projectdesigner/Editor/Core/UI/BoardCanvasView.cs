@@ -23,6 +23,8 @@ namespace ProjectDesigner.V2.Editor
 
             public IDictionary<string, Vector2> PreviewNodePositions { get; set; }
             public HashSet<string> VisibleNodeIds { get; set; }
+            public HashSet<string> SelectedNodeIds { get; set; }
+            public string HoveredNodeId { get; set; }
             public ConnectionPreviewData PreviewConnection { get; set; }
 
             public EdgeLayerElement(ProjectBoardAsset boardAsset)
@@ -40,7 +42,6 @@ namespace ProjectDesigner.V2.Editor
                 }
 
                 var painter = context.painter2D;
-                painter.lineWidth = 3f;
 
                 foreach (BoardEdgeModel edge in _boardAsset.Document.Edges)
                 {
@@ -58,7 +59,11 @@ namespace ProjectDesigner.V2.Editor
                     }
 
                     IProjectDesignerEdgeDefinition definition = ProjectDesignerRegistry.GetEdgeDefinition(edge.TypeId);
-                    painter.strokeColor = ParseColor(definition == null ? "#9AA3AF" : definition.AccentColor, new Color(0.6f, 0.6f, 0.6f));
+                    bool isHighlighted = IsHighlighted(edge);
+                    painter.lineWidth = isHighlighted ? 2.4f : 1.45f;
+                    painter.strokeColor = ApplyAlpha(
+                        ParseColor(definition == null ? "#9AA3AF" : definition.AccentColor, new Color(0.6f, 0.6f, 0.6f)),
+                        isHighlighted ? 0.86f : 0.2f);
                     DrawCurve(painter, source, target, GetNodePosition(source), GetNodePosition(target));
                 }
 
@@ -84,6 +89,24 @@ namespace ProjectDesigner.V2.Editor
                 painter.MoveTo(start);
                 painter.BezierCurveTo(start + Vector2.right * tangent, end + Vector2.left * tangent, end);
                 painter.Stroke();
+            }
+
+            private bool IsHighlighted(BoardEdgeModel edge)
+            {
+                if (edge == null)
+                {
+                    return false;
+                }
+
+                if (!string.IsNullOrEmpty(HoveredNodeId) &&
+                    (string.Equals(edge.SourceNodeId, HoveredNodeId, StringComparison.Ordinal) ||
+                     string.Equals(edge.TargetNodeId, HoveredNodeId, StringComparison.Ordinal)))
+                {
+                    return true;
+                }
+
+                return SelectedNodeIds != null &&
+                       (SelectedNodeIds.Contains(edge.SourceNodeId) || SelectedNodeIds.Contains(edge.TargetNodeId));
             }
 
             private void DrawCurve(UnityEngine.UIElements.Painter2D painter, BoardNodeModel source, BoardNodeModel target, Vector2 sourcePosition, Vector2 targetPosition)
@@ -122,9 +145,15 @@ namespace ProjectDesigner.V2.Editor
             {
                 return new Vector2(nodePosition.x, nodePosition.y + node.Size.y * 0.5f);
             }
+
+            private static Color ApplyAlpha(Color color, float alpha)
+            {
+                color.a = alpha;
+                return color;
+            }
         }
 
-        private const string DefaultHintText = "Drag cards to arrange them. Shift-drag empty space to multi-select. Drag empty space to pan. Drag from Link to create relationships.";
+        private const string DefaultHintText = "Right-click for board actions. Drag cards to arrange them. Shift-drag empty space to multi-select. Drag from Link to create relationships. Use Ctrl+D, Ctrl+A, Delete, and F for quick editing.";
 
         private readonly ProjectBoardAsset _boardAsset;
         private readonly IBoardCommandDispatcher _dispatcher;
@@ -146,6 +175,7 @@ namespace ProjectDesigner.V2.Editor
         private int _connectPointerId = -1;
         private Vector2 _connectPreviewPosition;
         private string _hoveredConnectionTargetId = string.Empty;
+        private string _hoveredNodeId = string.Empty;
         private VisualElement _connectionMenu;
 
         private bool _panning;
@@ -235,6 +265,7 @@ namespace ProjectDesigner.V2.Editor
                 nodeView.SetSelected(selectedNodeIds.Contains(nodeView.NodeId));
             }
 
+            _edgeLayer.SelectedNodeIds = selectedNodeIds;
             UpdateConnectionHighlights();
             BringSelectionToFront();
             _edgeLayer.MarkDirtyRepaint();
@@ -264,6 +295,28 @@ namespace ProjectDesigner.V2.Editor
                 .Where(node => node != null)
                 .ToList();
             FrameNodes(nodes);
+        }
+
+        internal Vector2 GetBoardPositionFromCanvas(Vector2 canvasPosition)
+        {
+            return CanvasToBoard(canvasPosition);
+        }
+
+        internal string GetNodeIdFromTarget(object target)
+        {
+            VisualElement element = target as VisualElement;
+            while (element != null)
+            {
+                BoardNodeView nodeView = element as BoardNodeView;
+                if (nodeView != null)
+                {
+                    return nodeView.NodeId;
+                }
+
+                element = element.parent;
+            }
+
+            return string.Empty;
         }
 
         private void FrameNodes(List<BoardNodeModel> nodes)
@@ -301,6 +354,8 @@ namespace ProjectDesigner.V2.Editor
             HashSet<string> visibleIds = new HashSet<string>(BoardInsights.GetVisibleNodes(_boardAsset.Document).Select(node => node.Id));
             _edgeLayer.VisibleNodeIds = visibleIds;
             HashSet<string> selectedNodeIds = new HashSet<string>(_boardAsset.Document.ViewState.SelectedNodeIds);
+            _edgeLayer.SelectedNodeIds = selectedNodeIds;
+            _edgeLayer.HoveredNodeId = visibleIds.Contains(_hoveredNodeId) ? _hoveredNodeId : string.Empty;
 
             foreach (BoardNodeModel node in _boardAsset.Document.Nodes.OrderBy(node => node != null && selectedNodeIds.Contains(node.Id) ? 1 : 0))
             {
@@ -315,6 +370,7 @@ namespace ProjectDesigner.V2.Editor
                 nodeView.Selected += OnNodeSelected;
                 nodeView.DragStarted += OnNodeDragStarted;
                 nodeView.ConnectionStarted += OnNodeConnectionStarted;
+                nodeView.HoverChanged += OnNodeHoverChanged;
                 _nodeLayer.Add(nodeView);
                 _nodeViews[node.Id] = nodeView;
             }
@@ -420,6 +476,21 @@ namespace ProjectDesigner.V2.Editor
             _edgeLayer.MarkDirtyRepaint();
             MarkDirtyRepaint();
             Focus();
+        }
+
+        private void OnNodeHoverChanged(string nodeId, bool isHovered)
+        {
+            if (isHovered)
+            {
+                _hoveredNodeId = nodeId ?? string.Empty;
+            }
+            else if (string.Equals(_hoveredNodeId, nodeId, StringComparison.Ordinal))
+            {
+                _hoveredNodeId = string.Empty;
+            }
+
+            _edgeLayer.HoveredNodeId = _hoveredNodeId;
+            _edgeLayer.MarkDirtyRepaint();
         }
 
         private void OnPointerDown(PointerDownEvent evt)
@@ -1183,6 +1254,7 @@ namespace ProjectDesigner.V2.Editor
             }
 
             _boardAsset.Document.ViewState.ClearSelection();
+            _edgeLayer.SelectedNodeIds = new HashSet<string>();
             ProjectDesignerBoardUtility.MarkDirty(_boardAsset);
             if (SelectionChanged != null)
             {

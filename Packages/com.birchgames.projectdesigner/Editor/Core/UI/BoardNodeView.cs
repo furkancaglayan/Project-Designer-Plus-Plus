@@ -32,10 +32,14 @@ namespace ProjectDesigner.V2.Editor
         private readonly VisualElement _tagsContainer;
         private readonly Label _connectHandle;
         private readonly Color _accentColor;
+        private bool _isSelected;
+        private bool _isHovered;
+        private bool _isConnectionOrigin;
 
         public event Action<BoardNodeSelectionRequest> Selected;
         public event Action<string, Vector2, int> DragStarted;
         public event Action<string, Vector2, int> ConnectionStarted;
+        public event Action<string, bool> HoverChanged;
 
         public string NodeId
         {
@@ -122,6 +126,9 @@ namespace ProjectDesigner.V2.Editor
             RefreshTagChips();
 
             RegisterCallback<PointerDownEvent>(OnPointerDown);
+            RegisterCallback<MouseEnterEvent>(OnMouseEnter);
+            RegisterCallback<MouseLeaveEvent>(OnMouseLeave);
+            UpdateConnectorVisibility();
         }
 
         public void Refresh(BoardDocument document, bool isSelected)
@@ -143,17 +150,21 @@ namespace ProjectDesigner.V2.Editor
 
         public void SetSelected(bool isSelected)
         {
+            _isSelected = isSelected;
             EnableInClassList("pd-node-selected", isSelected);
             _selectionFrame.style.display = isSelected ? DisplayStyle.Flex : DisplayStyle.None;
+            UpdateConnectorVisibility();
         }
 
         public void SetConnectionState(bool isOrigin, bool isValidTarget, bool isHoveredTarget)
         {
+            _isConnectionOrigin = isOrigin;
             bool hasLinkState = isValidTarget || isHoveredTarget;
             _linkFrame.style.display = hasLinkState ? DisplayStyle.Flex : DisplayStyle.None;
             _linkFrame.EnableInClassList("pd-node-link-valid", isValidTarget && !isHoveredTarget);
             _linkFrame.EnableInClassList("pd-node-link-hover", isHoveredTarget);
             _connectHandle.EnableInClassList("pd-node-connector-active", isOrigin);
+            UpdateConnectorVisibility();
 
             if (isOrigin)
             {
@@ -227,6 +238,28 @@ namespace ProjectDesigner.V2.Editor
             evt.StopPropagation();
         }
 
+        private void OnMouseEnter(MouseEnterEvent evt)
+        {
+            _isHovered = true;
+            EnableInClassList("pd-node-hovered", true);
+            UpdateConnectorVisibility();
+            if (HoverChanged != null)
+            {
+                HoverChanged.Invoke(_node.Id, true);
+            }
+        }
+
+        private void OnMouseLeave(MouseLeaveEvent evt)
+        {
+            _isHovered = false;
+            EnableInClassList("pd-node-hovered", false);
+            UpdateConnectorVisibility();
+            if (HoverChanged != null)
+            {
+                HoverChanged.Invoke(_node.Id, false);
+            }
+        }
+
         private static Vector2 GetEventPosition(Vector3 position)
         {
             return new Vector2(position.x, position.y);
@@ -296,6 +329,12 @@ namespace ProjectDesigner.V2.Editor
             chip.style.color = ProjectDesignerColorUtility.Blend(color, new Color(0.18f, 0.22f, 0.26f), 0.16f);
             chip.pickingMode = PickingMode.Ignore;
             _signalContainer.Add(chip);
+        }
+
+        private void UpdateConnectorVisibility()
+        {
+            bool isVisible = _isSelected || _isHovered || _isConnectionOrigin;
+            _connectHandle.style.display = isVisible ? DisplayStyle.Flex : DisplayStyle.None;
         }
 
     }

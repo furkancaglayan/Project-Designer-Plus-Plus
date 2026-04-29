@@ -21,13 +21,49 @@
     border-left-color: rgba(255, 255, 255, 0.08);
 }
 
-.pd-sidebar {
+.pd-sidebar-panel {
     background-color: rgb(20, 24, 31);
     border-right-color: rgba(255, 255, 255, 0.08);
 }
 
-.pd-inspector {
+.pd-sidebar-header {
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+.pd-sidebar-header-title,
+.pd-sidebar-summary {
+    color: rgb(177, 186, 199);
+}
+
+.pd-sidebar-toggle {
+    background-color: rgb(34, 40, 49);
+    color: rgb(230, 235, 241);
+    border-top-color: rgba(255, 255, 255, 0.08);
+    border-right-color: rgba(255, 255, 255, 0.08);
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+    border-left-color: rgba(255, 255, 255, 0.08);
+}
+
+.pd-inspector-panel {
     background-color: rgb(20, 24, 31);
+    border-left-color: rgba(255, 255, 255, 0.08);
+}
+
+.pd-inspector-header {
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+.pd-inspector-header-title,
+.pd-inspector-summary {
+    color: rgb(177, 186, 199);
+}
+
+.pd-inspector-toggle {
+    background-color: rgb(34, 40, 49);
+    color: rgb(230, 235, 241);
+    border-top-color: rgba(255, 255, 255, 0.08);
+    border-right-color: rgba(255, 255, 255, 0.08);
+    border-bottom-color: rgba(255, 255, 255, 0.08);
     border-left-color: rgba(255, 255, 255, 0.08);
 }
 
@@ -58,6 +94,24 @@
     border-right-color: rgba(117, 128, 152, 0.18);
     border-bottom-color: rgba(117, 128, 152, 0.18);
     border-left-color: rgba(117, 128, 152, 0.18);
+}
+
+.pd-filter-active-label {
+    background-color: rgba(103, 195, 255, 0.18);
+    color: rgb(210, 226, 255);
+    border-top-color: rgba(103, 195, 255, 0.28);
+    border-right-color: rgba(103, 195, 255, 0.28);
+    border-bottom-color: rgba(103, 195, 255, 0.28);
+    border-left-color: rgb(103, 195, 255);
+}
+
+.pd-filter-button-active {
+    background-color: rgba(103, 195, 255, 0.22);
+    color: rgb(236, 239, 244);
+    border-top-color: rgba(103, 195, 255, 0.34);
+    border-right-color: rgba(103, 195, 255, 0.34);
+    border-bottom-color: rgba(103, 195, 255, 0.34);
+    border-left-color: rgb(103, 195, 255);
 }
 
 .pd-canvas {
@@ -115,6 +169,10 @@
     border-right-color: rgba(255, 255, 255, 0.08);
     border-bottom-color: rgba(255, 255, 255, 0.08);
     border-left-color: rgba(255, 255, 255, 0.08);
+}
+
+.pd-overview-summary {
+    color: rgb(177, 186, 199);
 }
 
 .pd-overview-card-active {
@@ -184,12 +242,16 @@
 }
 
 .pd-canvas-hint {
-    background-color: rgba(34, 40, 49, 0.96);
+    background-color: rgba(34, 40, 49, 0.82);
     color: rgb(177, 186, 199);
     border-top-color: rgba(255, 255, 255, 0.08);
     border-right-color: rgba(255, 255, 255, 0.08);
     border-bottom-color: rgba(255, 255, 255, 0.08);
     border-left-color: rgba(255, 255, 255, 0.08);
+}
+
+.pd-overview-collapsed {
+    background-color: rgb(18, 22, 28);
 }
 
 .pd-marquee {

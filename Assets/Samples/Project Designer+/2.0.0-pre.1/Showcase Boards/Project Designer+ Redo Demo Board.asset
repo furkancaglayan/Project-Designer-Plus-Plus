@@ -15,89 +15,98 @@ MonoBehaviour:
   _schemaVersion: 2.0.0-preview
   _document:
     _boardName: Project Designer+ Redo Demo Board
-    _summary: Flagship showcase board for the Project Designer+ rewrite, covering planner architecture, interaction polish, docs, demo content, and launch prep.
+    _summary: Flagship showcase board for the Project Designer+ rewrite, covering
+      planner architecture, interaction polish, docs, demo content, and launch prep.
     _teamMembers:
     - Product Design
     - Tools Engineering
     - Documentation
     - Launch Producer
     _viewState:
-      _panOffset: {x: 0, y: 0}
-      _zoom: 1
-      _searchQuery:
-      _category: All
-      _selectedNodeId: 10000000000000000000000000000001
-      _activeFilterId:
-      _quickFilterId:
-      _snapToGrid: 0
+      _panOffset: {x: -196.78265, y: -399.2206}
+      _zoom: 0.47617126
+      _searchQuery: 
+      _category: Planning
+      _selectedNodeId: 
+      _selectedNodeIds: []
+      _activeFilterId: 20000000000000000000000000000001
+      _quickFilterId: 
+      _snapToGrid: 1
     _savedFilters:
     - _id: 20000000000000000000000000000001
       _name: Planning
-      _searchQuery:
+      _searchQuery: 
       _category: Planning
-      _requiredTag:
+      _requiredTag: 
       _includeTechnicalDesign: 0
     - _id: 20000000000000000000000000000002
       _name: References
-      _searchQuery:
+      _searchQuery: 
       _category: Reference
-      _requiredTag:
+      _requiredTag: 
       _includeTechnicalDesign: 0
     - _id: 20000000000000000000000000000003
       _name: Technical
-      _searchQuery:
+      _searchQuery: 
       _category: Technical Design
-      _requiredTag:
+      _requiredTag: 
       _includeTechnicalDesign: 1
     - _id: 20000000000000000000000000000004
       _name: Core Planner
-      _searchQuery:
+      _searchQuery: 
       _category: All
       _requiredTag: planner-core
       _includeTechnicalDesign: 1
     - _id: 20000000000000000000000000000005
       _name: Launch
-      _searchQuery:
+      _searchQuery: 
       _category: All
       _requiredTag: launch
       _includeTechnicalDesign: 1
     - _id: 20000000000000000000000000000006
       _name: Samples
-      _searchQuery:
+      _searchQuery: 
       _category: All
       _requiredTag: sample
       _includeTechnicalDesign: 1
     - _id: 20000000000000000000000000000007
       _name: Polish
-      _searchQuery:
+      _searchQuery: 
       _category: All
       _requiredTag: polish
       _includeTechnicalDesign: 1
     _templates:
     - _id: project-designer.preset.empty
       _name: Empty
-      _description: Start light with a pinned project brief card, then add your own structure.
+      _description: Start light with a pinned project brief card, then add your own
+        structure.
     - _id: project-designer.preset.project-designer-redo
       _name: Project Designer+ Redo
-      _description: Flagship showcase board for the package rewrite, planner architecture, docs, and launch prep.
+      _description: Flagship showcase board for the package rewrite, planner architecture,
+        docs, and launch prep.
     - _id: project-designer.preset.solo
       _name: Solo Indie
-      _description: A fuller solo-dev sample with slice planning, risks, references, and milestone progress.
+      _description: A fuller solo-dev sample with slice planning, risks, references,
+        and milestone progress.
     - _id: project-designer.preset.small-team
       _name: Small Team
-      _description: A denser collaborative sample for design, production, art, and stakeholder review prep.
+      _description: A denser collaborative sample for design, production, art, and
+        stakeholder review prep.
     - _id: project-designer.preset.technical
       _name: Technical Design
-      _description: A richer architecture sample with multiple class relationships, notes, and package-thinking.
+      _description: A richer architecture sample with multiple class relationships,
+        notes, and package-thinking.
     - _id: project-designer.preset.pitch-vision
       _name: Pitch & Vision
-      _description: Workflow preset for player promise, target audience, and pitch framing.
+      _description: Workflow preset for player promise, target audience, and pitch
+        framing.
     - _id: project-designer.preset.milestone-roadmap
       _name: Milestone Roadmap
       _description: Workflow preset for shaping checkpoints, dependencies, and scope.
     - _id: project-designer.preset.research-reference
       _name: Research & Reference
-      _description: Workflow preset for reference capture, synthesis, and research tasks.
+      _description: Workflow preset for reference capture, synthesis, and research
+        tasks.
     - _id: project-designer.preset.stakeholder-review
       _name: Stakeholder Review
       _description: Workflow preset for demo prep, review asks, and risk framing.
@@ -106,417 +115,464 @@ MonoBehaviour:
       _typeId: project-designer.edge.dependency
       _sourceNodeId: 10000000000000000000000000000006
       _targetNodeId: 10000000000000000000000000000005
-      _label:
+      _label: 
     - _id: 30000000000000000000000000000002
       _typeId: project-designer.edge.dependency
       _sourceNodeId: 10000000000000000000000000000007
       _targetNodeId: 10000000000000000000000000000006
-      _label:
+      _label: 
     - _id: 30000000000000000000000000000003
       _typeId: project-designer.edge.dependency
       _sourceNodeId: 10000000000000000000000000000007
       _targetNodeId: 10000000000000000000000000000008
-      _label:
+      _label: 
     - _id: 30000000000000000000000000000004
       _typeId: project-designer.edge.dependency
       _sourceNodeId: 10000000000000000000000000000009
       _targetNodeId: 10000000000000000000000000000007
-      _label:
+      _label: 
     - _id: 30000000000000000000000000000005
       _typeId: project-designer.edge.dependency
       _sourceNodeId: 10000000000000000000000000000010
       _targetNodeId: 10000000000000000000000000000007
-      _label:
+      _label: 
     - _id: 30000000000000000000000000000006
       _typeId: project-designer.edge.dependency
       _sourceNodeId: 10000000000000000000000000000011
       _targetNodeId: 10000000000000000000000000000010
-      _label:
+      _label: 
     - _id: 30000000000000000000000000000007
       _typeId: project-designer.edge.milestone
       _sourceNodeId: 10000000000000000000000000000005
       _targetNodeId: 10000000000000000000000000000002
-      _label:
+      _label: 
     - _id: 30000000000000000000000000000008
       _typeId: project-designer.edge.milestone
       _sourceNodeId: 10000000000000000000000000000006
       _targetNodeId: 10000000000000000000000000000002
-      _label:
+      _label: 
     - _id: 30000000000000000000000000000009
       _typeId: project-designer.edge.milestone
       _sourceNodeId: 10000000000000000000000000000007
       _targetNodeId: 10000000000000000000000000000002
-      _label:
+      _label: 
     - _id: 30000000000000000000000000000010
       _typeId: project-designer.edge.milestone
       _sourceNodeId: 10000000000000000000000000000008
       _targetNodeId: 10000000000000000000000000000002
-      _label:
+      _label: 
     - _id: 30000000000000000000000000000011
       _typeId: project-designer.edge.milestone
       _sourceNodeId: 10000000000000000000000000000009
       _targetNodeId: 10000000000000000000000000000002
-      _label:
+      _label: 
     - _id: 30000000000000000000000000000012
       _typeId: project-designer.edge.milestone
       _sourceNodeId: 10000000000000000000000000000010
       _targetNodeId: 10000000000000000000000000000003
-      _label:
+      _label: 
     - _id: 30000000000000000000000000000013
       _typeId: project-designer.edge.milestone
       _sourceNodeId: 10000000000000000000000000000011
       _targetNodeId: 10000000000000000000000000000004
-      _label:
+      _label: 
     - _id: 30000000000000000000000000000014
       _typeId: project-designer.edge.reference
       _sourceNodeId: 10000000000000000000000000000012
       _targetNodeId: 10000000000000000000000000000007
-      _label:
+      _label: 
     - _id: 30000000000000000000000000000015
       _typeId: project-designer.edge.reference
       _sourceNodeId: 10000000000000000000000000000013
       _targetNodeId: 10000000000000000000000000000011
-      _label:
+      _label: 
     - _id: 30000000000000000000000000000016
       _typeId: project-designer.edge.reference
       _sourceNodeId: 10000000000000000000000000000014
       _targetNodeId: 10000000000000000000000000000005
-      _label:
+      _label: 
     - _id: 30000000000000000000000000000017
       _typeId: project-designer.edge.reference
       _sourceNodeId: 10000000000000000000000000000014
       _targetNodeId: 10000000000000000000000000000011
-      _label:
+      _label: 
     - _id: 30000000000000000000000000000018
       _typeId: project-designer.edge.reference
       _sourceNodeId: 10000000000000000000000000000015
       _targetNodeId: 10000000000000000000000000000007
-      _label:
+      _label: 
     - _id: 30000000000000000000000000000019
       _typeId: project-designer.edge.reference
       _sourceNodeId: 10000000000000000000000000000016
       _targetNodeId: 10000000000000000000000000000010
-      _label:
+      _label: 
     - _id: 30000000000000000000000000000020
       _typeId: project-designer.edge.technical
       _sourceNodeId: 10000000000000000000000000000017
       _targetNodeId: 10000000000000000000000000000018
-      _label:
+      _label: 
     _nodes:
-    - rid: 1001
-    - rid: 1002
-    - rid: 1003
-    - rid: 1004
-    - rid: 1005
-    - rid: 1006
-    - rid: 1007
-    - rid: 1008
-    - rid: 1009
-    - rid: 1010
-    - rid: 1011
-    - rid: 1012
-    - rid: 1013
-    - rid: 1014
-    - rid: 1015
-    - rid: 1016
-    - rid: 1017
-    - rid: 1018
+    - rid: 4671173571184164885
+    - rid: 4671173571184164886
+    - rid: 4671173571184164887
+    - rid: 4671173571184164888
+    - rid: 4671173571184164889
+    - rid: 4671173571184164890
+    - rid: 4671173571184164891
+    - rid: 4671173571184164892
+    - rid: 4671173571184164893
+    - rid: 4671173571184164894
+    - rid: 4671173571184164895
+    - rid: 4671173571184164896
+    - rid: 4671173571184164897
+    - rid: 4671173571184164898
+    - rid: 4671173571184164899
+    - rid: 4671173571184164900
+    - rid: 4671173571184164901
+    - rid: 4671173571184164902
+    - rid: 4671173571184164903
   references:
     version: 2
     RefIds:
-    - rid: 1001
+    - rid: 4671173571184164885
       type: {class: ProjectBriefNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
       data:
         _id: 10000000000000000000000000000001
         _typeId: project-designer.project-brief
         _title: Project Brief
-        _position: {x: 120, y: 100}
+        _position: {x: 120, y: -344.60693}
         _size: {x: 360, y: 280}
         _tags:
         - overview
         - team
         - knowledge
         _isPinned: 1
-        _overview: Rebuild the legacy asset into a UPM-first planner that is easier to understand, easier to extend, and strong enough to demo on its own.
+        _overview: Rebuild the legacy asset into a UPM-first planner that is easier
+          to understand, easier to extend, and strong enough to demo on its own.
         _teamSnapshot: Product Design, Tools Engineering, Documentation, Launch Producer
-        _projectKnowledge: Keep planning as the headline, keep extensibility public but advanced, and use this board to prove that the package can carry real internal rollout work.
-    - rid: 1002
+        _projectKnowledge: Keep planning as the headline, keep extensibility public
+          but advanced, and use this board to prove that the package can carry real
+          internal rollout work.
+    - rid: 4671173571184164886
       type: {class: MilestoneNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
       data:
         _id: 10000000000000000000000000000002
         _typeId: project-designer.milestone
         _title: Planner Core Stable
-        _position: {x: 760, y: 100}
+        _position: {x: 2688, y: 336}
         _size: {x: 320, y: 200}
         _tags:
         - planner-core
         - milestone
         _isPinned: 0
-        _summary: Board interactions, package architecture, and everyday planning workflows feel trustworthy enough for continuous use.
+        _summary: Board interactions, package architecture, and everyday planning
+          workflows feel trustworthy enough for continuous use.
         _targetDateIso: 2026-05-06
-    - rid: 1003
+    - rid: 4671173571184164887
       type: {class: MilestoneNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
       data:
         _id: 10000000000000000000000000000003
         _typeId: project-designer.milestone
         _title: Showcase & Docs Ready
-        _position: {x: 1140, y: 100}
+        _position: {x: 2680, y: 615.39307}
         _size: {x: 320, y: 200}
         _tags:
         - showcase
         - docs
         - milestone
         _isPinned: 0
-        _summary: Examples, onboarding, docs, and sample surfaces clearly show what the planner can do.
+        _summary: Examples, onboarding, docs, and sample surfaces clearly show what
+          the planner can do.
         _targetDateIso: 2026-05-13
-    - rid: 1004
+    - rid: 4671173571184164888
       type: {class: MilestoneNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
       data:
         _id: 10000000000000000000000000000004
         _typeId: project-designer.milestone
         _title: Store Submission Ready
-        _position: {x: 1520, y: 100}
+        _position: {x: 3180, y: 569.39307}
         _size: {x: 320, y: 200}
         _tags:
         - launch
         - milestone
         _isPinned: 0
-        _summary: Package messaging, screenshots, demo boards, and review prep are aligned for launch.
+        _summary: Package messaging, screenshots, demo boards, and review prep are
+          aligned for launch.
         _targetDateIso: 2026-05-20
-    - rid: 1005
+    - rid: 4671173571184164889
       type: {class: TaskNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
       data:
         _id: 10000000000000000000000000000005
         _typeId: project-designer.task
         _title: Reposition package as planner
-        _position: {x: 120, y: 420}
+        _position: {x: 660, y: 417.39307}
         _size: {x: 320, y: 220}
         _tags:
         - launch
         - positioning
         _isPinned: 0
-        _description: Rewrite the product story so teams understand this as a pre-production planner first, with technical design as a secondary workflow.
+        _description: Rewrite the product story so teams understand this as a pre-production
+          planner first, with technical design as a secondary workflow.
         _status: 3
         _priority: 3
         _estimatePoints: 3
         _assigneeId: product-design
         _dueDateIso: 2026-05-01
-        _acceptanceCriteria: README, onboarding, and listing copy all lead with planning instead of UML.
-    - rid: 1006
+        _acceptanceCriteria: README, onboarding, and listing copy all lead with planning
+          instead of UML.
+    - rid: 4671173571184164890
       type: {class: TaskNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
       data:
         _id: 10000000000000000000000000000006
         _typeId: project-designer.task
         _title: Ship UPM-first package structure
-        _position: {x: 460, y: 420}
+        _position: {x: 1104, y: 528}
         _size: {x: 320, y: 220}
         _tags:
         - planner-core
         - package
         - technical
         _isPinned: 0
-        _description: Move the rewrite into a package layout with clearer runtime, editor, sample, and test boundaries.
+        _description: Move the rewrite into a package layout with clearer runtime,
+          editor, sample, and test boundaries.
         _status: 3
         _priority: 3
         _estimatePoints: 5
         _assigneeId: tools-engineering
         _dueDateIso: 2026-05-03
-        _acceptanceCriteria: The package imports cleanly and no longer depends on the legacy asset folder for v2 behavior.
-    - rid: 1007
+        _acceptanceCriteria: The package imports cleanly and no longer depends on
+          the legacy asset folder for v2 behavior.
+    - rid: 4671173571184164891
       type: {class: TaskNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
       data:
         _id: 10000000000000000000000000000007
         _typeId: project-designer.task
         _title: Polish board interactions
-        _position: {x: 800, y: 420}
+        _position: {x: 1680, y: 559.39307}
         _size: {x: 320, y: 220}
         _tags:
         - planner-core
         - polish
         _isPinned: 0
-        _description: Tighten drag, selection, connection flow, and board operations until the planner feels fast instead of fragile.
+        _description: Tighten drag, selection, connection flow, and board operations
+          until the planner feels fast instead of fragile.
         _status: 1
         _priority: 3
         _estimatePoints: 8
         _assigneeId: tools-engineering
         _dueDateIso: 2026-05-08
-        _acceptanceCriteria: Daily planning actions work without workaround explanations in the docs.
-    - rid: 1008
+        _acceptanceCriteria: Daily planning actions work without workaround explanations
+          in the docs.
+    - rid: 4671173571184164892
       type: {class: TaskNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
       data:
         _id: 10000000000000000000000000000008
         _typeId: project-designer.task
         _title: Add onboarding and project finder
-        _position: {x: 1140, y: 420}
+        _position: {x: 120, y: 315.39307}
         _size: {x: 320, y: 220}
         _tags:
         - planner-core
         - discoverability
         _isPinned: 0
-        _description: Create the product shell around the planner so first-run discovery feels intentional.
+        _description: Create the product shell around the planner so first-run discovery
+          feels intentional.
         _status: 3
         _priority: 2
         _estimatePoints: 5
         _assigneeId: product-design
         _dueDateIso: 2026-05-07
-        _acceptanceCriteria: Users can create, find, and reopen boards without hunting through the Project window.
-    - rid: 1009
+        _acceptanceCriteria: Users can create, find, and reopen boards without hunting
+          through the Project window.
+    - rid: 4671173571184164893
       type: {class: TaskNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
       data:
         _id: 10000000000000000000000000000009
         _typeId: project-designer.task
         _title: Add roster-backed workload views
-        _position: {x: 800, y: 700}
+        _position: {x: 2180, y: 437.39307}
         _size: {x: 320, y: 220}
         _tags:
         - planner-core
         - insights
         _isPinned: 0
-        _description: Move assignment into a project-wide roster and use that data for board summaries, filters, and insight cards.
+        _description: Move assignment into a project-wide roster and use that data
+          for board summaries, filters, and insight cards.
         _status: 1
         _priority: 2
         _estimatePoints: 5
         _assigneeId: tools-engineering
         _dueDateIso: 2026-05-10
-        _acceptanceCriteria: Assignees come from one roster and workload summaries stop drifting into duplicate names.
-    - rid: 1010
+        _acceptanceCriteria: Assignees come from one roster and workload summaries
+          stop drifting into duplicate names.
+    - rid: 4671173571184164894
       type: {class: TaskNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
       data:
         _id: 10000000000000000000000000000010
         _typeId: project-designer.task
         _title: Produce showcase boards
-        _position: {x: 1140, y: 700}
+        _position: {x: 2184, y: 744}
         _size: {x: 320, y: 220}
         _tags:
         - showcase
         - sample
         - docs
         _isPinned: 0
-        _description: Seed richer examples, a flagship redo board, and clearer sample packaging so users can inspect real planning density quickly.
+        _description: Seed richer examples, a flagship redo board, and clearer sample
+          packaging so users can inspect real planning density quickly.
         _status: 1
         _priority: 2
         _estimatePoints: 5
         _assigneeId: documentation
         _dueDateIso: 2026-05-12
-        _acceptanceCriteria: The package ships with examples that demonstrate planning depth, not just empty starter content.
-    - rid: 1011
+        _acceptanceCriteria: The package ships with examples that demonstrate planning
+          depth, not just empty starter content.
+    - rid: 4671173571184164895
       type: {class: TaskNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
       data:
         _id: 10000000000000000000000000000011
         _typeId: project-designer.task
         _title: Finalize launch copy and media checklist
-        _position: {x: 1480, y: 420}
+        _position: {x: 2680, y: 895.39307}
         _size: {x: 320, y: 220}
         _tags:
         - launch
         - docs
         - marketing
         _isPinned: 0
-        _description: Align package messaging, screenshots, and release notes around the same planner-first story.
+        _description: Align package messaging, screenshots, and release notes around
+          the same planner-first story.
         _status: 0
         _priority: 2
         _estimatePoints: 3
         _assigneeId: launch-producer
         _dueDateIso: 2026-05-16
-        _acceptanceCriteria: The listing draft, screenshots, and release checklist promise only what the shipped package really does.
-    - rid: 1012
+        _acceptanceCriteria: The listing draft, screenshots, and release checklist
+          promise only what the shipped package really does.
+    - rid: 4671173571184164896
       type: {class: NoteNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
       data:
         _id: 10000000000000000000000000000012
         _typeId: project-designer.note
         _title: Product Guardrails
-        _position: {x: 120, y: 760}
+        _position: {x: 120, y: 1215.3931}
         _size: {x: 300, y: 220}
         _tags:
         - decision
         - launch
         _isPinned: 0
-        _body: "- Keep planning as the headline.\n- Treat extensibility as a strong advanced path, not the default story.\n- Keep technical design useful but secondary.\n- Avoid demo boards that look like tiny tutorial scraps."
+        _body: '- Keep planning as the headline.
+
+          - Treat extensibility
+          as a strong advanced path, not the default story.
+
+          - Keep technical
+          design useful but secondary.
+
+          - Avoid demo boards that look like
+          tiny tutorial scraps.'
         _accentHex: '#F28C38'
-    - rid: 1013
+    - rid: 4671173571184164897
       type: {class: NoteNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
       data:
         _id: 10000000000000000000000000000013
         _typeId: project-designer.note
         _title: Open Questions
-        _position: {x: 460, y: 760}
+        _position: {x: 120, y: 1515.3931}
         _size: {x: 300, y: 220}
         _tags:
         - question
         - risk
         - launch
         _isPinned: 0
-        _body: "- Do we need a stronger review or export path before launch?\n- Which finder polish items can wait without hurting first-run clarity?\n- Should smart left-to-right layout become the post-launch hero feature?"
+        _body: '- Do we need a stronger review or export path before launch?
+
+          -
+          Which finder polish items can wait without hurting first-run clarity?
+
+          -
+          Should smart left-to-right layout become the post-launch hero feature?'
         _accentHex: '#2B90D9'
-    - rid: 1014
+    - rid: 4671173571184164898
       type: {class: ReferenceNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
       data:
         _id: 10000000000000000000000000000014
         _typeId: project-designer.reference
         _title: Launch Positioning Draft
-        _position: {x: 1840, y: 240}
+        _position: {x: 120, y: 15.393066}
         _size: {x: 320, y: 220}
         _tags:
         - launch
         - docs
         _isPinned: 0
-        _summary: Current package and store messaging centered on planner-first positioning, workflow presets, and extension hooks.
-        _assetPath:
-        _imageAssetPath:
-        _textReference: Use this as the source for README copy, onboarding messaging, and store-ready language.
-        _externalUrl:
-    - rid: 1015
+        _summary: Current package and store messaging centered on planner-first positioning,
+          workflow presets, and extension hooks.
+        _assetPath: 
+        _imageAssetPath: 
+        _textReference: Use this as the source for README copy, onboarding messaging,
+          and store-ready language.
+        _externalUrl: 
+    - rid: 4671173571184164899
       type: {class: ReferenceNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
       data:
         _id: 10000000000000000000000000000015
         _typeId: project-designer.reference
         _title: Planner UI Direction
-        _position: {x: 1840, y: 500}
+        _position: {x: 120, y: 615.39307}
         _size: {x: 320, y: 220}
         _tags:
         - polish
         - ui
         _isPinned: 0
-        _summary: Notes for keeping the board readable with stronger accents, simpler chips, and better parity with onboarding surfaces.
-        _assetPath:
-        _imageAssetPath:
-        _textReference: Tie the board look back to the onboarding shell so the product feels consistent.
-        _externalUrl:
-    - rid: 1016
+        _summary: Notes for keeping the board readable with stronger accents, simpler
+          chips, and better parity with onboarding surfaces.
+        _assetPath: 
+        _imageAssetPath: 
+        _textReference: Tie the board look back to the onboarding shell so the product
+          feels consistent.
+        _externalUrl: 
+    - rid: 4671173571184164900
       type: {class: ReferenceNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
       data:
         _id: 10000000000000000000000000000016
         _typeId: project-designer.reference
         _title: Sample Board Goals
-        _position: {x: 1840, y: 760}
+        _position: {x: 120, y: 915.39307}
         _size: {x: 320, y: 220}
         _tags:
         - showcase
         - sample
         _isPinned: 0
-        _summary: Examples should prove planning depth, launch readiness, extensibility, and the package-friendly architecture in one pass.
-        _assetPath:
-        _imageAssetPath:
-        _textReference: Use this as the checklist for deciding whether a sample board is explanatory enough.
-        _externalUrl:
-    - rid: 1017
+        _summary: Examples should prove planning depth, launch readiness, extensibility,
+          and the package-friendly architecture in one pass.
+        _assetPath: 
+        _imageAssetPath: 
+        _textReference: Use this as the checklist for deciding whether a sample board
+          is explanatory enough.
+        _externalUrl: 
+    - rid: 4671173571184164901
       type: {class: ClassNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
       data:
         _id: 10000000000000000000000000000017
         _typeId: project-designer.class
         _title: ProjectDesignerWorkspaceView
-        _position: {x: 1480, y: 780}
+        _position: {x: 120, y: 1815.3931}
         _size: {x: 340, y: 260}
         _tags:
         - technical
         - planner-core
         _isPinned: 0
         _namespaceName: ProjectDesigner.V2.Editor
-        _summary: Coordinates the planner shell, board canvas, inspector refresh, and overview surfaces.
+        _summary: Coordinates the planner shell, board canvas, inspector refresh,
+          and overview surfaces.
         _fields:
-        - _signature: _board: ProjectBoardAsset
+        - _signature: _board
           _visibility: private
-        - _signature: _commandStack: ProjectDesignerCommandStack
+        - _signature: 
+          _visibility: private
+        - _signature: _commandStack
+          _visibility: private
+        - _signature: 
           _visibility: private
         _methods:
         - _signature: BindBoard(ProjectBoardAsset)
@@ -525,24 +581,29 @@ MonoBehaviour:
           _visibility: public
         - _signature: RebuildInspector()
           _visibility: private
-    - rid: 1018
+    - rid: 4671173571184164902
       type: {class: ClassNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
       data:
         _id: 10000000000000000000000000000018
         _typeId: project-designer.class
         _title: BoardInsights
-        _position: {x: 1140, y: 980}
+        _position: {x: 660, y: 717.39307}
         _size: {x: 340, y: 260}
         _tags:
         - technical
         - insights
         _isPinned: 0
         _namespaceName: ProjectDesigner.V2.Data
-        _summary: Derives workload, risk, dependency, milestone, and quick-filter signals from the board document.
+        _summary: Derives workload, risk, dependency, milestone, and quick-filter
+          signals from the board document.
         _fields:
-        - _signature: AssigneeSummaries: IReadOnlyList<BoardAssigneeSummary>
+        - _signature: AssigneeSummaries
+          _visibility: private
+        - _signature: 
           _visibility: public
-        - _signature: MilestoneReports: IReadOnlyList<BoardMilestoneHealthReport>
+        - _signature: MilestoneReports
+          _visibility: private
+        - _signature: 
           _visibility: public
         _methods:
         - _signature: GetVisibleNodes(BoardDocument)
@@ -551,3 +612,20 @@ MonoBehaviour:
           _visibility: public
         - _signature: GetMilestoneHealth(BoardDocument, MilestoneNodeModel)
           _visibility: public
+    - rid: 4671173571184164903
+      type: {class: TaskNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
+      data:
+        _id: 935df0684fdf41cb8d227e37e755477f
+        _typeId: project-designer.task
+        _title: New Task
+        _position: {x: 1324.5529, y: 1043.0625}
+        _size: {x: 320, y: 220}
+        _tags: []
+        _isPinned: 0
+        _description: Describe the user value and acceptance criteria.
+        _status: 0
+        _priority: 1
+        _estimatePoints: 3
+        _assigneeId: 
+        _dueDateIso: 
+        _acceptanceCriteria: 

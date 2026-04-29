@@ -1,15 +1,14 @@
 # First 10 Minutes
 
-## 1. Open The Project Finder
+## 1. Open Onboarding
 
-Start with `Tools/Project Designer/Project Finder`.
+Start with `Tools/Project Designer/Onboarding`.
 
-That window is the fastest way to:
+That window is the best place to:
 
-- create a board from a preset
-- reopen an existing planning board
-- pin the boards you come back to most often
-- compare showcase boards versus workflow presets
+- understand the difference between onboarding, Project Finder, and the planner
+- pick a starter template on purpose
+- learn the core interactions before you start moving cards around
 
 ## 2. Choose The Right Starter
 
@@ -23,7 +22,17 @@ Pick one of these on purpose:
 - `Research & Reference Board` if you are collecting inspiration and need synthesis
 - `Stakeholder Review Board` if a review meeting is the next real milestone
 
-## 3. Replace The Example Context
+## 3. Open Project Finder For Existing Boards
+
+Once you already have boards in the project, switch to `Tools/Project Designer/Project Finder`.
+
+Use it to:
+
+- reopen current planning boards
+- pin the ones you revisit most
+- search by board name, summary, path, and team snapshot
+
+## 4. Replace The Example Context
 
 Select the board background and update:
 
@@ -34,7 +43,7 @@ Select the board background and update:
 
 Then update the pinned `Project Brief` or the most visible top-left context card so the board stops feeling like sample content immediately.
 
-## 4. Trace The Seeded Links
+## 5. Trace The Seeded Links
 
 Before adding anything, drag from the `Link` handle on a few cards and then inspect the links section.
 
@@ -44,7 +53,7 @@ This is the fastest way to understand:
 - how milestone links differ from dependency links
 - how references can support planning cards without becoming clutter
 
-## 5. Add Real Project Inputs
+## 6. Add Real Project Inputs
 
 Drag in:
 
@@ -54,7 +63,7 @@ Drag in:
 
 This validates whether the planner is useful with your actual material instead of only the seeded demo content.
 
-## 6. Save One Useful View
+## 7. Save One Useful View
 
 Use the search bar and category filter, then save that state as a view.
 
@@ -65,7 +74,7 @@ Good first saved views:
 - `Review Prep`
 - `References`
 
-## 7. Decide Whether You Need Extensions
+## 8. Decide Whether You Need Extensions
 
 If built-in cards are close but not quite right, import the `Status Report Extension` sample and open its demo board.
 

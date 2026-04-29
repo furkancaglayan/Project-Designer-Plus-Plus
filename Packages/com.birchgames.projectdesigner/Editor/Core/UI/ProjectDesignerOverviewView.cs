@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ProjectDesigner.V2.Data;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -9,18 +10,49 @@ namespace ProjectDesigner.V2.Editor
 {
     internal sealed class ProjectDesignerOverviewView : VisualElement
     {
+        private const string OverviewExpandedSessionKey = "ProjectDesigner.V2.OverviewExpanded";
         private readonly Action<string> _toggleQuickFilter;
+        private bool _isExpanded;
+        private BoardDocument _lastDocument;
 
         public ProjectDesignerOverviewView(Action<string> toggleQuickFilter)
         {
             _toggleQuickFilter = toggleQuickFilter;
+            _isExpanded = SessionState.GetBool(OverviewExpandedSessionKey, false);
             AddToClassList("pd-overview");
         }
 
         public void Refresh(BoardDocument document)
         {
+            _lastDocument = document;
             Clear();
+            EnableInClassList("pd-overview-collapsed", !_isExpanded);
             if (document == null)
+            {
+                return;
+            }
+
+            var headerRow = new VisualElement();
+            headerRow.AddToClassList("pd-overview-header");
+            Add(headerRow);
+
+            var titleLabel = new Label("Insights");
+            titleLabel.AddToClassList("pd-section-title");
+            headerRow.Add(titleLabel);
+
+            var summaryLabel = new Label(BuildSummary(document));
+            summaryLabel.AddToClassList("pd-overview-summary");
+            headerRow.Add(summaryLabel);
+
+            var toggleButton = new Button(ToggleExpandedState)
+            {
+                text = _isExpanded ? "Hide" : "Show"
+            };
+            toggleButton.AddToClassList("pd-secondary-button");
+            toggleButton.AddToClassList("pd-overview-toggle");
+            headerRow.Add(toggleButton);
+
+            if (!_isExpanded)
             {
                 return;
             }
@@ -106,6 +138,21 @@ namespace ProjectDesigner.V2.Editor
             {
                 _toggleQuickFilter.Invoke(filterId);
             }
+        }
+
+        private void ToggleExpandedState()
+        {
+            _isExpanded = !_isExpanded;
+            SessionState.SetBool(OverviewExpandedSessionKey, _isExpanded);
+            Refresh(_lastDocument);
+        }
+
+        private static string BuildSummary(BoardDocument document)
+        {
+            return
+                document.Nodes.OfType<TaskNodeModel>().Count() + " tasks | " +
+                BoardInsights.GetBlockedTasks(document).Count() + " blocked | " +
+                BoardInsights.CountAtRiskNodes(document) + " at risk";
         }
     }
 }
