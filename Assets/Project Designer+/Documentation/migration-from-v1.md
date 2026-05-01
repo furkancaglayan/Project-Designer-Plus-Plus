@@ -8,7 +8,7 @@ Project Designer+ `v3.0.0` is a clean-break rewrite.
 - `v3.0.0` uses a new `ProjectBoardAsset` document model
 - `v3.0.0` uses UI Toolkit for the planner shell and a custom canvas/edge layer
 - `v3.0.0` replaces reflection-first customization with explicit registry-driven extension points
-- `v3.0.0` is installed as a regular Unity asset under `Assets/Project Designer`
+- `v3.0.0` is installed as a regular Unity asset under `Assets/Project Designer+`
 
 ## Compatibility
 

@@ -20,7 +20,7 @@ namespace ProjectDesigner.V2.Editor
         private bool _autoOpenWorkspaceAfterBoardCreation = true;
 
         [SerializeField]
-        private string _defaultBoardFolder = "Assets/Project Designer";
+        private string _defaultBoardFolder = "Assets/Project Designer Boards";
 
         [SerializeField]
         private string _lastSeenOnboardingVersion = string.Empty;

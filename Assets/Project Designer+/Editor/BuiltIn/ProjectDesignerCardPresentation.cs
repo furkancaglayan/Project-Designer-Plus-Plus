@@ -33,6 +33,7 @@ namespace ProjectDesigner.V2.BuiltIn
     internal static class ProjectDesignerCardPresentation
     {
         internal const int MaxVisibleTags = 2;
+        private const string ReferencePlaceholderSummary = "Link assets, screenshots, and inspiration to the board.";
 
         public static string GetPreviewText(BoardNodeModel node, IProjectDesignerNodeDefinition definition, BoardDocument document)
         {
@@ -234,6 +235,11 @@ namespace ProjectDesigner.V2.BuiltIn
             else if (!string.IsNullOrWhiteSpace(reference.TextReference))
             {
                 return reference.TextReference.Trim();
+            }
+
+            if (string.Equals(summary, ReferencePlaceholderSummary, StringComparison.Ordinal))
+            {
+                summary = string.Empty;
             }
 
             if (!string.IsNullOrWhiteSpace(summary))

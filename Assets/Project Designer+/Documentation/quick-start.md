@@ -78,5 +78,5 @@ Sticky context card for pitch, board team snapshot, and project knowledge.
 - Drop a `TextAsset` to create a reference card.
 - Drop a `Texture2D` or `Sprite` to create a visual reference card.
 - Drop a `MonoScript` to create a class card.
-- Open the included `Showcase Boards` sample under `Assets/Project Designer/Samples` if you want a ready-made dense board for screenshots and team walkthroughs.
-- Open the included `Status Report Extension` sample under `Assets/Project Designer/Samples` to see how a custom importer adds a new card type.
+- Open the included `Showcase Boards` sample under `Assets/Project Designer+/Samples` if you want a ready-made dense board for screenshots and team walkthroughs.
+- Open the included `Status Report Extension` sample under `Assets/Project Designer+/Samples` to see how a custom importer adds a new card type.

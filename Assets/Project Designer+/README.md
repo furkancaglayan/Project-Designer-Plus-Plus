@@ -16,11 +16,11 @@ The shipped Asset Store version installs as a regular Unity asset inside your pr
 
 ## Installed Layout
 
-- `Assets/Project Designer`
+- `Assets/Project Designer+`
   Main product folder for the planner, editor tooling, runtime data model, and docs.
-- `Assets/Project Designer/Samples`
+- `Assets/Project Designer+/Samples`
   Included sample boards and extension examples. No extra import step is required.
-- `Assets/Project Designer/Documentation`
+- `Assets/Project Designer+/Documentation`
   User-facing docs shipped with the asset.
 
 ## Minimum Version

@@ -2,7 +2,7 @@
 
 Project Designer+ is a Unity editor tool for node-based pre-production planning.
 
-The shipped Asset Store version is intended to install as a regular Unity asset inside `Assets/Project Designer` and targets `Unity 2022.3 LTS+`.
+The shipped Asset Store version installs as a regular Unity asset inside `Assets/Project Designer+` and targets `Unity 2022.3 LTS+`.
 
 ## Current Direction
 
@@ -15,27 +15,23 @@ The shipped Asset Store version is intended to install as a regular Unity asset 
 
 ## Repo Layout
 
-- `Assets/Project Designer`
-  The classic Unity-package layout being prepared for the shipped Asset Store asset.
-- `Packages/com.birchgames.projectdesigner`
-  Source-package copy and tests retained during the export branch transition.
+- `Assets/Project Designer+`
+  The classic Unity-asset layout used for the shipped Asset Store version.
 
 ## Getting Started
 
 1. Open the project in Unity.
 2. Use `Tools/Project Designer/Onboarding` if you want to learn the tool or start from a template.
 3. Use `Tools/Project Designer/Project Finder` to reopen current boards.
-4. Open the included sample content under `Assets/Project Designer/Samples` if you want to evaluate showcase boards or custom-card extensibility immediately.
+4. Open the included sample content under `Assets/Project Designer+/Samples` if you want to evaluate showcase boards or custom-card extensibility immediately.
 
 ## Documentation
 
-- [Package README](Assets/Project%20Designer/README.md)
-- [Quick Start](Assets/Project%20Designer/Documentation/quick-start.md)
-- [First 10 Minutes](Assets/Project%20Designer/Documentation/first-10-minutes.md)
-- [Extensibility](Assets/Project%20Designer/Documentation/extensibility.md)
-- [Migration From v1](Assets/Project%20Designer/Documentation/migration-from-v1.md)
-- [Sample Boards](Assets/Project%20Designer/Documentation/sample-boards.md)
-- [Maintainer Guide](Assets/Project%20Designer%20Docs/Project%20Designer%2B%20Maintainer%20Guide.md)
+- [Package README](Assets/Project%20Designer%2B/README.md)
+- [Quick Start](Assets/Project%20Designer%2B/Documentation/quick-start.md)
+- [Extensibility](Assets/Project%20Designer%2B/Documentation/extensibility.md)
+- [Migration From v1](Assets/Project%20Designer%2B/Documentation/migration-from-v1.md)
+- [Sample Boards](Assets/Project%20Designer%2B/Documentation/sample-boards.md)
 
 ## Current Status
 

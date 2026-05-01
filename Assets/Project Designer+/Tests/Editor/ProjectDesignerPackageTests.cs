@@ -321,7 +321,7 @@ namespace ProjectDesigner.V2.Tests
             _temporaryAssets.Add(textPath);
 
             TextAsset textAsset = AssetDatabase.LoadAssetAtPath<TextAsset>(textPath);
-            MonoScript scriptAsset = AssetDatabase.LoadAssetAtPath<MonoScript>("Packages/com.birchgames.projectdesigner/Runtime/TaskNodeModel.cs");
+            MonoScript scriptAsset = AssetDatabase.LoadAssetAtPath<MonoScript>("Assets/Project Designer+/Runtime/TaskNodeModel.cs");
 
             IProjectDesignerAssetImporter textImporter = ProjectDesignerRegistry.GetAssetImporters().First(importer => importer.CanImport(textAsset));
             IProjectDesignerAssetImporter scriptImporter = ProjectDesignerRegistry.GetAssetImporters().First(importer => importer.CanImport(scriptAsset));
@@ -900,34 +900,29 @@ namespace ProjectDesigner.V2.Tests
         }
 
         [Test]
-        public void Package_DeclaresSamplesAndDemoBoards()
+        public void AssetLayout_DeclaresSamplesAndDemoBoards()
         {
-            string packageJsonPath = "Packages/com.birchgames.projectdesigner/package.json";
-            string showcaseReadmePath = "Packages/com.birchgames.projectdesigner/Samples~/ShowcaseBoards/README.md";
-            string showcaseBoardPath = "Packages/com.birchgames.projectdesigner/Samples~/ShowcaseBoards/Project Designer+ Redo Demo Board.asset";
-            string sampleCodePath = "Packages/com.birchgames.projectdesigner/Samples~/StatusReportExtension/StatusReportExtension.cs";
-            string sampleReadmePath = "Packages/com.birchgames.projectdesigner/Samples~/StatusReportExtension/README.md";
-            string sampleBoardPath = "Packages/com.birchgames.projectdesigner/Samples~/StatusReportExtension/Status Report Demo Board.asset";
+            string showcaseReadmePath = "Assets/Project Designer+/Samples/ShowcaseBoards/README.md";
+            string showcaseBoardPath = "Assets/Project Designer+/Samples/ShowcaseBoards/Project Designer+ Redo Demo Board.asset";
+            string sampleCodePath = "Assets/Project Designer+/Samples/StatusReportExtension/StatusReportExtension.cs";
+            string sampleReadmePath = "Assets/Project Designer+/Samples/StatusReportExtension/README.md";
+            string sampleBoardPath = "Assets/Project Designer+/Samples/StatusReportExtension/Status Report Demo Board.asset";
 
-            Assert.IsTrue(File.Exists(packageJsonPath));
             Assert.IsTrue(File.Exists(showcaseReadmePath));
             Assert.IsTrue(File.Exists(showcaseBoardPath));
             Assert.IsTrue(File.Exists(sampleCodePath));
             Assert.IsTrue(File.Exists(sampleReadmePath));
             Assert.IsTrue(File.Exists(sampleBoardPath));
 
-            string packageJson = File.ReadAllText(packageJsonPath);
             string showcaseReadme = File.ReadAllText(showcaseReadmePath);
             string showcaseBoard = File.ReadAllText(showcaseBoardPath);
             string sampleCode = File.ReadAllText(sampleCodePath);
             string sampleReadme = File.ReadAllText(sampleReadmePath);
             string sampleBoard = File.ReadAllText(sampleBoardPath);
 
-            StringAssert.Contains("Showcase Boards", packageJson);
             StringAssert.Contains("Project Designer+ Redo Demo Board", showcaseReadme);
             StringAssert.Contains("ProjectDesignerWorkspaceView", showcaseBoard);
             StringAssert.Contains("Project Designer+ Redo Demo Board", showcaseBoard);
-            StringAssert.Contains("Status Report Extension", packageJson);
             StringAssert.Contains("StatusReportNodeModel", sampleCode);
             StringAssert.Contains("StatusReportExtensionRegistration", sampleCode);
             StringAssert.Contains("demo board", sampleReadme.ToLowerInvariant());

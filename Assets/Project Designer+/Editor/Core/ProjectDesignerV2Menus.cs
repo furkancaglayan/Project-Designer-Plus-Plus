@@ -6,8 +6,6 @@ namespace ProjectDesigner.V2.Editor
 {
     internal static class ProjectDesignerV2Menus
     {
-        private const string MaintainerGuideAssetPath = "Assets/Project Designer Docs/Project Designer+ Maintainer Guide.md";
-
         [MenuItem("Tools/Project Designer/Open Planner", priority = -10)]
         [MenuItem("Window/Project Designer/Open Planner", priority = 2000)]
         public static void OpenPlanner()
@@ -35,27 +33,14 @@ namespace ProjectDesigner.V2.Editor
             string quickStartPath = Path.GetFullPath(ProjectDesignerPackageInfo.QuickStartPath);
             if (!File.Exists(quickStartPath))
             {
-                EditorUtility.DisplayDialog("Project Designer+", "Quick start documentation could not be found in the embedded package.", "OK");
+                EditorUtility.DisplayDialog("Project Designer+", "Quick start documentation could not be found under Assets/Project Designer+.", "OK");
                 return;
             }
 
             EditorUtility.OpenWithDefaultApp(quickStartPath);
         }
 
-        [MenuItem("Tools/Project Designer/Documentation/Maintainer Guide", priority = 11)]
-        public static void OpenMaintainerGuide()
-        {
-            string maintainerGuidePath = Path.GetFullPath(MaintainerGuideAssetPath);
-            if (!File.Exists(maintainerGuidePath))
-            {
-                EditorUtility.DisplayDialog(ProjectDesignerProductInfo.ProductName, "The maintainer guide could not be found under Assets.", "OK");
-                return;
-            }
-
-            EditorUtility.OpenWithDefaultApp(maintainerGuidePath);
-        }
-
-        [MenuItem("Tools/Project Designer/Project Settings", priority = 12)]
+        [MenuItem("Tools/Project Designer/Project Settings", priority = 11)]
         public static void OpenProjectSettings()
         {
             SettingsService.OpenProjectSettings(ProjectDesignerPackageInfo.SettingsPath);

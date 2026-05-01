@@ -28,9 +28,9 @@ Project Designer+ v2 exposes explicit registration APIs instead of reflection-he
 
 See:
 
-- `Assets/Project Designer/Samples/StatusReportExtension/StatusReportExtension.cs`
-- `Assets/Project Designer/Samples/StatusReportExtension/Status Report Demo Board.asset`
-- `Assets/Project Designer/Samples/StatusReportExtension/README.md`
+- `Assets/Project Designer+/Samples/StatusReportExtension/StatusReportExtension.cs`
+- `Assets/Project Designer+/Samples/StatusReportExtension/Status Report Demo Board.asset`
+- `Assets/Project Designer+/Samples/StatusReportExtension/README.md`
 
 That sample adds:
 
@@ -40,7 +40,7 @@ That sample adds:
 - a `TextAsset` importer for assets with `status` in the name
 - a demo planning board that already uses the custom card
 
-The shipped Asset Store version includes that sample directly inside the project under `Assets/Project Designer/Samples`.
+The shipped Asset Store version includes that sample directly inside the project under `Assets/Project Designer+/Samples`.
 
 ## What To Verify In The Sample
 

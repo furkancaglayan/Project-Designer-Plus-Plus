@@ -64,7 +64,7 @@ namespace ProjectDesigner.V2.Editor
             EditorGUILayout.PropertyField(
                 _settingsObject.FindProperty("_defaultBoardFolder"),
                 new GUIContent("Default Board Folder", "Assets-relative fallback folder used when a new board cannot be created from the current selection."));
-            EditorGUILayout.HelpBox("Use an Assets-relative folder such as 'Assets/Project Designer'. When your current selection is outside Assets, new planning boards will be created here.", MessageType.None);
+            EditorGUILayout.HelpBox("Use an Assets-relative folder such as 'Assets/Project Designer Boards'. When your current selection is outside Assets, new planning boards will be created here.", MessageType.None);
 
             EditorGUILayout.Space(10f);
             EditorGUILayout.LabelField("Team Roster", EditorStyles.boldLabel);

@@ -31,8 +31,8 @@ Project Designer+ includes boards that do two different jobs:
 
 Look in:
 
-- `Assets/Project Designer/Samples/ShowcaseBoards`
-- `Assets/Project Designer/Samples/StatusReportExtension`
+- `Assets/Project Designer+/Samples/ShowcaseBoards`
+- `Assets/Project Designer+/Samples/StatusReportExtension`
 
 Those folders are already included with the asset. No separate sample import step is required.
 
