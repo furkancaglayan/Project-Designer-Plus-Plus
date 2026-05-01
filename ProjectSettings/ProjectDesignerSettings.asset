@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bbd713b080e10714e86c6bae3a47d8d5, type: 3}
+  m_Script: {fileID: 11500000, guid: 3e9ad3765b8f3294f90ed9c618b3234a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _showOnboardingOnStartup: 1
@@ -18,21 +18,7 @@ MonoBehaviour:
   _defaultBoardFolder: Assets/Project Designer
   _lastSeenOnboardingVersion: 3.0.0
   _editorTheme: 1
-  _defaultTeamRoster: {fileID: 11400000, guid: a485b74c24f68fa4994bd60b7d4f0106, type: 2}
-  _projectFinderSortMode: 1
-  _pinnedBoardGuids:
-  - 0de2b6b1d8e994742a20930288199100
-  - 5c6ca521fd6d96e4ea11aac6afac7781
-  _recentBoardGuids:
-  - 3f0eb35251bd284478d83859519e72c2
-  - 5262b6e7bdcb0d14fa2db933a9502938
-  - dbff49d20ff0c0f459b337105a6805c9
-  - 3e975485c57a06e44b021fc108708a4c
-  - ca071b71157ea974fbfaca3381fea4bc
-  - 5ef3fa8362f8ad04c97736e0880d3edd
-  - 667afe5cf9ad2c84b8d6baf580846f9f
-  - ac83d00c36d2992428721afa4ffd6828
-  - 2640a51fd985caa4a8de6867ae9003a4
-  - aa7832f24a7d6584cb17b64f762858f4
-  - ab7f8eb1e92432d44beb55399e88dedc
-  - 0de2b6b1d8e994742a20930288199100
+  _defaultTeamRoster: {fileID: 0}
+  _projectFinderSortMode: 0
+  _pinnedBoardGuids: []
+  _recentBoardGuids: []
