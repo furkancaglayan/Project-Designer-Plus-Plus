@@ -17,26 +17,28 @@ That separation is intentional. Avoid letting one surface do all three jobs agai
 
 ## Package Layout
 
-- `Packages/com.birchgames.projectdesigner/Runtime`
+- `Assets/Project Designer/Runtime`
   Data model, board document, command stack, built-in node models, board insights, layout helpers, and public extension interfaces.
-- `Packages/com.birchgames.projectdesigner/Editor/Core`
+- `Assets/Project Designer/Editor/Core`
   Planner shell, onboarding, Project Finder, settings provider, menus, theme config, and shared editor utilities.
-- `Packages/com.birchgames.projectdesigner/Editor/BuiltIn`
+- `Assets/Project Designer/Editor/BuiltIn`
   Built-in card definitions, inspectors, templates, presentation helpers, and importers.
-- `Packages/com.birchgames.projectdesigner/Samples~`
+- `Assets/Project Designer/Samples`
   Public sample content, including showcase boards and the custom status-report extension sample.
 - `Packages/com.birchgames.projectdesigner/Tests/Editor`
-  Edit mode tests for document behavior, board insights, presets, shell helpers, and extension registration.
+  Edit mode tests retained in the repo while the classic Unity-package export branch is being prepared.
 
 ## Shipping Layout Note
 
-The source repo is maintained under `Packages/com.birchgames.projectdesigner`, but the intended customer-facing Asset Store delivery is a regular Unity package import, not a Package Manager install.
+The intended customer-facing Asset Store delivery is a regular Unity asset import, not a Package Manager install.
+
+On this branch, `Assets/Project Designer` is the export-ready source of truth. The old embedded package copy under `Packages/com.birchgames.projectdesigner` is still present only because the live Unity session prevented a clean move/delete pass.
 
 For shipped user-facing docs and support responses, describe the installed layout as:
 
-- `Assets/ProjectDesigner+`
-- `Assets/ProjectDesigner+/Samples`
-- `Assets/ProjectDesigner+/Documentation`
+- `Assets/Project Designer`
+- `Assets/Project Designer/Samples`
+- `Assets/Project Designer/Documentation`
 
 ## High-Level Data Flow
 
@@ -128,7 +130,7 @@ Registry entry point:
 
 Reference sample:
 
-- `Samples~/StatusReportExtension`
+- `Assets/Project Designer/Samples/StatusReportExtension`
 
 Use that sample when checking whether API changes would break third-party customization.
 
@@ -164,7 +166,7 @@ Avoid brittle UI tests for purely visual shell behavior unless the logic is extr
 
 There are now two doc audiences:
 
-- package docs in `Documentation~`
+- package docs in `Assets/Project Designer/Documentation`
   user-facing guidance
 - this guide in `Assets`
   maintainer-facing architecture and workflow notes
