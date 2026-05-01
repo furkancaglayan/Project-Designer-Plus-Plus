@@ -14,6 +14,7 @@ namespace ProjectDesigner.V2.Editor
     {
         private const string LibraryExpandedSessionKey = "ProjectDesigner.V2.LibraryExpanded";
         private const string InspectorExpandedSessionKey = "ProjectDesigner.V2.InspectorExpanded";
+        private const string InspectorFoldoutSessionKeyPrefix = "ProjectDesigner.V2.InspectorFoldout.";
         internal const int ToolbarTitleMaxLength = 40;
         internal const int InspectorSummaryMaxLength = 22;
 
@@ -364,7 +365,7 @@ namespace ProjectDesigner.V2.Editor
             _inspectorView.Add(teamField);
             _inspectorView.Add(CreateMutedBodyLabel("Use this as board context and shared knowledge. Task assignees come from the project-wide team roster in Project Settings."));
 
-            Foldout templatesFoldout = CreateFoldout("Starter Layouts", false);
+            Foldout templatesFoldout = CreatePersistentInspectorFoldout("Board.StarterLayouts", "Starter Layouts", false);
             templatesFoldout.Add(CreateMutedBodyLabel("Swap the current board structure for a curated layout."));
 
             foreach (BoardTemplateDefinition template in _boardAsset.Document.Templates)
@@ -417,7 +418,7 @@ namespace ProjectDesigner.V2.Editor
 
         private void BuildConnectionsInspector(BoardNodeModel selectedNode)
         {
-            Foldout connectionsFoldout = CreateFoldout("Links", false);
+            Foldout connectionsFoldout = CreatePersistentInspectorFoldout(selectedNode.Id + ".Links", "Links", false);
             connectionsFoldout.Add(CreateMutedBodyLabel("Drag from the Link handle on a card for the fastest path, or create relationships manually here when you need more control."));
             _inspectorView.Add(connectionsFoldout);
 
@@ -435,13 +436,19 @@ namespace ProjectDesigner.V2.Editor
                 .ToList();
 
             var edgePicker = new PopupField<string>("Link Type", availableDefinitions.Select(definition => definition.DisplayName).ToList(), 0);
-            var targetPicker = new PopupField<string>("Linked Card", new List<string>(), 0);
+            var targetPicker = new PopupField<ProjectDesignerLinkTargetChoice>(
+                "Linked Card",
+                new List<ProjectDesignerLinkTargetChoice>(),
+                0,
+                choice => choice == null ? string.Empty : choice.DisplayLabel,
+                choice => choice == null ? string.Empty : choice.DisplayLabel);
             var directionHint = CreateMutedBodyLabel(string.Empty);
             connectionsFoldout.Add(edgePicker);
             connectionsFoldout.Add(targetPicker);
             connectionsFoldout.Add(directionHint);
 
             List<ProjectDesignerLinkOption> activeOptions = new List<ProjectDesignerLinkOption>();
+            List<ProjectDesignerLinkTargetChoice> activeTargetChoices = new List<ProjectDesignerLinkTargetChoice>();
             Action refreshTargetPicker = () =>
             {
                 IProjectDesignerEdgeDefinition selectedDefinition = availableDefinitions
@@ -450,12 +457,20 @@ namespace ProjectDesigner.V2.Editor
                     .Where(option => option.Definition.TypeId == (selectedDefinition == null ? string.Empty : selectedDefinition.TypeId))
                     .ToList();
 
-                List<string> choiceLabels = activeOptions.Select(option => option.DisplayLabel).ToList();
-                targetPicker.choices = choiceLabels;
-                if (choiceLabels.Count > 0)
+                activeTargetChoices = ProjectDesignerLinkUtility.GetTargetChoicesForDefinition(
+                    _boardAsset.Document,
+                    selectedNode,
+                    selectedDefinition == null ? string.Empty : selectedDefinition.TypeId);
+
+                targetPicker.choices = activeTargetChoices;
+                if (activeTargetChoices.Count > 0)
                 {
                     targetPicker.index = 0;
-                    targetPicker.SetValueWithoutNotify(choiceLabels[0]);
+                    targetPicker.SetValueWithoutNotify(activeTargetChoices[0]);
+                }
+                else
+                {
+                    targetPicker.index = -1;
                 }
 
                 bool pointsIntoSelectedNode = activeOptions.Any(option => !option.SelectedNodeIsSource);
@@ -469,12 +484,18 @@ namespace ProjectDesigner.V2.Editor
 
             var createButton = new Button(() =>
             {
-                if (activeOptions.Count == 0 || targetPicker.index < 0 || targetPicker.index >= activeOptions.Count)
+                if (activeTargetChoices.Count == 0 || targetPicker.index < 0 || targetPicker.index >= activeTargetChoices.Count)
                 {
                     return;
                 }
 
-                ProjectDesignerLinkOption option = activeOptions[targetPicker.index];
+                ProjectDesignerLinkTargetChoice selectedChoice = targetPicker.value ?? activeTargetChoices[targetPicker.index];
+                ProjectDesignerLinkOption option = selectedChoice == null ? null : selectedChoice.Option;
+                if (option == null)
+                {
+                    return;
+                }
+
                 string sourceId = option.SelectedNodeIsSource ? selectedNode.Id : option.OtherNode.Id;
                 string targetId = option.SelectedNodeIsSource ? option.OtherNode.Id : selectedNode.Id;
 
@@ -871,6 +892,14 @@ namespace ProjectDesigner.V2.Editor
             return foldout;
         }
 
+        private Foldout CreatePersistentInspectorFoldout(string stateKeySuffix, string text, bool defaultOpen)
+        {
+            string sessionKey = InspectorFoldoutSessionKeyPrefix + stateKeySuffix;
+            Foldout foldout = CreateFoldout(text, SessionState.GetBool(sessionKey, defaultOpen));
+            foldout.RegisterValueChangedCallback(evt => SessionState.SetBool(sessionKey, evt.newValue));
+            return foldout;
+        }
+
         private static ToolbarButton CreateToolbarButton(string text, Action onClick)
         {
             var button = new ToolbarButton(onClick)
@@ -1235,7 +1264,7 @@ namespace ProjectDesigner.V2.Editor
 
         private void BuildPlannerInsights()
         {
-            Foldout workloadFoldout = CreateFoldout("Workload", false);
+            Foldout workloadFoldout = CreatePersistentInspectorFoldout("Board.Workload", "Workload", false);
             IReadOnlyList<BoardAssigneeSummary> assigneeSummaries = BoardInsights.GetAssigneeSummaries(_boardAsset.Document);
             if (assigneeSummaries.Count == 0)
             {
@@ -1276,7 +1305,7 @@ namespace ProjectDesigner.V2.Editor
             workloadFoldout.Add(CreateMutedBodyLabel(BoardInsights.CountUnassignedOpenTasks(_boardAsset.Document) + " unassigned open tasks"));
             _inspectorView.Add(workloadFoldout);
 
-            Foldout riskFoldout = CreateFoldout("Timeline & Risk", false);
+            Foldout riskFoldout = CreatePersistentInspectorFoldout("Board.TimelineAndRisk", "Timeline & Risk", false);
             riskFoldout.Add(CreateMutedBodyLabel(BoardInsights.GetOverdueTasks(_boardAsset.Document).Count() + " overdue tasks"));
             riskFoldout.Add(CreateMutedBodyLabel(BoardInsights.GetDueSoonTasks(_boardAsset.Document).Count() + " due soon tasks"));
             riskFoldout.Add(CreateMutedBodyLabel(BoardInsights.CountAtRiskNodes(_boardAsset.Document) + " at-risk cards"));
@@ -1293,7 +1322,7 @@ namespace ProjectDesigner.V2.Editor
             riskFoldout.Add(riskButtons);
             _inspectorView.Add(riskFoldout);
 
-            Foldout dependencyFoldout = CreateFoldout("Dependencies", false);
+            Foldout dependencyFoldout = CreatePersistentInspectorFoldout("Board.Dependencies", "Dependencies", false);
             dependencyFoldout.Add(CreateMutedBodyLabel(BoardInsights.CountUnresolvedDependencyLinks(_boardAsset.Document) + " unresolved dependency links"));
             dependencyFoldout.Add(CreateMutedBodyLabel(BoardInsights.GetBlockedTasks(_boardAsset.Document).Count(task => BoardInsights.HasUnresolvedDependencies(_boardAsset.Document, task)) + " tasks are waiting on other tasks"));
             dependencyFoldout.Add(CreateMutedBodyLabel(BoardInsights.GetTasksBlockingOthers(_boardAsset.Document).Count() + " tasks are blocking downstream work"));

@@ -400,6 +400,30 @@ namespace ProjectDesigner.V2.Tests
         }
 
         [Test]
+        public void LinkUtility_TargetChoicesKeepDuplicateMilestoneTitlesDistinct()
+        {
+            BoardDocument document = BoardPresetFactory.CreateEmpty("Duplicate Milestones");
+            var task = new TaskNodeModel { Title = "Source Task" };
+            var milestoneA = new MilestoneNodeModel { Title = "Launch" };
+            var milestoneB = new MilestoneNodeModel { Title = "Launch" };
+
+            document.AddNode(task);
+            document.AddNode(milestoneA);
+            document.AddNode(milestoneB);
+
+            List<ProjectDesignerLinkTargetChoice> choices = ProjectDesignerLinkUtility.GetTargetChoicesForDefinition(
+                document,
+                task,
+                BoardEdgeTypeIds.Milestone);
+
+            Assert.AreEqual(2, choices.Count);
+            Assert.AreNotEqual(choices[0].NodeId, choices[1].NodeId);
+            Assert.AreNotEqual(choices[0].DisplayLabel, choices[1].DisplayLabel);
+            StringAssert.Contains("#1", choices[0].DisplayLabel + choices[1].DisplayLabel);
+            StringAssert.Contains("#2", choices[0].DisplayLabel + choices[1].DisplayLabel);
+        }
+
+        [Test]
         public void SpawnUtility_StaggersRepeatedManualCreatePositions()
         {
             Vector2 center = new Vector2(640f, 360f);

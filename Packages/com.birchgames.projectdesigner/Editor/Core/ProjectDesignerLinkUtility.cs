@@ -12,6 +12,13 @@ namespace ProjectDesigner.V2.Editor
         public string DisplayLabel;
     }
 
+    internal sealed class ProjectDesignerLinkTargetChoice
+    {
+        public string NodeId;
+        public string DisplayLabel;
+        public ProjectDesignerLinkOption Option;
+    }
+
     internal static class ProjectDesignerLinkUtility
     {
         public static List<ProjectDesignerLinkOption> GetLinkOptions(BoardDocument document, BoardNodeModel selectedNode)
@@ -99,6 +106,31 @@ namespace ProjectDesigner.V2.Editor
             }
 
             return new List<ProjectDesignerLinkOption>();
+        }
+
+        public static List<ProjectDesignerLinkTargetChoice> GetTargetChoicesForDefinition(BoardDocument document, BoardNodeModel selectedNode, string edgeTypeId)
+        {
+            if (string.IsNullOrWhiteSpace(edgeTypeId))
+            {
+                return new List<ProjectDesignerLinkTargetChoice>();
+            }
+
+            return GetLinkOptions(document, selectedNode)
+                .Where(option => option.Definition != null && option.Definition.TypeId == edgeTypeId && option.OtherNode != null)
+                .GroupBy(option => option.OtherNode.Id)
+                .Select(group =>
+                {
+                    ProjectDesignerLinkOption option = group.First();
+                    return new ProjectDesignerLinkTargetChoice
+                    {
+                        NodeId = option.OtherNode.Id,
+                        DisplayLabel = option.DisplayLabel,
+                        Option = option
+                    };
+                })
+                .OrderBy(choice => choice.DisplayLabel)
+                .ThenBy(choice => choice.NodeId)
+                .ToList();
         }
 
         public static string GetInlineActionLabel(ProjectDesignerLinkOption option)

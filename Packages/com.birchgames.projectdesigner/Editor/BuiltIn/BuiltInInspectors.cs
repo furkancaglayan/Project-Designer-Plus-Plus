@@ -11,6 +11,8 @@ namespace ProjectDesigner.V2.BuiltIn
 {
     internal static class BuiltInInspectorUtility
     {
+        private const string FoldoutSessionKeyPrefix = "ProjectDesigner.V2.BuiltInFoldout.";
+
         public static void AddDelayedTextField(VisualElement parent, string label, string value, Action<string> onCommit, bool multiline = false)
         {
             var field = new TextField(label);
@@ -70,6 +72,14 @@ namespace ProjectDesigner.V2.BuiltIn
                 value = expanded
             };
             foldout.AddToClassList("pd-foldout");
+            return foldout;
+        }
+
+        public static Foldout CreatePersistentFoldout(string stateKey, string title, bool expanded = false)
+        {
+            string sessionKey = FoldoutSessionKeyPrefix + (string.IsNullOrWhiteSpace(stateKey) ? title : stateKey);
+            Foldout foldout = CreateFoldout(title, SessionState.GetBool(sessionKey, expanded));
+            foldout.RegisterValueChangedCallback(evt => SessionState.SetBool(sessionKey, evt.newValue));
             return foldout;
         }
     }
@@ -168,7 +178,7 @@ namespace ProjectDesigner.V2.BuiltIn
                 repaint();
             });
 
-            Foldout advancedFoldout = BuiltInInspectorUtility.CreateFoldout("Advanced", false);
+            Foldout advancedFoldout = BuiltInInspectorUtility.CreatePersistentFoldout(task.Id + ".Advanced", "Advanced", false);
             var advancedNote = new Label("Use this section for scheduling, sizing, and acceptance details.");
             advancedNote.AddToClassList("pd-muted-body");
             advancedFoldout.Add(advancedNote);
@@ -305,7 +315,7 @@ namespace ProjectDesigner.V2.BuiltIn
                 repaint();
             }, true);
 
-            Foldout contextFoldout = BuiltInInspectorUtility.CreateFoldout("Board Context", false);
+            Foldout contextFoldout = BuiltInInspectorUtility.CreatePersistentFoldout(brief.Id + ".BoardContext", "Board Context", false);
 
             BuiltInInspectorUtility.AddDelayedTextField(contextFoldout, "Board Team Snapshot", brief.TeamSnapshot, value =>
             {
@@ -381,7 +391,7 @@ namespace ProjectDesigner.V2.BuiltIn
                 repaint();
             });
 
-            Foldout detailsFoldout = BuiltInInspectorUtility.CreateFoldout("Advanced", false);
+            Foldout detailsFoldout = BuiltInInspectorUtility.CreatePersistentFoldout(milestone.Id + ".Advanced", "Advanced", false);
             BuiltInInspectorUtility.AddTagsField(detailsFoldout, milestone, board, dispatcher, repaint);
             root.Add(detailsFoldout);
             return root;
@@ -418,7 +428,7 @@ namespace ProjectDesigner.V2.BuiltIn
                 repaint();
             }, true);
 
-            Foldout advancedFoldout = BuiltInInspectorUtility.CreateFoldout("Advanced", false);
+            Foldout advancedFoldout = BuiltInInspectorUtility.CreatePersistentFoldout(note.Id + ".Advanced", "Advanced", false);
             BuiltInInspectorUtility.AddDelayedTextField(advancedFoldout, "Accent Color", note.AccentHex, value =>
             {
                 NoteNodeModel updated = (NoteNodeModel)note.Clone();
@@ -487,7 +497,7 @@ namespace ProjectDesigner.V2.BuiltIn
                 repaint();
             });
 
-            Foldout detailsFoldout = BuiltInInspectorUtility.CreateFoldout("Reference Details", false);
+            Foldout detailsFoldout = BuiltInInspectorUtility.CreatePersistentFoldout(reference.Id + ".ReferenceDetails", "Reference Details", false);
             BuiltInInspectorUtility.AddDelayedTextField(detailsFoldout, "Excerpt", reference.TextReference, value =>
             {
                 ReferenceNodeModel updated = (ReferenceNodeModel)reference.Clone();
@@ -540,7 +550,7 @@ namespace ProjectDesigner.V2.BuiltIn
                 repaint();
             }, true);
 
-            Foldout fieldsFoldout = BuiltInInspectorUtility.CreateFoldout("Fields", false);
+            Foldout fieldsFoldout = BuiltInInspectorUtility.CreatePersistentFoldout(classNode.Id + ".Fields", "Fields", false);
             BuiltInInspectorUtility.AddDelayedTextField(fieldsFoldout, "Field List", string.Join("\n", classNode.Fields.Select(item => item.Visibility + " " + item.Signature)), value =>
             {
                 ClassNodeModel updated = (ClassNodeModel)classNode.Clone();
@@ -559,7 +569,7 @@ namespace ProjectDesigner.V2.BuiltIn
             }, true);
             root.Add(fieldsFoldout);
 
-            Foldout methodsFoldout = BuiltInInspectorUtility.CreateFoldout("Methods", false);
+            Foldout methodsFoldout = BuiltInInspectorUtility.CreatePersistentFoldout(classNode.Id + ".Methods", "Methods", false);
             BuiltInInspectorUtility.AddDelayedTextField(methodsFoldout, "Method List", string.Join("\n", classNode.Methods.Select(item => item.Visibility + " " + item.Signature)), value =>
             {
                 ClassNodeModel updated = (ClassNodeModel)classNode.Clone();
@@ -578,7 +588,7 @@ namespace ProjectDesigner.V2.BuiltIn
             }, true);
             root.Add(methodsFoldout);
 
-            Foldout advancedFoldout = BuiltInInspectorUtility.CreateFoldout("Advanced", false);
+            Foldout advancedFoldout = BuiltInInspectorUtility.CreatePersistentFoldout(classNode.Id + ".Advanced", "Advanced", false);
             BuiltInInspectorUtility.AddTagsField(advancedFoldout, classNode, board, dispatcher, repaint);
             root.Add(advancedFoldout);
             return root;
