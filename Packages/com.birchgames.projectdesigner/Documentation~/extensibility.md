@@ -28,9 +28,9 @@ Project Designer+ v2 exposes explicit registration APIs instead of reflection-he
 
 See:
 
-- [StatusReportExtension.cs](../Samples~/StatusReportExtension/StatusReportExtension.cs)
-- [Status Report Demo Board.asset](../Samples~/StatusReportExtension/Status%20Report%20Demo%20Board.asset)
-- [README.md](../Samples~/StatusReportExtension/README.md)
+- `Assets/ProjectDesigner+/Samples/StatusReportExtension/StatusReportExtension.cs`
+- `Assets/ProjectDesigner+/Samples/StatusReportExtension/Status Report Demo Board.asset`
+- `Assets/ProjectDesigner+/Samples/StatusReportExtension/README.md`
 
 That sample adds:
 
@@ -39,6 +39,8 @@ That sample adds:
 - a custom inspector
 - a `TextAsset` importer for assets with `status` in the name
 - a demo planning board that already uses the custom card
+
+In the source repository, that sample is maintained under `Packages/com.birchgames.projectdesigner/Samples~`, but the shipped Asset Store version includes it directly inside the project under `Assets/ProjectDesigner+/Samples`.
 
 ## What To Verify In The Sample
 

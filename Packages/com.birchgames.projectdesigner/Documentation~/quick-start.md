@@ -1,13 +1,14 @@
 # Quick Start
 
-Project Designer+ opens as a planning-first Unity editor package for pre-production boards, workflow presets, and asset-backed reference capture.
+Project Designer+ installs as a regular Unity package and opens as a planning-first editor tool for pre-production boards, workflow presets, and asset-backed reference capture.
 
 ## Open The Planner
 
-1. Open Unity with `Packages/com.birchgames.projectdesigner` available.
-2. Use `Tools/Project Designer/Onboarding` if you want a guided first-use flow or a starter template.
-3. Use `Tools/Project Designer/Project Finder` if you want to reopen a planning board that already exists.
-4. Use `Tools/Project Designer/Open Planner` when you already know which board you want to work on, or when you already have one selected.
+1. Import Project Designer+ into your Unity project.
+2. Open Unity after the asset finishes importing.
+3. Use `Tools/Project Designer/Onboarding` if you want a guided first-use flow or a starter template.
+4. Use `Tools/Project Designer/Project Finder` if you want to reopen a planning board that already exists.
+5. Use `Tools/Project Designer/Open Planner` when you already know which board you want to work on, or when you already have one selected.
 
 ## Understand The Three Surfaces
 
@@ -77,5 +78,5 @@ Sticky context card for pitch, board team snapshot, and project knowledge.
 - Drop a `TextAsset` to create a reference card.
 - Drop a `Texture2D` or `Sprite` to create a visual reference card.
 - Drop a `MonoScript` to create a class card.
-- Import the `Showcase Boards` sample if you want a ready-made dense board for screenshots and team walkthroughs.
-- Import the `Status Report Extension` sample to see how a custom importer adds a new card type.
+- Open the included `Showcase Boards` sample under `Assets/ProjectDesigner+/Samples` if you want a ready-made dense board for screenshots and team walkthroughs.
+- Open the included `Status Report Extension` sample under `Assets/ProjectDesigner+/Samples` to see how a custom importer adds a new card type.

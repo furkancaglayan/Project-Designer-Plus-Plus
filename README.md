@@ -1,8 +1,8 @@
 # Project Designer+
 
-Project Designer+ is being rebuilt as a UPM-first Unity editor package for node-based pre-production planning.
+Project Designer+ is a Unity editor tool for node-based pre-production planning.
 
-The active package lives at [Packages/com.birchgames.projectdesigner](Packages/com.birchgames.projectdesigner) and targets `Unity 2022.3 LTS+`.
+The shipped Asset Store version is intended to install as a regular Unity package inside `Assets/ProjectDesigner+` and targets `Unity 2022.3 LTS+`.
 
 ## Current Direction
 
@@ -16,7 +16,7 @@ The active package lives at [Packages/com.birchgames.projectdesigner](Packages/c
 ## Repo Layout
 
 - `Packages/com.birchgames.projectdesigner`
-  The active package, docs, samples, tests, and editor tooling.
+  The source package, docs, samples, tests, and editor tooling used to build the shipped asset.
 - `Assets/ProjectDesigner+`
   Legacy v1 content kept in the repo as reference during the transition.
 
@@ -25,7 +25,7 @@ The active package lives at [Packages/com.birchgames.projectdesigner](Packages/c
 1. Open the project in Unity.
 2. Use `Tools/Project Designer/Onboarding` if you want to learn the tool or start from a template.
 3. Use `Tools/Project Designer/Project Finder` to reopen current boards.
-4. Import the `Status Report Extension` sample if you want to evaluate custom-card extensibility immediately.
+4. Open the included sample content under `Assets/ProjectDesigner+/Samples` if you want to evaluate showcase boards or custom-card extensibility immediately.
 
 ## Documentation
 
@@ -35,7 +35,6 @@ The active package lives at [Packages/com.birchgames.projectdesigner](Packages/c
 - [Extensibility](Packages/com.birchgames.projectdesigner/Documentation~/extensibility.md)
 - [Migration From v1](Packages/com.birchgames.projectdesigner/Documentation~/migration-from-v1.md)
 - [Sample Boards](Packages/com.birchgames.projectdesigner/Documentation~/sample-boards.md)
-- [Asset Store Listing Draft](Packages/com.birchgames.projectdesigner/Documentation~/asset-store-listing.md)
 - [Maintainer Guide](Assets/Project%20Designer%20Docs/Project%20Designer%2B%20Maintainer%20Guide.md)
 
 ## Current Status

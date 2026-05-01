@@ -28,6 +28,16 @@ That separation is intentional. Avoid letting one surface do all three jobs agai
 - `Packages/com.birchgames.projectdesigner/Tests/Editor`
   Edit mode tests for document behavior, board insights, presets, shell helpers, and extension registration.
 
+## Shipping Layout Note
+
+The source repo is maintained under `Packages/com.birchgames.projectdesigner`, but the intended customer-facing Asset Store delivery is a regular Unity package import, not a Package Manager install.
+
+For shipped user-facing docs and support responses, describe the installed layout as:
+
+- `Assets/ProjectDesigner+`
+- `Assets/ProjectDesigner+/Samples`
+- `Assets/ProjectDesigner+/Documentation`
+
 ## High-Level Data Flow
 
 ### Opening windows
