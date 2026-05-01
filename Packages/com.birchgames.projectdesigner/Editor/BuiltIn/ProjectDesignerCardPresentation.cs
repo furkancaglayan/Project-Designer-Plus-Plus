@@ -60,6 +60,26 @@ namespace ProjectDesigner.V2.BuiltIn
             return Array.Empty<ProjectDesignerCardSignal>();
         }
 
+        public static string GetSecondaryMetaText(BoardNodeModel node)
+        {
+            if (node is TaskNodeModel task)
+            {
+                return GetTaskSecondaryMetaText(task, false);
+            }
+
+            return string.Empty;
+        }
+
+        public static string GetSecondaryMetaRichText(BoardNodeModel node)
+        {
+            if (node is TaskNodeModel task)
+            {
+                return GetTaskSecondaryMetaText(task, true);
+            }
+
+            return GetSecondaryMetaText(node);
+        }
+
         public static IReadOnlyList<ProjectDesignerCardSignal> GetTaskSignals(TaskNodeModel task, BoardDocument document, ProjectDesignerTeamRosterAsset roster)
         {
             if (task == null)
@@ -239,6 +259,38 @@ namespace ProjectDesigner.V2.BuiltIn
             return hiddenCount <= 0 ? string.Empty : "+" + hiddenCount;
         }
 
+        public static string GetTaskSecondaryMetaText(TaskNodeModel task)
+        {
+            return GetTaskSecondaryMetaText(task, false);
+        }
+
+        private static string GetTaskSecondaryMetaText(TaskNodeModel task, bool richText)
+        {
+            if (task == null)
+            {
+                return string.Empty;
+            }
+
+            var parts = new List<string>();
+            string priorityLabel = GetVisibleTaskPriorityLabel(task.Priority, richText);
+            if (!string.IsNullOrWhiteSpace(priorityLabel))
+            {
+                parts.Add(priorityLabel);
+            }
+
+            if (!string.IsNullOrWhiteSpace(task.DueDateIso))
+            {
+                parts.Add("Due " + task.DueDateIso.Trim());
+            }
+
+            if (task.EstimatePoints > 0)
+            {
+                parts.Add(task.EstimatePoints + " pts");
+            }
+
+            return string.Join(" | ", parts);
+        }
+
         private static IReadOnlyList<ProjectDesignerCardSignal> GetMilestoneSignals(MilestoneNodeModel milestone, BoardDocument document)
         {
             var signals = new List<ProjectDesignerCardSignal>();
@@ -396,6 +448,19 @@ namespace ProjectDesigner.V2.BuiltIn
                     return new Color(0.53f, 0.59f, 0.66f);
                 default:
                     return new Color(0.24f, 0.55f, 0.88f);
+            }
+        }
+
+        private static string GetVisibleTaskPriorityLabel(TaskNodePriority priority, bool richText)
+        {
+            switch (priority)
+            {
+                case TaskNodePriority.Critical:
+                    return richText ? "<color=#E0565B>Critical</color>" : "Critical";
+                case TaskNodePriority.High:
+                    return richText ? "<color=#F0A84A>High</color>" : "High";
+                default:
+                    return string.Empty;
             }
         }
     }

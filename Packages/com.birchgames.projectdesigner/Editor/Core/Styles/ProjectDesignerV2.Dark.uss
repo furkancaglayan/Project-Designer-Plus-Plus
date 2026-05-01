@@ -145,6 +145,10 @@
     color: rgb(225, 229, 236);
 }
 
+.pd-node-meta {
+    color: rgb(167, 177, 192);
+}
+
 .pd-node-signal-chip {
     color: rgb(236, 239, 244);
 }

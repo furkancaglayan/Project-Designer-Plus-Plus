@@ -29,6 +29,7 @@ namespace ProjectDesigner.V2.Editor
         private readonly VisualElement _signalContainer;
         private readonly Label _categoryLabel;
         private readonly Label _previewLabel;
+        private readonly Label _metaLabel;
         private readonly VisualElement _tagsContainer;
         private readonly Label _connectHandle;
         private readonly Color _accentColor;
@@ -118,6 +119,13 @@ namespace ProjectDesigner.V2.Editor
             _previewLabel.pickingMode = PickingMode.Ignore;
             Add(_previewLabel);
 
+            _metaLabel = new Label(ProjectDesignerCardPresentation.GetSecondaryMetaRichText(_node));
+            _metaLabel.AddToClassList("pd-node-meta");
+            _metaLabel.pickingMode = PickingMode.Ignore;
+            _metaLabel.enableRichText = true;
+            _metaLabel.style.display = string.IsNullOrWhiteSpace(_metaLabel.text) ? DisplayStyle.None : DisplayStyle.Flex;
+            Add(_metaLabel);
+
             _tagsContainer = new VisualElement();
             _tagsContainer.AddToClassList("pd-node-tag-row");
             _tagsContainer.pickingMode = PickingMode.Ignore;
@@ -137,6 +145,8 @@ namespace ProjectDesigner.V2.Editor
             _categoryLabel.text = _node.Category;
             RefreshSignals(document);
             _previewLabel.text = ProjectDesignerCardPresentation.GetPreviewText(_node, _definition, document);
+            _metaLabel.text = ProjectDesignerCardPresentation.GetSecondaryMetaRichText(_node);
+            _metaLabel.style.display = string.IsNullOrWhiteSpace(_metaLabel.text) ? DisplayStyle.None : DisplayStyle.Flex;
             RefreshTagChips();
 
             style.left = _node.Position.x;

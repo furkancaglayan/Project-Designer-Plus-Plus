@@ -691,6 +691,26 @@ namespace ProjectDesigner.V2.Tests
         }
 
         [Test]
+        public void CardPresentation_TaskSecondaryMetaKeepsOnlyHighSignalPlanningDetails()
+        {
+            var task = new TaskNodeModel
+            {
+                Title = "Audience",
+                Priority = TaskNodePriority.High,
+                DueDateIso = "2026-05-08",
+                EstimatePoints = 5
+            };
+
+            Assert.AreEqual("High | Due 2026-05-08 | 5 pts", ProjectDesignerCardPresentation.GetTaskSecondaryMetaText(task));
+
+            task.Priority = TaskNodePriority.Medium;
+            task.DueDateIso = string.Empty;
+            task.EstimatePoints = 0;
+
+            Assert.AreEqual(string.Empty, ProjectDesignerCardPresentation.GetTaskSecondaryMetaText(task));
+        }
+
+        [Test]
         public void CardPresentation_TagSummaryCapsVisibleTagsAndShowsOverflow()
         {
             var task = new TaskNodeModel();

@@ -507,6 +507,13 @@
     margin-bottom: 4px;
 }
 
+.pd-node-meta {
+    color: rgb(112, 123, 139);
+    font-size: 11px;
+    margin-bottom: 3px;
+    white-space: normal;
+}
+
 .pd-node-tag-row {
     flex-direction: row;
     flex-wrap: wrap;
