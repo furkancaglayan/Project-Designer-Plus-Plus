@@ -1,0 +1,23 @@
+{
+    "name": "ProjectDesigner.V2.Tests",
+    "rootNamespace": "ProjectDesigner.V2.Tests",
+    "references": [
+        "ProjectDesigner.V2.Data",
+        "ProjectDesigner.V2.BuiltIn",
+        "ProjectDesigner.V2.Editor"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false,
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ]
+}
