@@ -956,7 +956,7 @@ namespace ProjectDesigner.V2.Editor
             if (!string.IsNullOrEmpty(nodeId))
             {
                 EnsureContextNodeSelection(nodeId);
-                PopulateNodeContextMenu(evt.menu);
+                PopulateNodeContextMenu(evt.menu, nodeId);
                 return;
             }
 
@@ -981,12 +981,14 @@ namespace ProjectDesigner.V2.Editor
             _canvasView.RefreshSelection();
         }
 
-        private void PopulateNodeContextMenu(DropdownMenu menu)
+        private void PopulateNodeContextMenu(DropdownMenu menu, string contextNodeId)
         {
             AppendAction(menu, "Duplicate", _ => DuplicateSelection(), HasSelection());
             AppendAction(menu, "Delete", _ => DeleteSelectedNode(), HasSelection());
             AppendAction(menu, "Frame Selection", _ => FrameSelection(), HasSelection());
+
             menu.AppendSeparator();
+            AppendReferenceContextActions(menu, contextNodeId);
             AppendAction(menu, "Arrange/Auto Layout Left To Right", _ => AutoLayoutSelectionOrVisible(), HasSelection());
             AppendArrangeActions(menu, GetSelectedNodes().Count > 1);
             menu.AppendSeparator();
@@ -994,8 +996,83 @@ namespace ProjectDesigner.V2.Editor
             AppendAction(menu, _inspectorExpanded ? "Hide Details" : "Show Details", _ => ToggleInspectorExpanded(true), true);
         }
 
+        private void AppendReferenceContextActions(DropdownMenu menu, string contextNodeId)
+        {
+            ReferenceNodeModel referenceNode = GetContextReferenceNode(contextNodeId);
+            if (referenceNode == null)
+            {
+                return;
+            }
+
+            if (!string.IsNullOrWhiteSpace(referenceNode.ExternalUrl))
+            {
+                string url = referenceNode.ExternalUrl.Trim();
+                AppendAction(menu, "Reference/Open Link", _ => Application.OpenURL(url), true);
+            }
+
+            string assetPath = GetReferenceAssetPath(referenceNode);
+            UnityEngine.Object asset = string.IsNullOrWhiteSpace(assetPath)
+                ? null
+                : AssetDatabase.LoadMainAssetAtPath(assetPath);
+            if (asset != null)
+            {
+                AppendAction(menu, "Reference/Select Asset", _ => SelectReferenceAsset(asset), true);
+            }
+        }
+
+        private ReferenceNodeModel GetContextReferenceNode(string contextNodeId)
+        {
+            ReferenceNodeModel referenceNode = _boardAsset.Document.GetNode(contextNodeId) as ReferenceNodeModel;
+            if (referenceNode != null)
+            {
+                return referenceNode;
+            }
+
+            List<BoardNodeModel> selectedNodes = GetSelectedNodes();
+            if (selectedNodes.Count == 1)
+            {
+                return selectedNodes[0] as ReferenceNodeModel;
+            }
+
+            return null;
+        }
+
+        private static string GetReferenceAssetPath(ReferenceNodeModel referenceNode)
+        {
+            if (referenceNode == null)
+            {
+                return string.Empty;
+            }
+
+            if (!string.IsNullOrWhiteSpace(referenceNode.AssetPath))
+            {
+                return referenceNode.AssetPath.Trim();
+            }
+
+            if (!string.IsNullOrWhiteSpace(referenceNode.ImageAssetPath))
+            {
+                return referenceNode.ImageAssetPath.Trim();
+            }
+
+            return string.Empty;
+        }
+
+        private static void SelectReferenceAsset(UnityEngine.Object asset)
+        {
+            if (asset == null)
+            {
+                return;
+            }
+
+            EditorUtility.FocusProjectWindow();
+            Selection.activeObject = asset;
+            EditorGUIUtility.PingObject(asset);
+        }
+
         private void PopulateCanvasContextMenu(DropdownMenu menu, Vector2 boardPosition)
         {
+            AppendReferenceContextActions(menu, string.Empty);
+
             foreach (IGrouping<string, IProjectDesignerNodeDefinition> group in ProjectDesignerRegistry.GetNodeDefinitions()
                          .OrderBy(definition => GetCategorySortOrder(definition.Category))
                          .ThenBy(definition => definition.DisplayName)

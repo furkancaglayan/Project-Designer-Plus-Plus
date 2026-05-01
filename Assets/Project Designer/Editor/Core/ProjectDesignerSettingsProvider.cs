@@ -3,7 +3,6 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using ProjectDesigner.V2.Data;
-using System.Linq;
 
 namespace ProjectDesigner.V2.Editor
 {

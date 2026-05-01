@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6c9b53d589047b34cb69ecbee4544dd4, type: 3}
+  m_Script: {fileID: 11500000, guid: 09dddd999187a8d4aae8cede8a04f0a8, type: 3}
   m_Name: Project Designer+ Redo Demo Board
   m_EditorClassIdentifier: 
   _schemaVersion: 2.0.0-preview

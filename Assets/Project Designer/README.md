@@ -39,7 +39,6 @@ The shipped Asset Store version installs as a regular Unity asset inside your pr
 ## Documentation
 
 - [Quick Start](Documentation/quick-start.md)
-- [First 10 Minutes](Documentation/first-10-minutes.md)
 - [Extensibility](Documentation/extensibility.md)
 - [Migration From v1](Documentation/migration-from-v1.md)
 - [Sample Boards](Documentation/sample-boards.md)

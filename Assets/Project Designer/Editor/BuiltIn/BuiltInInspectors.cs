@@ -497,6 +497,43 @@ namespace ProjectDesigner.V2.BuiltIn
                 repaint();
             });
 
+            string referenceAssetPath = GetReferenceAssetPath(reference);
+            UnityEngine.Object linkedAsset = string.IsNullOrWhiteSpace(referenceAssetPath)
+                ? null
+                : AssetDatabase.LoadMainAssetAtPath(referenceAssetPath);
+            bool hasExternalUrl = !string.IsNullOrWhiteSpace(reference.ExternalUrl);
+            if (hasExternalUrl || linkedAsset != null)
+            {
+                var actionRow = new VisualElement();
+                actionRow.style.flexDirection = FlexDirection.Row;
+                actionRow.style.flexWrap = Wrap.Wrap;
+                actionRow.style.marginTop = 6f;
+                actionRow.style.marginBottom = 4f;
+
+                if (hasExternalUrl)
+                {
+                    string url = reference.ExternalUrl.Trim();
+                    var openLinkButton = new Button(() => Application.OpenURL(url))
+                    {
+                        text = "Open Link"
+                    };
+                    openLinkButton.AddToClassList("pd-secondary-button");
+                    actionRow.Add(openLinkButton);
+                }
+
+                if (linkedAsset != null)
+                {
+                    var selectAssetButton = new Button(() => SelectReferenceAsset(linkedAsset))
+                    {
+                        text = "Select Asset"
+                    };
+                    selectAssetButton.AddToClassList("pd-secondary-button");
+                    actionRow.Add(selectAssetButton);
+                }
+
+                root.Add(actionRow);
+            }
+
             Foldout detailsFoldout = BuiltInInspectorUtility.CreatePersistentFoldout(reference.Id + ".ReferenceDetails", "Reference Details", false);
             BuiltInInspectorUtility.AddDelayedTextField(detailsFoldout, "Excerpt", reference.TextReference, value =>
             {
@@ -509,6 +546,38 @@ namespace ProjectDesigner.V2.BuiltIn
             BuiltInInspectorUtility.AddTagsField(detailsFoldout, reference, board, dispatcher, repaint);
             root.Add(detailsFoldout);
             return root;
+        }
+
+        private static string GetReferenceAssetPath(ReferenceNodeModel reference)
+        {
+            if (reference == null)
+            {
+                return string.Empty;
+            }
+
+            if (!string.IsNullOrWhiteSpace(reference.AssetPath))
+            {
+                return reference.AssetPath.Trim();
+            }
+
+            if (!string.IsNullOrWhiteSpace(reference.ImageAssetPath))
+            {
+                return reference.ImageAssetPath.Trim();
+            }
+
+            return string.Empty;
+        }
+
+        private static void SelectReferenceAsset(UnityEngine.Object asset)
+        {
+            if (asset == null)
+            {
+                return;
+            }
+
+            EditorUtility.FocusProjectWindow();
+            Selection.activeObject = asset;
+            EditorGUIUtility.PingObject(asset);
         }
     }
 

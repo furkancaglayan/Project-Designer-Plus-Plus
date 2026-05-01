@@ -16,7 +16,7 @@ MonoBehaviour:
   _showOnboardingForPackageUpdates: 1
   _autoOpenWorkspaceAfterBoardCreation: 1
   _defaultBoardFolder: Assets/Project Designer
-  _lastSeenOnboardingVersion: 2.0.0-pre.1
+  _lastSeenOnboardingVersion: 3.0.0
   _editorTheme: 1
   _defaultTeamRoster: {fileID: 11400000, guid: a485b74c24f68fa4994bd60b7d4f0106, type: 2}
   _projectFinderSortMode: 1
@@ -24,13 +24,15 @@ MonoBehaviour:
   - 0de2b6b1d8e994742a20930288199100
   - 5c6ca521fd6d96e4ea11aac6afac7781
   _recentBoardGuids:
+  - 3f0eb35251bd284478d83859519e72c2
+  - 5262b6e7bdcb0d14fa2db933a9502938
+  - dbff49d20ff0c0f459b337105a6805c9
+  - 3e975485c57a06e44b021fc108708a4c
+  - ca071b71157ea974fbfaca3381fea4bc
+  - 5ef3fa8362f8ad04c97736e0880d3edd
+  - 667afe5cf9ad2c84b8d6baf580846f9f
+  - ac83d00c36d2992428721afa4ffd6828
   - 2640a51fd985caa4a8de6867ae9003a4
   - aa7832f24a7d6584cb17b64f762858f4
   - ab7f8eb1e92432d44beb55399e88dedc
   - 0de2b6b1d8e994742a20930288199100
-  - 49ea237e24bbc6b4b87f3b7cfef9d473
-  - 45404a3349f87e4468041348a5aa5e4c
-  - 7ceac16e1b1d7af48a880e2f7abbffff
-  - d488ff4ba17c0da49a5c4340f51024b6
-  - 2176a6a45d2c47b43b412d25506bdffc
-  - 5c6ca521fd6d96e4ea11aac6afac7781

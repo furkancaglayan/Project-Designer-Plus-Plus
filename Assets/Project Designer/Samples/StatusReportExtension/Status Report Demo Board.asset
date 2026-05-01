@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6c9b53d589047b34cb69ecbee4544dd4, type: 3}
+  m_Script: {fileID: 11500000, guid: 09dddd999187a8d4aae8cede8a04f0a8, type: 3}
   m_Name: Status Report Demo Board
   m_EditorClassIdentifier: 
   _schemaVersion: 2.0.0-preview
@@ -22,40 +22,43 @@ MonoBehaviour:
     - Engineering Lead
     - UI Designer
     _viewState:
-      _panOffset: {x: 0, y: 0}
+      _panOffset: {x: -434.39993, y: 124}
       _zoom: 1
-      _searchQuery:
+      _searchQuery: 
       _category: All
-      _selectedNodeId: 11111111111111111111111111111111
-      _activeFilterId:
+      _selectedNodeId: 
+      _selectedNodeIds: []
+      _activeFilterId: 
+      _quickFilterId: 
+      _snapToGrid: 0
     _savedFilters:
     - _id: a1111111111111111111111111111111
       _name: Planning
-      _searchQuery:
+      _searchQuery: 
       _category: Planning
-      _requiredTag:
+      _requiredTag: 
       _includeTechnicalDesign: 0
     - _id: a2222222222222222222222222222222
       _name: References
-      _searchQuery:
+      _searchQuery: 
       _category: Reference
-      _requiredTag:
+      _requiredTag: 
       _includeTechnicalDesign: 0
     - _id: a3333333333333333333333333333333
       _name: Technical
-      _searchQuery:
+      _searchQuery: 
       _category: Technical Design
-      _requiredTag:
+      _requiredTag: 
       _includeTechnicalDesign: 1
     - _id: a4444444444444444444444444444444
       _name: Status Updates
-      _searchQuery:
+      _searchQuery: 
       _category: Planning
       _requiredTag: status
       _includeTechnicalDesign: 0
     - _id: a5555555555555555555555555555555
       _name: Risks
-      _searchQuery:
+      _searchQuery: 
       _category: All
       _requiredTag: risk
       _includeTechnicalDesign: 1
@@ -95,32 +98,32 @@ MonoBehaviour:
       _typeId: project-designer.edge.reference
       _sourceNodeId: 11111111111111111111111111111111
       _targetNodeId: 22222222222222222222222222222222
-      _label:
+      _label: 
     - _id: e2222222222222222222222222222222
       _typeId: project-designer.edge.reference
       _sourceNodeId: 44444444444444444444444444444444
       _targetNodeId: 33333333333333333333333333333333
-      _label:
+      _label: 
     - _id: e3333333333333333333333333333333
       _typeId: project-designer.edge.reference
       _sourceNodeId: 55555555555555555555555555555555
       _targetNodeId: 22222222222222222222222222222222
-      _label:
+      _label: 
     - _id: e4444444444444444444444444444444
       _typeId: project-designer.edge.dependency
       _sourceNodeId: 33333333333333333333333333333333
       _targetNodeId: 22222222222222222222222222222222
-      _label:
+      _label: 
     - _id: e5555555555555555555555555555555
       _typeId: project-designer.edge.milestone
       _sourceNodeId: 22222222222222222222222222222222
       _targetNodeId: 66666666666666666666666666666666
-      _label:
+      _label: 
     - _id: e6666666666666666666666666666666
       _typeId: project-designer.edge.milestone
       _sourceNodeId: 33333333333333333333333333333333
       _targetNodeId: 66666666666666666666666666666666
-      _label:
+      _label: 
     _nodes:
     - rid: 1001
     - rid: 1002
@@ -166,7 +169,7 @@ MonoBehaviour:
         _status: 1
         _priority: 2
         _estimatePoints: 3
-        _assignee: Producer
+        _assigneeId: Producer
         _dueDateIso: 2026-05-02
         _acceptanceCriteria: The checklist is approved and nobody is surprised by
           what is or is not in the build.
@@ -188,7 +191,7 @@ MonoBehaviour:
         _status: 0
         _priority: 2
         _estimatePoints: 2
-        _assignee: Engineering Lead
+        _assigneeId: Engineering Lead
         _dueDateIso: 2026-05-04
         _acceptanceCriteria: Each blocker has an owner, next step, and escalation
           path.
@@ -220,10 +223,10 @@ MonoBehaviour:
         - agenda
         _isPinned: 0
         _summary: One-page agenda that keeps the checkpoint meeting short and decision-oriented.
-        _assetPath:
-        _imageAssetPath:
+        _assetPath: 
+        _imageAssetPath: 
         _textReference: Lead with the build ask, then blockers, then next decisions.
-        _externalUrl:
+        _externalUrl: 
     - rid: 1006
       type: {class: MilestoneNodeModel, ns: ProjectDesigner.V2.Data, asm: ProjectDesigner.V2.Data}
       data:

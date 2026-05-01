@@ -37,6 +37,11 @@ namespace ProjectDesigner.V2.BuiltIn
         public static string GetPreviewText(BoardNodeModel node, IProjectDesignerNodeDefinition definition, BoardDocument document)
         {
             string preview = definition == null ? string.Empty : definition.GetPreview(node, document);
+            if (node is ReferenceNodeModel)
+            {
+                return Truncate(NormalizeMultilinePreview(preview), GetPreviewCharacterLimit(node));
+            }
+
             return Truncate(NormalizeWhitespace(preview), GetPreviewCharacterLimit(node));
         }
 
@@ -205,35 +210,40 @@ namespace ProjectDesigner.V2.BuiltIn
                 return string.Empty;
             }
 
+            string summary = string.IsNullOrWhiteSpace(reference.Summary) ? string.Empty : reference.Summary.Trim();
+            string source = string.Empty;
+
             if (!string.IsNullOrWhiteSpace(reference.AssetPath))
             {
-                return "Unity asset: " + Path.GetFileName(reference.AssetPath);
+                source = "Unity asset: " + Path.GetFileName(reference.AssetPath);
             }
-
-            if (!string.IsNullOrWhiteSpace(reference.ExternalUrl))
+            else if (!string.IsNullOrWhiteSpace(reference.ExternalUrl))
             {
                 if (Uri.TryCreate(reference.ExternalUrl, UriKind.Absolute, out Uri uri) && !string.IsNullOrWhiteSpace(uri.Host))
                 {
                     string host = uri.Host.StartsWith("www.", StringComparison.OrdinalIgnoreCase)
                         ? uri.Host.Substring(4)
                         : uri.Host;
-                    return "External link: " + host;
+                    source = "External link: " + host;
                 }
-
-                return reference.ExternalUrl.Trim();
+                else
+                {
+                    source = reference.ExternalUrl.Trim();
+                }
             }
-
-            if (!string.IsNullOrWhiteSpace(reference.TextReference))
+            else if (!string.IsNullOrWhiteSpace(reference.TextReference))
             {
                 return reference.TextReference.Trim();
             }
 
-            if (!string.IsNullOrWhiteSpace(reference.Summary))
+            if (!string.IsNullOrWhiteSpace(summary))
             {
-                return reference.Summary.Trim();
+                return string.IsNullOrWhiteSpace(source)
+                    ? summary
+                    : summary + "\n" + source;
             }
 
-            return string.Empty;
+            return source;
         }
 
         public static string GetClassPreview(ClassNodeModel classNode)
@@ -367,6 +377,29 @@ namespace ProjectDesigner.V2.BuiltIn
             }
 
             return string.Join(" ", value.Split(new[] { ' ', '\r', '\n', '\t' }, StringSplitOptions.RemoveEmptyEntries));
+        }
+
+        private static string NormalizeMultilinePreview(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return string.Empty;
+            }
+
+            string[] lines = value
+                .Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+
+            var normalizedLines = new List<string>();
+            foreach (string line in lines)
+            {
+                string normalized = NormalizeWhitespace(line);
+                if (!string.IsNullOrWhiteSpace(normalized))
+                {
+                    normalizedLines.Add(normalized);
+                }
+            }
+
+            return string.Join("\n", normalizedLines);
         }
 
         private static string Truncate(string value, int maxLength)
