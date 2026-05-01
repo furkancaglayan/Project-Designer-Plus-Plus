@@ -15,7 +15,7 @@ namespace ProjectDesigner.V2.Editor
             UnityPackageInfo packageInfo = UnityPackageInfo.FindForAssetPath(PackageRoot);
             return packageInfo != null && !string.IsNullOrEmpty(packageInfo.version)
                 ? packageInfo.version
-                : "2.0.0-pre.1";
+                : "3.0.0";
         }
     }
 }

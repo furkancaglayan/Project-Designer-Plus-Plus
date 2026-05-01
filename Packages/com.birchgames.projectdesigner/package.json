@@ -1,7 +1,7 @@
 {
   "name": "com.birchgames.projectdesigner",
   "displayName": "Project Designer+",
-  "version": "2.0.0-pre.1",
+  "version": "3.0.0",
   "unity": "2022.3",
   "description": "A node-based pre-production planner for indie Unity teams with built-in planning workflows, reference capture, technical design support, and public extension hooks.",
   "keywords": [
