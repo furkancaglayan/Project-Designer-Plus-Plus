@@ -16,11 +16,14 @@ MonoBehaviour:
   _showOnboardingForPackageUpdates: 1
   _autoOpenWorkspaceAfterBoardCreation: 1
   _defaultBoardFolder: Assets/Project Designer
-  _lastSeenOnboardingVersion: 3.0.0
+  _lastSeenOnboardingVersion: 3.1.0
   _editorTheme: 1
   _defaultTeamRoster: {fileID: 0}
   _projectFinderSortMode: 0
   _pinnedBoardGuids: []
   _recentBoardGuids:
+  - f9a251c7e3df3224f8d7af3325907fc3
+  - ba5199a8ad56f8749a40bb5981f02ec5
+  - 0c4b639ffe79218438a40f61ecf0e2dc
   - 2e1c30a04e42a074b9d1d219974b128e
   - ee5822ff94430f04c8185459a8600f63

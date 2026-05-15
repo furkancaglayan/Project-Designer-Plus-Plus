@@ -227,12 +227,26 @@ namespace ProjectDesigner.V2.Editor
                 _libraryView.Add(CreateActiveViewLabel(activeSavedFilter.Name));
             }
 
+            var savedViewActions = CreateActionRow();
+            savedViewActions.Add(CreateLibraryActionButton("Save Current View", SaveCurrentFilter, true));
+
+            Button updateCurrentViewButton = CreateLibraryActionButton("Update Current View", () => UpdateSavedFilterFromCurrentView(activeSavedFilter), false);
+            updateCurrentViewButton.tooltip = "Overwrite the active saved view with the current search, category, and quick filter.";
+            updateCurrentViewButton.SetEnabled(activeSavedFilter != null);
+            savedViewActions.Add(updateCurrentViewButton);
+
+            Button clearViewButton = CreateLibraryActionButton("Clear View", ClearCurrentFilter, false);
+            clearViewButton.tooltip = "Reset the active saved view, search, category, and quick filters.";
+            clearViewButton.SetEnabled(CanClearCurrentFilter());
+            savedViewActions.Add(clearViewButton);
+            _libraryView.Add(savedViewActions);
+
             _libraryView.Add(_savedFiltersContainer);
             _savedFiltersContainer.Clear();
 
             if (_boardAsset.Document.SavedFilters.Count == 0)
             {
-                _savedFiltersContainer.Add(CreateMutedBodyLabel("Save the current search and category filters to jump back to a view later."));
+                _savedFiltersContainer.Add(CreateMutedBodyLabel("Save the current search, category, and quick-filter state to jump back to a view later."));
             }
             else
             {
@@ -256,14 +270,9 @@ namespace ProjectDesigner.V2.Editor
                         button.AddToClassList("pd-filter-button-active");
                     }
 
-                    _savedFiltersContainer.Add(button);
+                    _savedFiltersContainer.Add(CreateSavedViewEntry(localFilter, button));
                 }
             }
-
-            Button clearViewButton = CreateLibraryActionButton("Clear View", ClearCurrentFilter);
-            clearViewButton.tooltip = "Reset the active saved view, search, category, and quick filters.";
-            clearViewButton.SetEnabled(CanClearCurrentFilter());
-            _savedFiltersContainer.Add(clearViewButton);
         }
 
         private void RefreshInspector()
@@ -380,7 +389,67 @@ namespace ProjectDesigner.V2.Editor
             }
 
             _inspectorView.Add(templatesFoldout);
+            BuildSavedViewsInspector();
             BuildPlannerInsights();
+        }
+
+        private void BuildSavedViewsInspector()
+        {
+            Foldout savedViewsFoldout = CreatePersistentInspectorFoldout("Board.SavedViews", "Saved Views", false);
+            savedViewsFoldout.Add(CreateMutedBodyLabel("Save reusable board searches, categories, and quick filters, then rename or refresh them from here."));
+
+            var actions = CreateActionRow();
+            actions.Add(CreateInspectorButton("Save Current View", SaveCurrentFilter));
+
+            BoardSavedFilter activeSavedFilter = GetActiveSavedFilter();
+            Button updateCurrentButton = CreateInspectorButton("Update Current View", () => UpdateSavedFilterFromCurrentView(activeSavedFilter));
+            updateCurrentButton.SetEnabled(activeSavedFilter != null);
+            actions.Add(updateCurrentButton);
+            savedViewsFoldout.Add(actions);
+
+            if (_boardAsset.Document.SavedFilters.Count == 0)
+            {
+                savedViewsFoldout.Add(CreateMutedBodyLabel("No saved views yet. Save the current board state to capture your current workflow."));
+                _inspectorView.Add(savedViewsFoldout);
+                return;
+            }
+
+            foreach (BoardSavedFilter filter in _boardAsset.Document.SavedFilters)
+            {
+                savedViewsFoldout.Add(CreateSavedViewInspectorCard(filter));
+            }
+
+            _inspectorView.Add(savedViewsFoldout);
+        }
+
+        private VisualElement CreateSavedViewInspectorCard(BoardSavedFilter filter)
+        {
+            bool isActive = IsSavedViewActive(_boardAsset.Document.ViewState.ActiveFilterId, filter);
+            int matchCount = GetSavedViewMatchCount(filter);
+
+            var card = new VisualElement();
+            card.AddToClassList("pd-welcome-preset");
+
+            if (isActive)
+            {
+                card.Add(CreateActiveViewLabel(filter.Name));
+            }
+
+            var nameField = new TextField("Name");
+            nameField.value = filter.Name;
+            nameField.isDelayed = true;
+            nameField.RegisterValueChangedCallback(evt => RenameSavedFilter(filter, evt.newValue));
+            card.Add(nameField);
+
+            card.Add(CreateMutedBodyLabel(BuildSavedViewSummaryText(filter, matchCount)));
+
+            var actions = CreateActionRow();
+            actions.Add(CreateInspectorButton("Apply", () => ApplySavedFilter(filter)));
+            actions.Add(CreateInspectorButton("Update From Current", () => UpdateSavedFilterFromCurrentView(filter)));
+            actions.Add(CreateInspectorButton("Delete", () => DeleteSavedFilter(filter)));
+            card.Add(actions);
+
+            return card;
         }
 
         private void BuildMultiSelectionInspector(List<BoardNodeModel> selectedNodes)
@@ -692,32 +761,24 @@ namespace ProjectDesigner.V2.Editor
 
         private void SaveCurrentFilter()
         {
-            int filterCount = _boardAsset.Document.SavedFilters.Count + 1;
-            var filter = new BoardSavedFilter(
-                "Filter " + filterCount,
-                _boardAsset.Document.ViewState.SearchQuery,
-                _boardAsset.Document.ViewState.Category,
-                string.Empty,
-                true);
+            BoardSavedFilter filter = CreateSavedFilterFromCurrentView(BuildDefaultSavedViewName(), null);
 
             _commandStack.Execute(new SaveFilterCommand(_boardAsset, filter));
-            _commandStack.Execute(new SetFilterStateCommand(_boardAsset, new BoardViewState
-            {
-                PanOffset = _boardAsset.Document.ViewState.PanOffset,
-                Zoom = _boardAsset.Document.ViewState.Zoom,
-                SearchQuery = filter.SearchQuery,
-                Category = filter.Category,
-                SelectedNodeId = _boardAsset.Document.ViewState.SelectedNodeId,
-                ActiveFilterId = filter.Id
-            }));
+            ApplySavedFilter(filter);
         }
 
         private void ApplySavedFilter(BoardSavedFilter filter)
         {
+            if (filter == null)
+            {
+                return;
+            }
+
             var viewState = _boardAsset.Document.ViewState.Clone();
             viewState.ActiveFilterId = filter.Id;
             viewState.SearchQuery = filter.SearchQuery;
             viewState.Category = filter.Category;
+            viewState.QuickFilterId = filter.QuickFilterId;
             _commandStack.Execute(new SetFilterStateCommand(_boardAsset, viewState));
         }
 
@@ -838,14 +899,24 @@ namespace ProjectDesigner.V2.Editor
             return label;
         }
 
-        private static Button CreateLibraryActionButton(string text, Action onClick)
+        private static Button CreateLibraryActionButton(string text, Action onClick, bool primary)
         {
             var button = new Button(onClick)
             {
                 text = text
             };
-            button.AddToClassList("pd-secondary-button");
+            button.AddToClassList(primary ? "pd-primary-button" : "pd-secondary-button");
             return button;
+        }
+
+        private VisualElement CreateSavedViewEntry(BoardSavedFilter filter, Button applyButton)
+        {
+            int matchCount = GetSavedViewMatchCount(filter);
+
+            var entry = new VisualElement();
+            entry.Add(applyButton);
+            entry.Add(CreateMutedBodyLabel(BuildSavedViewSummaryText(filter, matchCount)));
+            return entry;
         }
 
         private VisualElement CreateLibraryGroup(IGrouping<string, IProjectDesignerNodeDefinition> group)
@@ -1163,7 +1234,7 @@ namespace ProjectDesigner.V2.Editor
             return name;
         }
 
-        private static string BuildSavedViewTooltip(BoardSavedFilter filter, bool isActive)
+        private string BuildSavedViewTooltip(BoardSavedFilter filter, bool isActive)
         {
             if (filter == null)
             {
@@ -1180,6 +1251,11 @@ namespace ProjectDesigner.V2.Editor
                 !string.Equals(filter.Category, BoardNodeCategories.All, StringComparison.Ordinal))
             {
                 tooltip += "\nCategory: " + filter.Category;
+            }
+
+            if (!string.IsNullOrWhiteSpace(filter.QuickFilterId))
+            {
+                tooltip += "\nQuick Filter: " + DescribeQuickFilter(filter.QuickFilterId);
             }
 
             if (isActive)
@@ -1209,6 +1285,184 @@ namespace ProjectDesigner.V2.Editor
             }
 
             return value.Substring(0, maxLength - 1) + "…";
+        }
+
+        private int GetSavedViewMatchCount(BoardSavedFilter filter)
+        {
+            if (filter == null)
+            {
+                return 0;
+            }
+
+            IEnumerable<BoardNodeModel> nodes = _boardAsset.Document.Nodes.Where(node => filter.Matches(node));
+            if (!string.IsNullOrWhiteSpace(filter.QuickFilterId))
+            {
+                nodes = nodes.Where(node => BoardInsights.MatchesQuickFilter(_boardAsset.Document, node, filter.QuickFilterId));
+            }
+
+            return nodes.Count();
+        }
+
+        private string BuildSavedViewSummaryText(BoardSavedFilter filter, int matchCount)
+        {
+            if (filter == null)
+            {
+                return "0 matching cards";
+            }
+
+            var parts = new List<string>
+            {
+                matchCount + " matching card" + (matchCount == 1 ? string.Empty : "s")
+            };
+
+            if (!string.IsNullOrWhiteSpace(filter.Category) &&
+                !string.Equals(filter.Category, BoardNodeCategories.All, StringComparison.Ordinal))
+            {
+                parts.Add(filter.Category);
+            }
+
+            if (!string.IsNullOrWhiteSpace(filter.QuickFilterId))
+            {
+                parts.Add("Quick filter: " + DescribeQuickFilter(filter.QuickFilterId));
+            }
+
+            if (!string.IsNullOrWhiteSpace(filter.RequiredTag))
+            {
+                parts.Add("Tag: " + filter.RequiredTag.Trim());
+            }
+
+            if (!string.IsNullOrWhiteSpace(filter.SearchQuery))
+            {
+                parts.Add("Search: " + filter.SearchQuery.Trim());
+            }
+
+            return string.Join(" | ", parts);
+        }
+
+        private string BuildDefaultSavedViewName()
+        {
+            var parts = new List<string>();
+            BoardViewState viewState = _boardAsset.Document.ViewState;
+
+            if (!string.IsNullOrWhiteSpace(viewState.QuickFilterId))
+            {
+                parts.Add(DescribeQuickFilter(viewState.QuickFilterId));
+            }
+
+            if (!string.IsNullOrWhiteSpace(viewState.Category) &&
+                !string.Equals(viewState.Category, BoardNodeCategories.All, StringComparison.Ordinal))
+            {
+                parts.Add(viewState.Category);
+            }
+
+            if (!string.IsNullOrWhiteSpace(viewState.SearchQuery))
+            {
+                parts.Add("Search: " + TruncateShellLabel(viewState.SearchQuery.Trim(), 20));
+            }
+
+            string baseName = parts.Count == 0
+                ? "Saved View"
+                : string.Join(" | ", parts.Take(2).ToArray());
+
+            return EnsureUniqueSavedViewName(baseName);
+        }
+
+        private string EnsureUniqueSavedViewName(string candidate)
+        {
+            string baseName = string.IsNullOrWhiteSpace(candidate) ? "Saved View" : candidate.Trim();
+            HashSet<string> existingNames = new HashSet<string>(
+                _boardAsset.Document.SavedFilters
+                    .Where(filter => filter != null)
+                    .Select(filter => filter.Name),
+                StringComparer.OrdinalIgnoreCase);
+
+            if (!existingNames.Contains(baseName))
+            {
+                return baseName;
+            }
+
+            int suffix = 2;
+            while (existingNames.Contains(baseName + " " + suffix))
+            {
+                suffix++;
+            }
+
+            return baseName + " " + suffix;
+        }
+
+        private BoardSavedFilter CreateSavedFilterFromCurrentView(string name, BoardSavedFilter existingFilter)
+        {
+            BoardViewState viewState = _boardAsset.Document.ViewState;
+            BoardSavedFilter filter = existingFilter == null ? new BoardSavedFilter() : existingFilter.Clone();
+            filter.Name = string.IsNullOrWhiteSpace(name) ? BuildDefaultSavedViewName() : name.Trim();
+            filter.SearchQuery = viewState.SearchQuery;
+            filter.Category = viewState.Category;
+            filter.QuickFilterId = viewState.QuickFilterId;
+
+            if (existingFilter == null)
+            {
+                filter.RequiredTag = string.Empty;
+                filter.IncludeTechnicalDesign = true;
+            }
+
+            return filter;
+        }
+
+        private void UpdateSavedFilterFromCurrentView(BoardSavedFilter filter)
+        {
+            if (filter == null)
+            {
+                return;
+            }
+
+            BoardSavedFilter updated = CreateSavedFilterFromCurrentView(filter.Name, filter);
+            _commandStack.Execute(new SaveFilterCommand(_boardAsset, updated));
+            ApplySavedFilter(updated);
+        }
+
+        private void RenameSavedFilter(BoardSavedFilter filter, string newName)
+        {
+            if (filter == null)
+            {
+                return;
+            }
+
+            string trimmedName = string.IsNullOrWhiteSpace(newName) ? filter.Name : newName.Trim();
+            if (string.Equals(trimmedName, filter.Name, StringComparison.Ordinal))
+            {
+                return;
+            }
+
+            BoardSavedFilter updated = filter.Clone();
+            updated.Name = trimmedName;
+            _commandStack.Execute(new SaveFilterCommand(_boardAsset, updated));
+        }
+
+        private void DeleteSavedFilter(BoardSavedFilter filter)
+        {
+            if (filter == null)
+            {
+                return;
+            }
+
+            bool confirmed = EditorUtility.DisplayDialog(
+                ProjectDesignerProductInfo.ProductName,
+                "Delete the saved view \"" + filter.Name + "\"?",
+                "Delete",
+                "Cancel");
+            if (!confirmed)
+            {
+                return;
+            }
+
+            _commandStack.Execute(BoardMutationCommand.Create(_boardAsset, "Delete Saved View", document =>
+            {
+                document.RemoveFilter(filter.Id);
+                if (string.Equals(document.ViewState.ActiveFilterId, filter.Id, StringComparison.Ordinal))
+                {
+                    document.ViewState.ActiveFilterId = string.Empty;
+                }
+            }));
         }
 
         private BoardSavedFilter GetActiveSavedFilter()

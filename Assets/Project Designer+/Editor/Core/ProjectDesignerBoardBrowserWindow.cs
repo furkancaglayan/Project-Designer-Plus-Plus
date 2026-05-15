@@ -394,7 +394,10 @@ namespace ProjectDesigner.V2.Editor
 
             if (pinnedBoards.Count == 0 && recentBoards.Count == 0)
             {
-                _quickAccessContent.Add(CreateMutedBodyLabel("Pin a few planning boards or open boards from this finder to build a quick-access layer."));
+                var hasAnyBoards = ProjectDesignerBoardCatalog.GetBoardEntries().Count > 0;
+                _quickAccessContent.Add(CreateMutedBodyLabel(hasAnyBoards
+                    ? "Pin a few planning boards or open boards from this finder to build a quick-access layer."
+                    : "Create your first planning board from onboarding, then reopen it here to build a quick-access layer."));
                 return;
             }
 
@@ -427,7 +430,7 @@ namespace ProjectDesigner.V2.Editor
             _boardListContent.Clear();
             if (entries.Count == 0)
             {
-                _boardListContent.Add(new Label("No planning boards match the current finder filters yet."));
+                _boardListContent.Add(CreateEmptyState());
                 return;
             }
 
@@ -435,6 +438,61 @@ namespace ProjectDesigner.V2.Editor
             {
                 _boardListContent.Add(CreateBoardRow(entry));
             }
+        }
+
+        private VisualElement CreateEmptyState()
+        {
+            var state = new VisualElement();
+            state.AddToClassList("pd-welcome-preset");
+
+            bool hasAnyBoards = ProjectDesignerBoardCatalog.GetBoardEntries().Count > 0;
+            bool hasSearchQuery = !string.IsNullOrWhiteSpace(_searchQuery);
+
+            if (!hasAnyBoards)
+            {
+                state.Add(CreateSubsectionLabel("No Boards Yet"));
+                state.Add(CreateMutedBodyLabel("This Unity project does not have any planning boards yet. Open onboarding to choose a starter template, or create an empty board and begin from a lighter starting point."));
+
+                var actions = CreateActionRow();
+                actions.Add(CreateActionButton("Open Onboarding", ProjectDesignerOnboardingWindow.Open, true));
+                actions.Add(CreateActionButton("Create Empty Board", () =>
+                {
+                    ProjectDesignerV2Menus.CreateBoard(BoardPresetIds.Empty, ProjectDesignerProductInfo.DefaultBoardName);
+                    RefreshFinderSections();
+                }, false));
+                state.Add(actions);
+                return state;
+            }
+
+            if (hasSearchQuery)
+            {
+                state.Add(CreateSubsectionLabel("No Matches"));
+                state.Add(CreateMutedBodyLabel("No planning boards match the current search yet. Clear the search to browse everything again, or open onboarding when you want to start a fresh board."));
+
+                var actions = CreateActionRow();
+                actions.Add(CreateActionButton("Clear Search", () =>
+                {
+                    _searchQuery = string.Empty;
+                    if (_searchField != null)
+                    {
+                        _searchField.SetValueWithoutNotify(string.Empty);
+                    }
+
+                    RefreshFinderSections(true);
+                }, true));
+                actions.Add(CreateActionButton("Open Onboarding", ProjectDesignerOnboardingWindow.Open, false));
+                state.Add(actions);
+                return state;
+            }
+
+            state.Add(CreateSubsectionLabel("Nothing To Show"));
+            state.Add(CreateMutedBodyLabel("No planning boards are visible in the current finder view. Try refreshing the finder or create a new board from onboarding."));
+
+            var fallbackActions = CreateActionRow();
+            fallbackActions.Add(CreateActionButton("Refresh", RefreshFinderSections, false));
+            fallbackActions.Add(CreateActionButton("Open Onboarding", ProjectDesignerOnboardingWindow.Open, true));
+            state.Add(fallbackActions);
+            return state;
         }
 
         private static Button CreateActionButton(string text, Action onClick, bool primary)

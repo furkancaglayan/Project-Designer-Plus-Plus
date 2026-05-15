@@ -224,6 +224,32 @@ namespace ProjectDesigner.V2.Tests
         }
 
         [Test]
+        public void BoardDocument_RemoveFilterDeletesSavedViewsById()
+        {
+            BoardDocument document = BoardPresetFactory.CreateEmpty("Saved View Removal");
+            var planningFilter = new BoardSavedFilter("Planning", string.Empty, BoardNodeCategories.Planning, string.Empty, true);
+            var referenceFilter = new BoardSavedFilter("References", string.Empty, BoardNodeCategories.Reference, string.Empty, true);
+
+            document.UpsertFilter(planningFilter);
+            document.UpsertFilter(referenceFilter);
+            document.RemoveFilter(planningFilter.Id);
+
+            Assert.AreEqual(1, document.SavedFilters.Count);
+            Assert.AreEqual(referenceFilter.Id, document.SavedFilters[0].Id);
+        }
+
+        [Test]
+        public void SavedFilter_ClonePreservesQuickFilterState()
+        {
+            var filter = new BoardSavedFilter("Blocked", "prototype", BoardNodeCategories.Planning, string.Empty, true, BoardQuickFilterIds.Blocked);
+            BoardSavedFilter clone = filter.Clone();
+
+            Assert.AreEqual(filter.Id, clone.Id);
+            Assert.AreEqual(BoardQuickFilterIds.Blocked, clone.QuickFilterId);
+            Assert.AreEqual(filter.SearchQuery, clone.SearchQuery);
+        }
+
+        [Test]
         public void SavedFilter_MatchesNodesByCategoryAndSearchQuery()
         {
             BoardDocument document = BoardPresetFactory.CreateEmpty("Filter Test");

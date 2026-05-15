@@ -187,6 +187,16 @@ namespace ProjectDesigner.V2.Data
             }
         }
 
+        public void RemoveFilter(string filterId)
+        {
+            if (string.IsNullOrWhiteSpace(filterId))
+            {
+                return;
+            }
+
+            _savedFilters.RemoveAll(filter => filter != null && string.Equals(filter.Id, filterId, StringComparison.Ordinal));
+        }
+
         public BoardDocument DeepClone()
         {
             var clone = new BoardDocument(BoardName)

@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.1.0
+
+- Improved Project Finder empty states with clearer next steps for first-use flow and no-result searches.
+- Added stronger saved view workflows with save/update actions, board-level rename/delete management, and quick-filter-aware saved views.
+- Expanded reference card quick actions with copy/open/reveal actions for URLs and linked Unity assets.
+
 ## 3.0.0
 
 Project Designer+ has been fully rebuilt as a planning-first Unity editor tool.

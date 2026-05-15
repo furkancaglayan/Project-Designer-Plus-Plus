@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using ProjectDesigner.V2.Data;
 using UnityEditor;
@@ -519,16 +520,44 @@ namespace ProjectDesigner.V2.BuiltIn
                     };
                     openLinkButton.AddToClassList("pd-secondary-button");
                     actionRow.Add(openLinkButton);
+
+                    var copyLinkButton = new Button(() => CopyToClipboard(url))
+                    {
+                        text = "Copy URL"
+                    };
+                    copyLinkButton.AddToClassList("pd-secondary-button");
+                    actionRow.Add(copyLinkButton);
                 }
 
                 if (linkedAsset != null)
                 {
+                    var openAssetButton = new Button(() => AssetDatabase.OpenAsset(linkedAsset))
+                    {
+                        text = "Open Asset"
+                    };
+                    openAssetButton.AddToClassList("pd-secondary-button");
+                    actionRow.Add(openAssetButton);
+
                     var selectAssetButton = new Button(() => SelectReferenceAsset(linkedAsset))
                     {
                         text = "Select Asset"
                     };
                     selectAssetButton.AddToClassList("pd-secondary-button");
                     actionRow.Add(selectAssetButton);
+
+                    var revealAssetButton = new Button(() => RevealReferenceAsset(referenceAssetPath))
+                    {
+                        text = "Reveal File"
+                    };
+                    revealAssetButton.AddToClassList("pd-secondary-button");
+                    actionRow.Add(revealAssetButton);
+
+                    var copyAssetPathButton = new Button(() => CopyToClipboard(referenceAssetPath))
+                    {
+                        text = "Copy Asset Path"
+                    };
+                    copyAssetPathButton.AddToClassList("pd-secondary-button");
+                    actionRow.Add(copyAssetPathButton);
                 }
 
                 root.Add(actionRow);
@@ -578,6 +607,26 @@ namespace ProjectDesigner.V2.BuiltIn
             EditorUtility.FocusProjectWindow();
             Selection.activeObject = asset;
             EditorGUIUtility.PingObject(asset);
+        }
+
+        private static void RevealReferenceAsset(string assetPath)
+        {
+            if (string.IsNullOrWhiteSpace(assetPath))
+            {
+                return;
+            }
+
+            EditorUtility.RevealInFinder(Path.GetFullPath(assetPath.Trim()));
+        }
+
+        private static void CopyToClipboard(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return;
+            }
+
+            EditorGUIUtility.systemCopyBuffer = value.Trim();
         }
     }
 

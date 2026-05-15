@@ -19,6 +19,8 @@ namespace ProjectDesigner.V2.Data
         private string _requiredTag;
         [SerializeField]
         private bool _includeTechnicalDesign;
+        [SerializeField]
+        private string _quickFilterId;
 
         public string Id
         {
@@ -59,6 +61,12 @@ namespace ProjectDesigner.V2.Data
             set { _includeTechnicalDesign = value; }
         }
 
+        public string QuickFilterId
+        {
+            get { return _quickFilterId; }
+            set { _quickFilterId = value ?? string.Empty; }
+        }
+
         public BoardSavedFilter()
         {
             _name = "Saved Filter";
@@ -66,10 +74,11 @@ namespace ProjectDesigner.V2.Data
             _category = BoardNodeCategories.All;
             _requiredTag = string.Empty;
             _includeTechnicalDesign = true;
+            _quickFilterId = string.Empty;
             EnsureId();
         }
 
-        public BoardSavedFilter(string name, string searchQuery, string category, string requiredTag, bool includeTechnicalDesign)
+        public BoardSavedFilter(string name, string searchQuery, string category, string requiredTag, bool includeTechnicalDesign, string quickFilterId = "")
             : this()
         {
             Name = name;
@@ -77,6 +86,7 @@ namespace ProjectDesigner.V2.Data
             Category = category;
             RequiredTag = requiredTag;
             IncludeTechnicalDesign = includeTechnicalDesign;
+            QuickFilterId = quickFilterId;
         }
 
         public bool Matches(BoardNodeModel node, string searchOverride = null)
@@ -108,7 +118,7 @@ namespace ProjectDesigner.V2.Data
 
         public BoardSavedFilter Clone()
         {
-            var clone = new BoardSavedFilter(Name, SearchQuery, Category, RequiredTag, IncludeTechnicalDesign);
+            var clone = new BoardSavedFilter(Name, SearchQuery, Category, RequiredTag, IncludeTechnicalDesign, QuickFilterId);
             clone._id = Id;
             return clone;
         }
