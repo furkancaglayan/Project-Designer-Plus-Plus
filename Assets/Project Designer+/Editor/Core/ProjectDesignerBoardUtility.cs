@@ -46,23 +46,30 @@ namespace ProjectDesigner.V2.Editor
             }
 
             string path = AssetDatabase.GetAssetPath(selectedObject);
-            if (string.IsNullOrEmpty(path))
+            return ResolveBoardCreationFolder(path, AssetDatabase.IsValidFolder(path), defaultPath);
+        }
+
+        internal static string ResolveBoardCreationFolder(string selectedAssetPath, bool selectedPathIsFolder, string fallbackFolder)
+        {
+            string fallback = ProjectDesignerSettings.NormalizeAssetFolder(fallbackFolder);
+            if (!selectedPathIsFolder || string.IsNullOrWhiteSpace(selectedAssetPath))
             {
-                return defaultPath;
+                return fallback;
             }
 
-            if (!path.StartsWith("Assets"))
+            string normalizedSelection = selectedAssetPath.Trim().Replace("\\", "/");
+            if (!IsAssetsFolderPath(normalizedSelection))
             {
-                return defaultPath;
+                return fallback;
             }
 
-            if (File.Exists(path))
-            {
-                string directoryName = Path.GetDirectoryName(path);
-                return string.IsNullOrEmpty(directoryName) ? defaultPath : directoryName.Replace("\\", "/");
-            }
+            return ProjectDesignerSettings.NormalizeAssetFolder(normalizedSelection);
+        }
 
-            return path.Replace("\\", "/");
+        private static bool IsAssetsFolderPath(string path)
+        {
+            return string.Equals(path, "Assets", System.StringComparison.Ordinal) ||
+                   path.StartsWith("Assets/", System.StringComparison.Ordinal);
         }
 
         internal static string EnsureAssetFolderExists(string assetFolder)

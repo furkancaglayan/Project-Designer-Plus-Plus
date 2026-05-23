@@ -3,6 +3,15 @@ using UnityEngine;
 
 namespace ProjectDesigner.V2.Data
 {
+    public enum BoardEdgeAnchor
+    {
+        Auto,
+        Left,
+        Right,
+        Top,
+        Bottom
+    }
+
     [Serializable]
     public sealed class BoardEdgeModel
     {
@@ -16,6 +25,10 @@ namespace ProjectDesigner.V2.Data
         private string _targetNodeId;
         [SerializeField]
         private string _label;
+        [SerializeField]
+        private BoardEdgeAnchor _sourceAnchor;
+        [SerializeField]
+        private BoardEdgeAnchor _targetAnchor;
 
         public string Id
         {
@@ -50,12 +63,26 @@ namespace ProjectDesigner.V2.Data
             set { _label = value ?? string.Empty; }
         }
 
+        public BoardEdgeAnchor SourceAnchor
+        {
+            get { return _sourceAnchor; }
+            set { _sourceAnchor = IsDefined(value) ? value : BoardEdgeAnchor.Auto; }
+        }
+
+        public BoardEdgeAnchor TargetAnchor
+        {
+            get { return _targetAnchor; }
+            set { _targetAnchor = IsDefined(value) ? value : BoardEdgeAnchor.Auto; }
+        }
+
         public BoardEdgeModel()
         {
             _typeId = BoardEdgeTypeIds.Dependency;
             _sourceNodeId = string.Empty;
             _targetNodeId = string.Empty;
             _label = string.Empty;
+            _sourceAnchor = BoardEdgeAnchor.Auto;
+            _targetAnchor = BoardEdgeAnchor.Auto;
             EnsureId();
         }
 
@@ -72,12 +99,34 @@ namespace ProjectDesigner.V2.Data
         {
             var clone = new BoardEdgeModel(TypeId, SourceNodeId, TargetNodeId, Label);
             clone._id = Id;
+            clone.SourceAnchor = SourceAnchor;
+            clone.TargetAnchor = TargetAnchor;
             return clone;
+        }
+
+        public void EnsureDefaults()
+        {
+            _typeId = string.IsNullOrWhiteSpace(_typeId) ? BoardEdgeTypeIds.Dependency : _typeId;
+            _sourceNodeId = _sourceNodeId ?? string.Empty;
+            _targetNodeId = _targetNodeId ?? string.Empty;
+            _label = _label ?? string.Empty;
+            SourceAnchor = SourceAnchor;
+            TargetAnchor = TargetAnchor;
+            EnsureId();
         }
 
         public void RegenerateId()
         {
             _id = Guid.NewGuid().ToString("N");
+        }
+
+        private static bool IsDefined(BoardEdgeAnchor anchor)
+        {
+            return anchor == BoardEdgeAnchor.Auto ||
+                   anchor == BoardEdgeAnchor.Left ||
+                   anchor == BoardEdgeAnchor.Right ||
+                   anchor == BoardEdgeAnchor.Top ||
+                   anchor == BoardEdgeAnchor.Bottom;
         }
 
         private void EnsureId()

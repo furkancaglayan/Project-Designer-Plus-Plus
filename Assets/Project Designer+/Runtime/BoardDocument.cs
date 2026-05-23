@@ -91,6 +91,17 @@ namespace ProjectDesigner.V2.Data
             _templates = _templates ?? new List<BoardTemplateDefinition>();
             _viewState = _viewState ?? new BoardViewState();
             _viewState.SetSelection(_viewState.SelectedNodeIds, _viewState.SelectedNodeId);
+
+            foreach (BoardNodeModel node in _nodes.Where(node => node != null))
+            {
+                node.EnsureDefaults();
+                node.Size = node.Size;
+            }
+
+            foreach (BoardEdgeModel edge in _edges.Where(edge => edge != null))
+            {
+                edge.EnsureDefaults();
+            }
         }
 
         public BoardNodeModel GetNode(string nodeId)

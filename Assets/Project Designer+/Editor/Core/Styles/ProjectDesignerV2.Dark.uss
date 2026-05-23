@@ -49,6 +49,12 @@
     border-left-color: rgba(255, 255, 255, 0.08);
 }
 
+.pd-inspector-splitter {
+    background-color: rgba(255, 255, 255, 0.04);
+    border-left-color: rgba(255, 255, 255, 0.08);
+    border-right-color: rgba(255, 255, 255, 0.08);
+}
+
 .pd-inspector-header {
     border-bottom-color: rgba(255, 255, 255, 0.08);
 }
@@ -147,6 +153,20 @@
 
 .pd-node-meta {
     color: rgb(167, 177, 192);
+}
+
+.pd-node-resize-handle {
+    border-right-color: rgba(103, 195, 255, 0.78);
+    border-bottom-color: rgba(103, 195, 255, 0.78);
+}
+
+.pd-edge-row {
+    background-color: rgba(103, 195, 255, 0.04);
+}
+
+.pd-edge-row-hovered {
+    background-color: rgba(103, 195, 255, 0.13);
+    border-left-color: rgb(103, 195, 255);
 }
 
 .pd-node-signal-chip {
@@ -274,8 +294,17 @@
 .pd-board-browser-stats,
 .pd-board-browser-summary,
 .pd-inline-link-menu-body,
-.pd-overview-detail {
+.pd-overview-detail,
+.pd-duration-table {
     color: rgb(177, 186, 199);
+}
+
+.pd-duration-table {
+    background-color: rgba(255, 255, 255, 0.06);
+}
+
+.pd-validation-label {
+    color: rgb(152, 222, 181);
 }
 
 .pd-foldout .pd-muted-body,

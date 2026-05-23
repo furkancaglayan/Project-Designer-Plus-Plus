@@ -10,7 +10,7 @@ namespace ProjectDesigner.V2.Editor
 
         public static string GetInstalledVersion()
         {
-            return "3.1.0";
+            return "3.2.0";
         }
     }
 }

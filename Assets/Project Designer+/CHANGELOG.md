@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.2.0
+
+- Replaced task estimate points with duration estimates and legacy point-to-day migration.
+- Added start dates, validated date labels, and stronger due-date urgency states.
+- Added richer card actions for delete, duplicate, focus, linking, anchors, resizing with readable minimum card sizes and size-aware previews, and details panel resizing.
+- Added a Project Settings toggle for dotted alignment guides while moving or resizing cards.
+- Improved rich-text-safe card previews, note accent colors, sample boards, and release documentation.
+
 ## 3.1.0
 
 - Improved Project Finder empty states with clearer next steps for first-use flow and no-result searches.

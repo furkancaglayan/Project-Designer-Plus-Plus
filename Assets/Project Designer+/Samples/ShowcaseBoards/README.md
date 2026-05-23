@@ -22,5 +22,5 @@ Use that board to inspect:
 
 ## Related Paths
 
-- Create the same built-in showcase from `Tools/Project Designer/New Project Designer+ Redo Board`
+- Create the same built-in showcase from `Assets/Create/Project Designer/Project Designer+ Redo Board`
 - Compare it against the `Solo Indie`, `Small Team`, and workflow preset boards from the Project Finder

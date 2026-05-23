@@ -168,6 +168,26 @@ namespace ProjectDesigner.V2.Data
         }
     }
 
+    public sealed class ResizeNodeCommand : ProjectDesignerSnapshotCommand
+    {
+        public ResizeNodeCommand(ProjectBoardAsset board, string nodeId, Vector2 newSize)
+            : base("Resize Card", board.Document, BuildAfter(board.Document, nodeId, newSize))
+        {
+        }
+
+        private static BoardDocument BuildAfter(BoardDocument document, string nodeId, Vector2 newSize)
+        {
+            BoardDocument after = document.DeepClone();
+            BoardNodeModel node = after.GetNode(nodeId);
+            if (node != null)
+            {
+                node.Size = newSize;
+            }
+
+            return after;
+        }
+    }
+
     public sealed class CreateEdgeCommand : ProjectDesignerSnapshotCommand
     {
         public CreateEdgeCommand(ProjectBoardAsset board, BoardEdgeModel edge)
@@ -194,6 +214,27 @@ namespace ProjectDesigner.V2.Data
         {
             BoardDocument after = document.DeepClone();
             after.RemoveEdge(edgeId);
+            return after;
+        }
+    }
+
+    public sealed class SetEdgeAnchorsCommand : ProjectDesignerSnapshotCommand
+    {
+        public SetEdgeAnchorsCommand(ProjectBoardAsset board, string edgeId, BoardEdgeAnchor sourceAnchor, BoardEdgeAnchor targetAnchor)
+            : base("Set Link Anchors", board.Document, BuildAfter(board.Document, edgeId, sourceAnchor, targetAnchor))
+        {
+        }
+
+        private static BoardDocument BuildAfter(BoardDocument document, string edgeId, BoardEdgeAnchor sourceAnchor, BoardEdgeAnchor targetAnchor)
+        {
+            BoardDocument after = document.DeepClone();
+            BoardEdgeModel edge = after.Edges.FirstOrDefault(candidate => candidate != null && candidate.Id == edgeId);
+            if (edge != null)
+            {
+                edge.SourceAnchor = sourceAnchor;
+                edge.TargetAnchor = targetAnchor;
+            }
+
             return after;
         }
     }

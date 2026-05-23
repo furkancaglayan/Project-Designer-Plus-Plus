@@ -50,18 +50,42 @@ Project Designer+ installs as a regular Unity asset and opens as a planning-firs
 ## Use The Planner
 
 - Left sidebar:
-  add cards and jump between saved views.
+  add cards, jump between saved views, and keep the shortcut reminder close at hand.
 - Center board:
-  pan, zoom, drag cards, drag from `Link` on a card to create relationships, use `Arrange > Auto Layout Left To Right` when a board gets messy, and drop Unity assets onto the planner.
+  pan, zoom, drag cards, use dotted alignment guides while moving or resizing, resize selected cards from the bottom-right handle, drag from `Link` on a card to create relationships, use `Arrange > Auto Layout Left To Right` when a board gets messy, and drop Unity assets onto the planner.
 - Right inspector:
-  edit the selected card or planning board details and use the manual link fallback when you need more control.
+  edit the selected card or planning board details, set link anchors, and use the manual link fallback when you need more control.
 - Bottom overview:
   watch planning metrics without adding a dashboard card to the board.
+
+## Duration Estimates
+
+Task estimates use duration text. The planner accepts mixed units and converts them through a work calendar.
+
+| Unit | Meaning |
+| --- | --- |
+| `min` | minutes |
+| `h` | hours |
+| `d` | workdays, where `1d = 8h` |
+| `w` | workweeks, where `1w = 5d` |
+| `m` | work-months, where `1m = 4w` |
+
+Examples: `1d`, `3w 1d`, `2.5h`, `30min`, and `5000min`. When the estimate parses correctly, the inspector shows the computed hours and workdays.
+
+## Shortcuts
+
+Alignment guides can be turned off in `Project Settings > Project Designer+ > Board Editing`.
+
+- `F`: focus the selected card or selected cards.
+- `Delete` / `Backspace`: delete selected cards.
+- `Ctrl+D`: duplicate selected cards.
+- `Ctrl+A`: select visible cards.
+- `Esc`: cancel a link/resize/marquee action or clear the current selection.
 
 ## Built-In Card Types
 
 - `Task`
-Status, priority, estimate, assignee from the shared team roster, due date, tags, and acceptance criteria.
+Status, priority, duration estimate, assignee from the shared team roster, start date, due date, tags, and acceptance criteria.
 - `Milestone`
   Roll-up checkpoint for linked tasks.
 - `Note`

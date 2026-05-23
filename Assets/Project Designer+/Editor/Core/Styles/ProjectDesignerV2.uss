@@ -46,7 +46,7 @@
 }
 
 .pd-toolbar-menu {
-    unity-text-align: middle-center;
+    -unity-text-align: middle-center;
 }
 
 .pd-toolbar-search,
@@ -126,6 +126,8 @@
 
 .pd-center-column {
     flex-grow: 1;
+    flex-shrink: 1;
+    min-width: 0;
     flex-direction: column;
     overflow: hidden;
 }
@@ -136,6 +138,15 @@
     border-left-width: 1px;
     border-left-color: rgba(69, 102, 171, 0.08);
     flex-direction: column;
+}
+
+.pd-inspector-splitter {
+    width: 6px;
+    background-color: rgba(69, 102, 171, 0.04);
+    border-left-width: 1px;
+    border-left-color: rgba(69, 102, 171, 0.08);
+    border-right-width: 1px;
+    border-right-color: rgba(69, 102, 171, 0.08);
 }
 
 .pd-inspector-panel-collapsed {
@@ -317,6 +328,8 @@
 
 .pd-canvas {
     flex-grow: 1;
+    flex-shrink: 1;
+    min-width: 0;
     background-color: rgb(236, 242, 248);
     overflow: hidden;
 }
@@ -415,23 +428,40 @@
     position: absolute;
     top: 10px;
     right: 10px;
-    min-width: 38px;
-    min-height: 20px;
-    padding-left: 8px;
-    padding-right: 8px;
-    padding-top: 2px;
-    padding-bottom: 2px;
-    font-size: 9px;
-    -unity-font-style: normal;
-    text-align: center;
-    border-top-width: 1px;
-    border-right-width: 1px;
-    border-bottom-width: 1px;
-    border-left-width: 1px;
+    min-width: 68px;
+    min-height: 30px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    background-color: rgb(64, 100, 240);
+    color: rgb(255, 255, 255);
+    font-size: 11px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    border-top-width: 2px;
+    border-right-width: 2px;
+    border-bottom-width: 2px;
+    border-left-width: 2px;
     border-top-left-radius: 6px;
     border-top-right-radius: 6px;
     border-bottom-left-radius: 6px;
     border-bottom-right-radius: 6px;
+}
+
+.pd-node-resize-handle {
+    position: absolute;
+    right: 4px;
+    bottom: 4px;
+    width: 24px;
+    height: 24px;
+    background-color: rgba(76, 122, 255, 0.14);
+    border-right-width: 3px;
+    border-bottom-width: 3px;
+    border-right-color: rgba(76, 122, 255, 0.78);
+    border-bottom-color: rgba(76, 122, 255, 0.78);
+    border-top-right-radius: 2px;
+    border-bottom-left-radius: 2px;
 }
 
 .pd-node-connector-active {
@@ -446,10 +476,12 @@
 .pd-node-category {
     color: rgb(103, 119, 136);
     font-size: 11px;
+    flex-shrink: 0;
 }
 
 .pd-node-category-chip {
     align-self: flex-start;
+    flex-shrink: 0;
     padding-left: 7px;
     padding-right: 7px;
     padding-top: 2px;
@@ -470,12 +502,14 @@
     -unity-font-style: bold;
     font-size: 15px;
     color: rgb(31, 40, 52);
+    flex-shrink: 0;
 }
 
 .pd-node-signal-row {
     flex-direction: row;
     flex-wrap: wrap;
     margin-bottom: 5px;
+    flex-shrink: 0;
 }
 
 .pd-node-signal-chip {
@@ -487,6 +521,8 @@
     padding-bottom: 2px;
     font-size: 10px;
     -unity-font-style: normal;
+    flex-shrink: 0;
+    min-height: 18px;
     border-top-width: 1px;
     border-right-width: 1px;
     border-bottom-width: 1px;
@@ -499,10 +535,11 @@
 
 .pd-node-preview {
     flex-grow: 1;
+    flex-shrink: 1;
+    min-height: 0;
     white-space: normal;
     color: rgb(78, 91, 107);
     font-size: 12px;
-    max-height: 48px;
     overflow: hidden;
     margin-bottom: 4px;
 }
@@ -512,12 +549,14 @@
     font-size: 11px;
     margin-bottom: 3px;
     white-space: normal;
+    flex-shrink: 0;
 }
 
 .pd-node-tag-row {
     flex-direction: row;
     flex-wrap: wrap;
     margin-top: 4px;
+    flex-shrink: 0;
 }
 
 .pd-node-tag-chip {
@@ -528,6 +567,8 @@
     padding-top: 2px;
     padding-bottom: 2px;
     font-size: 10px;
+    flex-shrink: 0;
+    min-height: 18px;
     border-top-width: 1px;
     border-right-width: 1px;
     border-bottom-width: 1px;
@@ -648,24 +689,53 @@
 }
 
 .pd-edge-row {
-    flex-direction: row;
+    flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
-    margin-top: 4px;
-    margin-bottom: 4px;
+    margin-top: 6px;
+    margin-bottom: 6px;
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-top: 8px;
+    padding-bottom: 8px;
     min-width: 0;
+    background-color: rgba(69, 102, 171, 0.03);
+    border-left-width: 2px;
+    border-left-color: rgba(69, 102, 171, 0);
+    border-radius: 7px;
+}
+
+.pd-edge-row-hovered {
+    background-color: rgba(76, 122, 255, 0.08);
+    border-left-color: rgb(76, 122, 255);
 }
 
 .pd-edge-row > Label {
-    flex-grow: 1;
+    flex-grow: 0;
     flex-shrink: 1;
     min-width: 0;
     margin-right: 8px;
     white-space: normal;
 }
 
+.pd-edge-anchor-row {
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-top: 4px;
+    width: 100%;
+}
+
+.pd-edge-anchor-field {
+    width: 204px;
+    min-height: 30px;
+    margin-right: 10px;
+    margin-bottom: 8px;
+}
+
 .pd-edge-row > .pd-secondary-button {
     margin-top: 0;
+    min-width: 90px;
+    min-height: 30px;
     flex-shrink: 0;
 }
 
@@ -687,6 +757,18 @@
     border-right-color: rgba(67, 102, 219, 0.9);
     border-bottom-color: rgba(67, 102, 219, 0.9);
     border-left-color: rgba(67, 102, 219, 0.9);
+}
+
+.pd-link-create-button {
+    align-self: stretch;
+    min-height: 38px;
+    font-size: 13px;
+}
+
+.pd-link-menu-button {
+    align-self: stretch;
+    min-height: 32px;
+    white-space: normal;
 }
 
 .pd-secondary-button {
@@ -897,6 +979,31 @@
 .pd-action-row > * {
     margin-right: 8px;
     margin-bottom: 8px;
+}
+
+.pd-duration-table {
+    margin-top: -2px;
+    margin-bottom: 8px;
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    white-space: normal;
+    color: rgb(80, 93, 109);
+    background-color: rgba(69, 102, 171, 0.06);
+    border-radius: 6px;
+}
+
+.pd-validation-label {
+    margin-top: -2px;
+    margin-bottom: 8px;
+    color: rgb(42, 111, 78);
+    white-space: normal;
+}
+
+.pd-shortcut-info {
+    margin-top: 8px;
+    font-size: 11px;
 }
 
 .pd-onboarding-window {

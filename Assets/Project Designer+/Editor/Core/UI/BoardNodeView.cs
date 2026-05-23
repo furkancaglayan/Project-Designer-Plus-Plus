@@ -21,8 +21,13 @@ namespace ProjectDesigner.V2.Editor
 
     internal sealed class BoardNodeView : VisualElement
     {
+        private const float CompactHeightThreshold = 190f;
+        private const float TinyHeightThreshold = 150f;
+        private static readonly Color ConnectorButtonColor = new Color(0.25f, 0.39f, 0.94f);
+        private static readonly Color ConnectorButtonBorderColor = new Color(0.18f, 0.29f, 0.78f);
         private readonly BoardNodeModel _node;
         private readonly IProjectDesignerNodeDefinition _definition;
+        private BoardDocument _document;
         private readonly VisualElement _selectionFrame;
         private readonly VisualElement _linkFrame;
         private readonly Label _titleLabel;
@@ -32,14 +37,18 @@ namespace ProjectDesigner.V2.Editor
         private readonly Label _metaLabel;
         private readonly VisualElement _tagsContainer;
         private readonly Label _connectHandle;
+        private readonly VisualElement _resizeHandle;
         private readonly Color _accentColor;
         private bool _isSelected;
         private bool _isHovered;
         private bool _isConnectionOrigin;
+        private bool _hasSignals;
+        private bool _hasTags;
 
         public event Action<BoardNodeSelectionRequest> Selected;
         public event Action<string, Vector2, int> DragStarted;
         public event Action<string, Vector2, int> ConnectionStarted;
+        public event Action<string, Vector2, int> ResizeStarted;
         public event Action<string, bool> HoverChanged;
 
         public string NodeId
@@ -51,9 +60,8 @@ namespace ProjectDesigner.V2.Editor
         {
             _node = node;
             _definition = definition;
-            _accentColor = ProjectDesignerColorUtility.ParseOrFallback(
-                _definition == null ? "#6E6E6E" : _definition.AccentColor,
-                new Color(0.43f, 0.43f, 0.43f));
+            _document = document;
+            _accentColor = ResolveAccentColor(node, definition);
 
             AddToClassList("pd-node");
             usageHints = UsageHints.DynamicTransform;
@@ -79,17 +87,24 @@ namespace ProjectDesigner.V2.Editor
             _linkFrame.style.display = DisplayStyle.None;
             Add(_linkFrame);
 
-            _connectHandle = new Label("Link");
+            _connectHandle = new Label("Link +")
+            {
+                tooltip = "Click to choose a target or drag to create a link"
+            };
             _connectHandle.AddToClassList("pd-node-connector");
             _connectHandle.pickingMode = PickingMode.Position;
-            _connectHandle.style.backgroundColor = ProjectDesignerColorUtility.WithAlpha(_accentColor, 0.06f);
-            _connectHandle.style.borderTopColor = ProjectDesignerColorUtility.WithAlpha(_accentColor, 0.14f);
-            _connectHandle.style.borderRightColor = ProjectDesignerColorUtility.WithAlpha(_accentColor, 0.14f);
-            _connectHandle.style.borderBottomColor = ProjectDesignerColorUtility.WithAlpha(_accentColor, 0.14f);
-            _connectHandle.style.borderLeftColor = ProjectDesignerColorUtility.WithAlpha(_accentColor, 0.14f);
-            _connectHandle.style.color = ProjectDesignerColorUtility.Blend(_accentColor, new Color(0.18f, 0.22f, 0.26f), 0.22f);
+            ApplyDefaultConnectorStyle();
             _connectHandle.RegisterCallback<PointerDownEvent>(OnConnectionPointerDown);
             Add(_connectHandle);
+
+            _resizeHandle = new VisualElement
+            {
+                tooltip = "Drag to resize"
+            };
+            _resizeHandle.AddToClassList("pd-node-resize-handle");
+            _resizeHandle.pickingMode = PickingMode.Position;
+            _resizeHandle.RegisterCallback<PointerDownEvent>(OnResizePointerDown);
+            Add(_resizeHandle);
 
             _categoryLabel = new Label(_node.Category);
             _categoryLabel.AddToClassList("pd-node-category");
@@ -141,6 +156,7 @@ namespace ProjectDesigner.V2.Editor
 
         public void Refresh(BoardDocument document, bool isSelected)
         {
+            _document = document;
             _titleLabel.text = _node.Title;
             _categoryLabel.text = _node.Category;
             RefreshSignals(document);
@@ -153,6 +169,7 @@ namespace ProjectDesigner.V2.Editor
             style.top = _node.Position.y;
             style.width = _node.Size.x;
             style.height = _node.Size.y;
+            UpdateContentDensity(_node.Size);
 
             SetSelected(isSelected);
             SetConnectionState(false, false, false);
@@ -188,18 +205,33 @@ namespace ProjectDesigner.V2.Editor
                 return;
             }
 
-            _connectHandle.style.backgroundColor = ProjectDesignerColorUtility.WithAlpha(_accentColor, 0.06f);
-            _connectHandle.style.borderTopColor = ProjectDesignerColorUtility.WithAlpha(_accentColor, 0.14f);
-            _connectHandle.style.borderRightColor = ProjectDesignerColorUtility.WithAlpha(_accentColor, 0.14f);
-            _connectHandle.style.borderBottomColor = ProjectDesignerColorUtility.WithAlpha(_accentColor, 0.14f);
-            _connectHandle.style.borderLeftColor = ProjectDesignerColorUtility.WithAlpha(_accentColor, 0.14f);
-            _connectHandle.style.color = ProjectDesignerColorUtility.Blend(_accentColor, new Color(0.18f, 0.22f, 0.26f), 0.22f);
+            ApplyDefaultConnectorStyle();
+        }
+
+        private void ApplyDefaultConnectorStyle()
+        {
+            Color backgroundColor = ProjectDesignerColorUtility.Blend(ConnectorButtonColor, _accentColor, 0.12f);
+            Color borderColor = ProjectDesignerColorUtility.Blend(ConnectorButtonBorderColor, _accentColor, 0.1f);
+            _connectHandle.style.backgroundColor = backgroundColor;
+            _connectHandle.style.borderTopColor = borderColor;
+            _connectHandle.style.borderRightColor = borderColor;
+            _connectHandle.style.borderBottomColor = borderColor;
+            _connectHandle.style.borderLeftColor = borderColor;
+            _connectHandle.style.color = Color.white;
         }
 
         public void SetPreviewPosition(Vector2 position)
         {
             style.left = position.x;
             style.top = position.y;
+        }
+
+        public void SetPreviewSize(Vector2 size)
+        {
+            style.width = size.x;
+            style.height = size.y;
+            _previewLabel.text = ProjectDesignerCardPresentation.GetPreviewText(_node, _definition, _document, size);
+            UpdateContentDensity(size);
         }
 
         private void OnPointerDown(PointerDownEvent evt)
@@ -245,6 +277,26 @@ namespace ProjectDesigner.V2.Editor
                 ConnectionStarted.Invoke(_node.Id, GetEventPosition(evt.position), evt.pointerId);
             }
 
+            evt.StopImmediatePropagation();
+        }
+
+        private void OnResizePointerDown(PointerDownEvent evt)
+        {
+            if (evt.button != 0)
+            {
+                return;
+            }
+
+            if (Selected != null)
+            {
+                Selected.Invoke(new BoardNodeSelectionRequest(_node.Id, false));
+            }
+
+            if (ResizeStarted != null)
+            {
+                ResizeStarted.Invoke(_node.Id, GetEventPosition(evt.position), evt.pointerId);
+            }
+
             evt.StopPropagation();
         }
 
@@ -280,6 +332,7 @@ namespace ProjectDesigner.V2.Editor
             _tagsContainer.Clear();
 
             ProjectDesignerCardTagSummary tagSummary = ProjectDesignerCardPresentation.GetTagSummary(_node);
+            _hasTags = tagSummary.VisibleTags.Count > 0 || tagSummary.HiddenCount > 0;
             if (tagSummary.VisibleTags.Count == 0 && tagSummary.HiddenCount == 0)
             {
                 _tagsContainer.style.display = DisplayStyle.None;
@@ -315,6 +368,7 @@ namespace ProjectDesigner.V2.Editor
         {
             _signalContainer.Clear();
             IReadOnlyList<ProjectDesignerCardSignal> signals = ProjectDesignerCardPresentation.GetSignals(_node, document);
+            _hasSignals = signals.Count > 0;
             _signalContainer.style.display = signals.Count == 0 ? DisplayStyle.None : DisplayStyle.Flex;
             foreach (ProjectDesignerCardSignal signal in signals)
             {
@@ -345,6 +399,32 @@ namespace ProjectDesigner.V2.Editor
         {
             bool isVisible = _isSelected || _isHovered || _isConnectionOrigin;
             _connectHandle.style.display = isVisible ? DisplayStyle.Flex : DisplayStyle.None;
+            _resizeHandle.style.display = isVisible ? DisplayStyle.Flex : DisplayStyle.None;
+        }
+
+        private void UpdateContentDensity(Vector2 size)
+        {
+            bool isCompact = size.y < CompactHeightThreshold;
+            bool isTiny = size.y < TinyHeightThreshold;
+            EnableInClassList("pd-node-compact", isCompact);
+            EnableInClassList("pd-node-tiny", isTiny);
+
+            _signalContainer.style.display = _hasSignals && !isCompact ? DisplayStyle.Flex : DisplayStyle.None;
+            _previewLabel.style.display = isTiny ? DisplayStyle.None : DisplayStyle.Flex;
+            _metaLabel.style.display = !isTiny && !string.IsNullOrWhiteSpace(_metaLabel.text) ? DisplayStyle.Flex : DisplayStyle.None;
+            _tagsContainer.style.display = _hasTags && !isTiny ? DisplayStyle.Flex : DisplayStyle.None;
+        }
+
+        private static Color ResolveAccentColor(BoardNodeModel node, IProjectDesignerNodeDefinition definition)
+        {
+            if (node is NoteNodeModel note)
+            {
+                return ProjectDesignerColorUtility.ParseOrFallback(note.ResolvedAccentHex, new Color(0.17f, 0.56f, 0.85f));
+            }
+
+            return ProjectDesignerColorUtility.ParseOrFallback(
+                definition == null ? "#6E6E6E" : definition.AccentColor,
+                new Color(0.43f, 0.43f, 0.43f));
         }
 
     }

@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 09dddd999187a8d4aae8cede8a04f0a8, type: 3}
+  m_Script: {fileID: 11500000, guid: 6db539dbf600d844b8613d063d9ce1a9, type: 3}
   m_Name: Project Designer+ Redo Demo Board
   m_EditorClassIdentifier: 
   _schemaVersion: 2.0.0-preview
@@ -298,7 +298,7 @@ MonoBehaviour:
         _description: Rewrite the product story so teams understand this as a pre-production planner first, with technical design as a secondary workflow.
         _status: 3
         _priority: 3
-        _estimatePoints: 3
+        _estimateDurationText: 3d
         _assigneeId: product-design
         _dueDateIso: 2026-05-01
         _acceptanceCriteria: README, onboarding, and listing copy all lead with planning instead of UML.
@@ -318,7 +318,7 @@ MonoBehaviour:
         _description: Move the rewrite into a package layout with clearer runtime, editor, sample, and test boundaries.
         _status: 3
         _priority: 3
-        _estimatePoints: 5
+        _estimateDurationText: 5d
         _assigneeId: tools-engineering
         _dueDateIso: 2026-05-03
         _acceptanceCriteria: The package imports cleanly and no longer depends on the legacy asset folder for v2 behavior.
@@ -337,7 +337,7 @@ MonoBehaviour:
         _description: Tighten drag, selection, connection flow, and board operations until the planner feels fast instead of fragile.
         _status: 1
         _priority: 3
-        _estimatePoints: 8
+        _estimateDurationText: 8d
         _assigneeId: tools-engineering
         _dueDateIso: 2026-05-08
         _acceptanceCriteria: Daily planning actions work without workaround explanations in the docs.
@@ -356,7 +356,7 @@ MonoBehaviour:
         _description: Create the product shell around the planner so first-run discovery feels intentional.
         _status: 3
         _priority: 2
-        _estimatePoints: 5
+        _estimateDurationText: 5d
         _assigneeId: product-design
         _dueDateIso: 2026-05-07
         _acceptanceCriteria: Users can create, find, and reopen boards without hunting through the Project window.
@@ -375,7 +375,7 @@ MonoBehaviour:
         _description: Move assignment into a project-wide roster and use that data for board summaries, filters, and insight cards.
         _status: 1
         _priority: 2
-        _estimatePoints: 5
+        _estimateDurationText: 5d
         _assigneeId: tools-engineering
         _dueDateIso: 2026-05-10
         _acceptanceCriteria: Assignees come from one roster and workload summaries stop drifting into duplicate names.
@@ -395,7 +395,7 @@ MonoBehaviour:
         _description: Seed richer examples, a flagship redo board, and clearer sample packaging so users can inspect real planning density quickly.
         _status: 1
         _priority: 2
-        _estimatePoints: 5
+        _estimateDurationText: 5d
         _assigneeId: documentation
         _dueDateIso: 2026-05-12
         _acceptanceCriteria: The package ships with examples that demonstrate planning depth, not just empty starter content.
@@ -415,7 +415,7 @@ MonoBehaviour:
         _description: Align package messaging, screenshots, and release notes around the same planner-first story.
         _status: 0
         _priority: 2
-        _estimatePoints: 3
+        _estimateDurationText: 3d
         _assigneeId: launch-producer
         _dueDateIso: 2026-05-16
         _acceptanceCriteria: The listing draft, screenshots, and release checklist promise only what the shipped package really does.

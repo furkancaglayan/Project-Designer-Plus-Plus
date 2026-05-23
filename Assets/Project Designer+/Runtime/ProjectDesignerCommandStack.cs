@@ -34,6 +34,16 @@ namespace ProjectDesigner.V2.Data
 
         public void Execute(IProjectDesignerCommand command)
         {
+            ExecuteInternal(command, true);
+        }
+
+        public void ExecuteSilently(IProjectDesignerCommand command)
+        {
+            ExecuteInternal(command, false);
+        }
+
+        private void ExecuteInternal(IProjectDesignerCommand command, bool notifyChanged)
+        {
             if (command == null || BoardAsset == null)
             {
                 return;
@@ -43,7 +53,16 @@ namespace ProjectDesigner.V2.Data
             _undo.Push(command);
             _redo.Clear();
             TrimUndoHistory();
-            RaiseChanged();
+            if (notifyChanged)
+            {
+                RaiseChanged();
+                return;
+            }
+
+            if (_afterChange != null)
+            {
+                _afterChange.Invoke();
+            }
         }
 
         public void Undo()

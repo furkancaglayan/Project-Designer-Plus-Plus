@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 09dddd999187a8d4aae8cede8a04f0a8, type: 3}
+  m_Script: {fileID: 11500000, guid: 6db539dbf600d844b8613d063d9ce1a9, type: 3}
   m_Name: Status Report Demo Board
   m_EditorClassIdentifier: 
   _schemaVersion: 2.0.0-preview
@@ -168,7 +168,7 @@ MonoBehaviour:
           checkpoint build.
         _status: 1
         _priority: 2
-        _estimatePoints: 3
+        _estimateDurationText: 3d
         _assigneeId: Producer
         _dueDateIso: 2026-05-02
         _acceptanceCriteria: The checklist is approved and nobody is surprised by
@@ -190,7 +190,7 @@ MonoBehaviour:
           each one an owner.
         _status: 0
         _priority: 2
-        _estimatePoints: 2
+        _estimateDurationText: 2d
         _assigneeId: Engineering Lead
         _dueDateIso: 2026-05-04
         _acceptanceCriteria: Each blocker has an owner, next step, and escalation

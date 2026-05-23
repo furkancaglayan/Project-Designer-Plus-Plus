@@ -4,11 +4,56 @@ using UnityEngine;
 
 namespace ProjectDesigner.V2.Data
 {
+    public enum BoardAlignmentGuideOrientation
+    {
+        Vertical,
+        Horizontal
+    }
+
+    public enum BoardAlignmentGuideKind
+    {
+        Alignment
+    }
+
+    public readonly struct BoardAlignmentGuide
+    {
+        public BoardAlignmentGuide(BoardAlignmentGuideOrientation orientation, BoardAlignmentGuideKind kind, float position, float start, float end)
+        {
+            Orientation = orientation;
+            Kind = kind;
+            Position = position;
+            Start = Mathf.Min(start, end);
+            End = Mathf.Max(start, end);
+        }
+
+        public BoardAlignmentGuideOrientation Orientation { get; }
+        public BoardAlignmentGuideKind Kind { get; }
+        public float Position { get; }
+        public float Start { get; }
+        public float End { get; }
+    }
+
     public static class BoardLayoutUtility
     {
         private const float AutoLayoutHorizontalGap = 180f;
         private const float AutoLayoutVerticalGap = 56f;
         private const float AutoLayoutComponentGap = 24f;
+        private const float AlignmentGuidePadding = 48f;
+        private const int MaxAlignmentGuidesPerAxis = 2;
+
+        private readonly struct AlignmentGuideCandidate
+        {
+            public AlignmentGuideCandidate(BoardAlignmentGuide guide, float distance, int priority)
+            {
+                Guide = guide;
+                Distance = distance;
+                Priority = priority;
+            }
+
+            public BoardAlignmentGuide Guide { get; }
+            public float Distance { get; }
+            public int Priority { get; }
+        }
 
         private sealed class AutoLayoutComponent
         {
@@ -32,6 +77,29 @@ namespace ProjectDesigner.V2.Data
             return new Vector2(
                 Mathf.Round(position.x / grid) * grid,
                 Mathf.Round(position.y / grid) * grid);
+        }
+
+        public static List<BoardAlignmentGuide> BuildAlignmentGuides(Rect activeRect, IEnumerable<Rect> referenceRects, float tolerance)
+        {
+            var guides = new List<BoardAlignmentGuide>();
+            var verticalCandidates = new List<AlignmentGuideCandidate>();
+            var horizontalCandidates = new List<AlignmentGuideCandidate>();
+            float normalizedTolerance = Mathf.Max(0.001f, tolerance);
+
+            foreach (Rect referenceRect in referenceRects ?? Enumerable.Empty<Rect>())
+            {
+                if (referenceRect.width <= 0f || referenceRect.height <= 0f)
+                {
+                    continue;
+                }
+
+                CollectAlignmentCandidates(activeRect, referenceRect, true, normalizedTolerance, verticalCandidates);
+                CollectAlignmentCandidates(activeRect, referenceRect, false, normalizedTolerance, horizontalCandidates);
+            }
+
+            AppendBestGuides(guides, verticalCandidates);
+            AppendBestGuides(guides, horizontalCandidates);
+            return guides;
         }
 
         public static Rect GetBounds(IEnumerable<BoardNodeModel> nodes)
@@ -144,6 +212,91 @@ namespace ProjectDesigner.V2.Data
             return AutoArrange((nodes ?? new List<BoardNodeModel>())
                 .Where(node => node != null)
                 .ToList(), document == null ? Enumerable.Empty<BoardEdgeModel>() : document.Edges, snapToGrid);
+        }
+
+        private static void CollectAlignmentCandidates(Rect activeRect, Rect referenceRect, bool vertical, float tolerance, List<AlignmentGuideCandidate> candidates)
+        {
+            float[] activeValues = vertical
+                ? new[] { activeRect.xMin, activeRect.center.x, activeRect.xMax }
+                : new[] { activeRect.yMin, activeRect.center.y, activeRect.yMax };
+            float[] referenceValues = vertical
+                ? new[] { referenceRect.xMin, referenceRect.center.x, referenceRect.xMax }
+                : new[] { referenceRect.yMin, referenceRect.center.y, referenceRect.yMax };
+
+            for (int activeIndex = 0; activeIndex < activeValues.Length; activeIndex++)
+            {
+                for (int referenceIndex = 0; referenceIndex < referenceValues.Length; referenceIndex++)
+                {
+                    float activeValue = activeValues[activeIndex];
+                    float referenceValue = referenceValues[referenceIndex];
+                    float distance = Mathf.Abs(activeValue - referenceValue);
+                    if (distance > tolerance)
+                    {
+                        continue;
+                    }
+
+                    BoardAlignmentGuideOrientation orientation = vertical
+                        ? BoardAlignmentGuideOrientation.Vertical
+                        : BoardAlignmentGuideOrientation.Horizontal;
+                    float start = vertical
+                        ? Mathf.Min(activeRect.yMin, referenceRect.yMin) - AlignmentGuidePadding
+                        : Mathf.Min(activeRect.xMin, referenceRect.xMin) - AlignmentGuidePadding;
+                    float end = vertical
+                        ? Mathf.Max(activeRect.yMax, referenceRect.yMax) + AlignmentGuidePadding
+                        : Mathf.Max(activeRect.xMax, referenceRect.xMax) + AlignmentGuidePadding;
+
+                    candidates.Add(new AlignmentGuideCandidate(
+                        new BoardAlignmentGuide(orientation, BoardAlignmentGuideKind.Alignment, referenceValue, start, end),
+                        distance,
+                        GetAlignmentGuidePriority(activeIndex, referenceIndex)));
+                }
+            }
+        }
+
+        private static void AppendBestGuides(List<BoardAlignmentGuide> guides, List<AlignmentGuideCandidate> candidates)
+        {
+            int added = 0;
+            foreach (AlignmentGuideCandidate candidate in candidates
+                         .OrderBy(item => item.Distance)
+                         .ThenBy(item => item.Priority))
+            {
+                if (HasGuideNear(guides, candidate.Guide))
+                {
+                    continue;
+                }
+
+                guides.Add(candidate.Guide);
+                added++;
+                if (added >= MaxAlignmentGuidesPerAxis)
+                {
+                    return;
+                }
+            }
+        }
+
+        private static int GetAlignmentGuidePriority(int activeIndex, int referenceIndex)
+        {
+            bool activeIsEdge = activeIndex != 1;
+            bool referenceIsEdge = referenceIndex != 1;
+            if (activeIsEdge && referenceIsEdge)
+            {
+                return 0;
+            }
+
+            if (!activeIsEdge && !referenceIsEdge)
+            {
+                return 1;
+            }
+
+            return 2;
+        }
+
+        private static bool HasGuideNear(List<BoardAlignmentGuide> guides, BoardAlignmentGuide guide)
+        {
+            return guides.Any(existing =>
+                existing.Kind == guide.Kind &&
+                existing.Orientation == guide.Orientation &&
+                Mathf.Abs(existing.Position - guide.Position) <= 0.5f);
         }
 
         private static Dictionary<string, Vector2> AutoArrange(IReadOnlyList<BoardNodeModel> nodes, IEnumerable<BoardEdgeModel> edges, bool snapToGrid)

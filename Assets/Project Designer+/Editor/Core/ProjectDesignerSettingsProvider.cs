@@ -23,7 +23,10 @@ namespace ProjectDesigner.V2.Editor
                 "Planning",
                 "Roster",
                 "Assignee",
-                "Team"
+                "Team",
+                "Alignment",
+                "Guides",
+                "Resize"
             });
         }
 
@@ -65,6 +68,13 @@ namespace ProjectDesigner.V2.Editor
                 _settingsObject.FindProperty("_defaultBoardFolder"),
                 new GUIContent("Default Board Folder", "Assets-relative fallback folder used when a new board cannot be created from the current selection."));
             EditorGUILayout.HelpBox("Use an Assets-relative folder such as 'Assets/Project Designer Boards'. When your current selection is outside Assets, new planning boards will be created here.", MessageType.None);
+
+            EditorGUILayout.Space(10f);
+            EditorGUILayout.LabelField("Board Editing", EditorStyles.boldLabel);
+            EditorGUILayout.PropertyField(
+                _settingsObject.FindProperty("_showAlignmentGuides"),
+                new GUIContent("Show Alignment Guides", "Show dotted alignment guides while moving or resizing cards."));
+            EditorGUILayout.HelpBox("Alignment guides are only visual hints while editing; they do not change snapping or final card placement.", MessageType.None);
 
             EditorGUILayout.Space(10f);
             EditorGUILayout.LabelField("Team Roster", EditorStyles.boldLabel);

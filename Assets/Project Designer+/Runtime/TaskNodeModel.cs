@@ -30,9 +30,13 @@ namespace ProjectDesigner.V2.Data
         [SerializeField]
         private TaskNodePriority _priority;
         [SerializeField]
-        private int _estimatePoints;
+        private string _estimateDurationText;
+        [SerializeField, FormerlySerializedAs("_estimatePoints")]
+        private int _legacyEstimateDays;
         [SerializeField, FormerlySerializedAs("_assignee")]
         private string _assigneeId;
+        [SerializeField]
+        private string _startDateIso;
         [SerializeField]
         private string _dueDateIso;
         [SerializeField]
@@ -61,16 +65,26 @@ namespace ProjectDesigner.V2.Data
             set { _priority = value; }
         }
 
-        public int EstimatePoints
+        public string EstimateDurationText
         {
-            get { return _estimatePoints; }
-            set { _estimatePoints = Mathf.Max(0, value); }
+            get
+            {
+                MigrateLegacyEstimate();
+                return _estimateDurationText;
+            }
+            set { _estimateDurationText = value ?? string.Empty; }
         }
 
         public string AssigneeId
         {
             get { return _assigneeId; }
             set { _assigneeId = value ?? string.Empty; }
+        }
+
+        public string StartDateIso
+        {
+            get { return _startDateIso; }
+            set { _startDateIso = value ?? string.Empty; }
         }
 
         public string DueDateIso
@@ -91,8 +105,10 @@ namespace ProjectDesigner.V2.Data
             _description = "Describe the user value and acceptance criteria.";
             _status = TaskNodeStatus.NotStarted;
             _priority = TaskNodePriority.Medium;
-            _estimatePoints = 3;
+            _estimateDurationText = string.Empty;
+            _legacyEstimateDays = 0;
             _assigneeId = string.Empty;
+            _startDateIso = string.Empty;
             _dueDateIso = string.Empty;
             _acceptanceCriteria = string.Empty;
         }
@@ -104,13 +120,25 @@ namespace ProjectDesigner.V2.Data
                 Description = Description,
                 Status = Status,
                 Priority = Priority,
-                EstimatePoints = EstimatePoints,
+                EstimateDurationText = EstimateDurationText,
                 AssigneeId = AssigneeId,
+                StartDateIso = StartDateIso,
                 DueDateIso = DueDateIso,
                 AcceptanceCriteria = AcceptanceCriteria
             };
             CopyCommonTo(clone);
             return clone;
+        }
+
+        public override void EnsureDefaults()
+        {
+            base.EnsureDefaults();
+            _description = _description ?? string.Empty;
+            _assigneeId = _assigneeId ?? string.Empty;
+            _startDateIso = _startDateIso ?? string.Empty;
+            _dueDateIso = _dueDateIso ?? string.Empty;
+            _acceptanceCriteria = _acceptanceCriteria ?? string.Empty;
+            MigrateLegacyEstimate();
         }
 
         public override string GetSearchText()
@@ -119,13 +147,26 @@ namespace ProjectDesigner.V2.Data
             {
                 base.GetSearchText(),
                 Description,
+                EstimateDurationText,
                 AssigneeId,
                 ProjectDesignerTeamRosterResolver.GetDisplayName(ProjectDesignerTeamRosterContext.CurrentRoster, AssigneeId),
+                StartDateIso,
                 DueDateIso,
                 AcceptanceCriteria,
                 Status.ToString(),
                 Priority.ToString()
             });
+        }
+
+        private void MigrateLegacyEstimate()
+        {
+            if (string.IsNullOrWhiteSpace(_estimateDurationText) && _legacyEstimateDays > 0)
+            {
+                _estimateDurationText = string.Format("{0}d", Mathf.Max(0, _legacyEstimateDays));
+                _legacyEstimateDays = 0;
+            }
+
+            _estimateDurationText = _estimateDurationText ?? string.Empty;
         }
     }
 }

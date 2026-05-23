@@ -38,6 +38,54 @@ namespace ProjectDesigner.V2.BuiltIn
             parent.Add(field);
         }
 
+        public static void AddDurationField(VisualElement parent, string label, string value, Action<string> onCommit)
+        {
+            AddDelayedTextField(parent, label, value, onCommit);
+
+            var table = new Label("1d = 8h | 1w = 5d | 1m = 4w\nExamples: 1d, 3w 1d, 2.5h, 30min, 5000min");
+            table.AddToClassList("pd-duration-table");
+            parent.Add(table);
+
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return;
+            }
+
+            int totalMinutes;
+            if (BoardInsights.TryParseDuration(value, out totalMinutes))
+            {
+                var parsedLabel = new Label(BoardInsights.DescribeDuration(totalMinutes));
+                parsedLabel.AddToClassList("pd-validation-label");
+                parent.Add(parsedLabel);
+            }
+            else
+            {
+                parent.Add(new HelpBox("Use a duration like 1d, 3w 1d, 2.5h, 30min, or 5000min. Negative values are not valid.", HelpBoxMessageType.Warning));
+            }
+        }
+
+        public static void AddDateField(VisualElement parent, string label, string value, Action<string> onCommit)
+        {
+            AddDelayedTextField(parent, label, value, onCommit);
+
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return;
+            }
+
+            string formattedDate;
+            if (BoardInsights.TryFormatDateLong(value, out formattedDate))
+            {
+                var parsedLabel = new Label(formattedDate);
+                parsedLabel.AddToClassList("pd-validation-label");
+                parent.Add(parsedLabel);
+            }
+            else
+            {
+                parent.Add(new HelpBox("Use a valid date like 2026-05-15 so timeline and health signals stay accurate.", HelpBoxMessageType.Warning));
+            }
+        }
+
         public static void AddEnumField<TEnum>(VisualElement parent, string label, TEnum value, Action<TEnum> onCommit) where TEnum : Enum
         {
             var field = new EnumField(label, value);
@@ -192,24 +240,50 @@ namespace ProjectDesigner.V2.BuiltIn
                 repaint();
             });
 
-            BuiltInInspectorUtility.AddIntegerField(advancedFoldout, "Estimate", task.EstimatePoints, value =>
+            BuiltInInspectorUtility.AddDurationField(advancedFoldout, "Estimate Duration", task.EstimateDurationText, value =>
             {
                 TaskNodeModel updated = (TaskNodeModel)task.Clone();
-                updated.EstimatePoints = value;
+                updated.EstimateDurationText = value;
                 dispatcher.Execute(new UpdateNodeCommand(board, updated));
                 repaint();
             });
 
-            BuiltInInspectorUtility.AddDelayedTextField(advancedFoldout, "Due Date (YYYY-MM-DD)", task.DueDateIso, value =>
+            BuiltInInspectorUtility.AddDateField(advancedFoldout, "Start Date (YYYY-MM-DD)", task.StartDateIso, value =>
+            {
+                TaskNodeModel updated = (TaskNodeModel)task.Clone();
+                updated.StartDateIso = value;
+                dispatcher.Execute(new UpdateNodeCommand(board, updated));
+                repaint();
+            });
+
+            BuiltInInspectorUtility.AddDateField(advancedFoldout, "Due Date (YYYY-MM-DD)", task.DueDateIso, value =>
             {
                 TaskNodeModel updated = (TaskNodeModel)task.Clone();
                 updated.DueDateIso = value;
                 dispatcher.Execute(new UpdateNodeCommand(board, updated));
                 repaint();
             });
-            if (!string.IsNullOrWhiteSpace(task.DueDateIso) && !BoardInsights.TryParseDate(task.DueDateIso, out _))
+
+            DateTime startDate;
+            DateTime dueDate;
+            if (BoardInsights.TryParseDate(task.StartDateIso, out startDate) &&
+                BoardInsights.TryParseDate(task.DueDateIso, out dueDate) &&
+                dueDate < startDate)
             {
-                advancedFoldout.Add(new HelpBox("Use a valid date like 2026-05-15 so timeline and milestone health signals stay accurate.", HelpBoxMessageType.Warning));
+                advancedFoldout.Add(new HelpBox("Due date is before the start date.", HelpBoxMessageType.Warning));
+            }
+
+            if (BoardInsights.IsTaskOverdue(task))
+            {
+                advancedFoldout.Add(new HelpBox("Overdue: the due date is before today.", HelpBoxMessageType.Warning));
+            }
+            else if (BoardInsights.IsTaskDueVerySoon(task))
+            {
+                advancedFoldout.Add(new HelpBox("Due Very Soon: due within 3 days.", HelpBoxMessageType.Info));
+            }
+            else if (BoardInsights.IsTaskDueSoon(task))
+            {
+                advancedFoldout.Add(new HelpBox("Due Soon: due within 7 days.", HelpBoxMessageType.Info));
             }
 
             BuiltInInspectorUtility.AddDelayedTextField(advancedFoldout, "Acceptance", task.AcceptanceCriteria, value =>
@@ -384,7 +458,7 @@ namespace ProjectDesigner.V2.BuiltIn
                 repaint();
             }, true);
 
-            BuiltInInspectorUtility.AddDelayedTextField(root, "Target Date", milestone.TargetDateIso, value =>
+            BuiltInInspectorUtility.AddDateField(root, "Target Date (YYYY-MM-DD)", milestone.TargetDateIso, value =>
             {
                 MilestoneNodeModel updated = (MilestoneNodeModel)milestone.Clone();
                 updated.TargetDateIso = value;
@@ -430,13 +504,41 @@ namespace ProjectDesigner.V2.BuiltIn
             }, true);
 
             Foldout advancedFoldout = BuiltInInspectorUtility.CreatePersistentFoldout(note.Id + ".Advanced", "Advanced", false);
-            BuiltInInspectorUtility.AddDelayedTextField(advancedFoldout, "Accent Color", note.AccentHex, value =>
+            Color resolvedColor;
+            if (!ColorUtility.TryParseHtmlString(note.ResolvedAccentHex, out resolvedColor))
+            {
+                if (!ColorUtility.TryParseHtmlString(NoteNodeModel.DefaultAccentHex, out resolvedColor))
+                {
+                    resolvedColor = new Color(0.17f, 0.56f, 0.85f);
+                }
+            }
+
+            var accentField = new ColorField("Accent")
+            {
+                value = resolvedColor
+            };
+            accentField.RegisterValueChangedCallback(evt =>
+            {
+                NoteNodeModel updated = (NoteNodeModel)note.Clone();
+                updated.AccentHex = "#" + ColorUtility.ToHtmlStringRGB(evt.newValue);
+                dispatcher.Execute(new UpdateNodeCommand(board, updated));
+                repaint();
+            });
+            advancedFoldout.Add(accentField);
+
+            BuiltInInspectorUtility.AddDelayedTextField(advancedFoldout, "Accent Hex", note.AccentHex, value =>
             {
                 NoteNodeModel updated = (NoteNodeModel)note.Clone();
                 updated.AccentHex = value;
                 dispatcher.Execute(new UpdateNodeCommand(board, updated));
                 repaint();
             });
+
+            string normalizedAccent;
+            if (!NoteNodeModel.TryNormalizeAccentHex(note.AccentHex, out normalizedAccent))
+            {
+                advancedFoldout.Add(new HelpBox("Use a valid #RRGGBB color. The card is using the last valid accent: " + note.ResolvedAccentHex, HelpBoxMessageType.Warning));
+            }
 
             BuiltInInspectorUtility.AddTagsField(advancedFoldout, note, board, dispatcher, repaint);
             root.Add(advancedFoldout);
@@ -497,6 +599,11 @@ namespace ProjectDesigner.V2.BuiltIn
                 dispatcher.Execute(new UpdateNodeCommand(board, updated));
                 repaint();
             });
+            if (!string.IsNullOrWhiteSpace(reference.ExternalUrl) &&
+                (!Uri.TryCreate(reference.ExternalUrl.Trim(), UriKind.Absolute, out Uri parsedUrl) || string.IsNullOrWhiteSpace(parsedUrl.Host)))
+            {
+                root.Add(new HelpBox("Use a full URL such as https://example.com so link actions can open it reliably.", HelpBoxMessageType.Warning));
+            }
 
             string referenceAssetPath = GetReferenceAssetPath(reference);
             UnityEngine.Object linkedAsset = string.IsNullOrWhiteSpace(referenceAssetPath)

@@ -2,11 +2,25 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace ProjectDesigner.V2.Data
 {
     public static class BoardInsights
     {
+        public const int WorkMinutesPerHour = 60;
+        public const int WorkHoursPerDay = 8;
+        public const int WorkDaysPerWeek = 5;
+        public const int WorkWeeksPerMonth = 4;
+        public const int DueVerySoonWindowDays = 3;
+        public const int DueSoonWindowDays = 7;
+
+        private const int HeavyLoadWorkdays = 13;
+
+        private static readonly Regex DurationTokenPattern = new Regex(
+            @"(?<value>\d+(?:\.\d+)?)\s*(?<unit>min|m|h|d|w)",
+            RegexOptions.IgnoreCase);
+
         private static readonly string[] SupportedDateFormats =
         {
             "yyyy-MM-dd",
@@ -92,10 +106,34 @@ namespace ProjectDesigner.V2.Data
             return task != null && TryParseDate(task.DueDateIso, out dueDate);
         }
 
+        public static bool HasStartDate(TaskNodeModel task, out DateTime startDate)
+        {
+            startDate = default(DateTime);
+            return task != null && TryParseDate(task.StartDateIso, out startDate);
+        }
+
         public static bool HasTargetDate(MilestoneNodeModel milestone, out DateTime targetDate)
         {
             targetDate = default(DateTime);
             return milestone != null && TryParseDate(milestone.TargetDateIso, out targetDate);
+        }
+
+        public static string FormatDateLong(DateTime date)
+        {
+            return date.Date.ToString("dddd, MMMM d, yyyy", CultureInfo.InvariantCulture);
+        }
+
+        public static bool TryFormatDateLong(string dateText, out string formattedDate)
+        {
+            DateTime date;
+            if (TryParseDate(dateText, out date))
+            {
+                formattedDate = FormatDateLong(date);
+                return true;
+            }
+
+            formattedDate = string.Empty;
+            return false;
         }
 
         public static bool TryParseDate(string dateText, out DateTime date)
@@ -127,6 +165,109 @@ namespace ProjectDesigner.V2.Data
             return false;
         }
 
+        public static bool TryParseDuration(string durationText, out int totalMinutes)
+        {
+            totalMinutes = 0;
+            if (string.IsNullOrWhiteSpace(durationText))
+            {
+                return false;
+            }
+
+            string text = durationText.Trim();
+            if (text.IndexOf('-', StringComparison.Ordinal) >= 0)
+            {
+                return false;
+            }
+
+            int cursor = 0;
+            bool matchedAny = false;
+            foreach (Match match in DurationTokenPattern.Matches(text))
+            {
+                if (!IsOnlyWhitespace(text, cursor, match.Index - cursor))
+                {
+                    totalMinutes = 0;
+                    return false;
+                }
+
+                if (!double.TryParse(match.Groups["value"].Value, NumberStyles.Float, CultureInfo.InvariantCulture, out double value) ||
+                    value < 0d)
+                {
+                    totalMinutes = 0;
+                    return false;
+                }
+
+                int unitMinutes = GetDurationUnitMinutes(match.Groups["unit"].Value);
+                if (unitMinutes <= 0)
+                {
+                    totalMinutes = 0;
+                    return false;
+                }
+
+                double tokenMinutes = value * unitMinutes;
+                if (tokenMinutes > int.MaxValue - totalMinutes)
+                {
+                    totalMinutes = 0;
+                    return false;
+                }
+
+                totalMinutes += (int)Math.Round(tokenMinutes, MidpointRounding.AwayFromZero);
+
+                matchedAny = true;
+                cursor = match.Index + match.Length;
+            }
+
+            if (!matchedAny || !IsOnlyWhitespace(text, cursor, text.Length - cursor))
+            {
+                totalMinutes = 0;
+                return false;
+            }
+
+            return totalMinutes > 0;
+        }
+
+        public static int GetTaskEstimateMinutes(TaskNodeModel task)
+        {
+            int totalMinutes;
+            return task != null && TryParseDuration(task.EstimateDurationText, out totalMinutes) ? totalMinutes : 0;
+        }
+
+        public static string FormatDuration(int totalMinutes)
+        {
+            if (totalMinutes <= 0)
+            {
+                return "0min";
+            }
+
+            int monthMinutes = WorkWeeksPerMonth * WorkDaysPerWeek * WorkHoursPerDay * WorkMinutesPerHour;
+            int weekMinutes = WorkDaysPerWeek * WorkHoursPerDay * WorkMinutesPerHour;
+            int dayMinutes = WorkHoursPerDay * WorkMinutesPerHour;
+            List<string> parts = new List<string>();
+
+            AppendDurationPart(parts, ref totalMinutes, monthMinutes, "m");
+            AppendDurationPart(parts, ref totalMinutes, weekMinutes, "w");
+            AppendDurationPart(parts, ref totalMinutes, dayMinutes, "d");
+            AppendDurationPart(parts, ref totalMinutes, WorkMinutesPerHour, "h");
+
+            if (totalMinutes > 0)
+            {
+                parts.Add(string.Format("{0}min", totalMinutes));
+            }
+
+            return string.Join(" ", parts);
+        }
+
+        public static string DescribeDuration(int totalMinutes)
+        {
+            if (totalMinutes <= 0)
+            {
+                return "No estimate set.";
+            }
+
+            double hours = totalMinutes / (double)WorkMinutesPerHour;
+            double workdays = hours / WorkHoursPerDay;
+            return string.Format(CultureInfo.InvariantCulture, "{0} = {1:0.##}h / {2:0.##} workdays", FormatDuration(totalMinutes), hours, workdays);
+        }
+
         public static bool IsTaskOverdue(TaskNodeModel task, DateTime? referenceDate = null)
         {
             DateTime dueDate;
@@ -138,7 +279,7 @@ namespace ProjectDesigner.V2.Data
             return dueDate < ResolveReferenceDate(referenceDate);
         }
 
-        public static bool IsTaskDueSoon(TaskNodeModel task, DateTime? referenceDate = null, int windowDays = 7)
+        public static bool IsTaskDueSoon(TaskNodeModel task, DateTime? referenceDate = null, int windowDays = DueSoonWindowDays)
         {
             DateTime dueDate;
             if (task == null || task.Status == TaskNodeStatus.Done || !HasDueDate(task, out dueDate))
@@ -148,6 +289,11 @@ namespace ProjectDesigner.V2.Data
 
             DateTime today = ResolveReferenceDate(referenceDate);
             return dueDate >= today && dueDate <= today.AddDays(windowDays);
+        }
+
+        public static bool IsTaskDueVerySoon(TaskNodeModel task, DateTime? referenceDate = null)
+        {
+            return IsTaskDueSoon(task, referenceDate, DueVerySoonWindowDays);
         }
 
         public static bool HasUnresolvedDependencies(BoardDocument document, TaskNodeModel task)
@@ -178,7 +324,12 @@ namespace ProjectDesigner.V2.Data
             return GetOpenTasks(document).Where(task => IsTaskOverdue(task, referenceDate));
         }
 
-        public static IEnumerable<TaskNodeModel> GetDueSoonTasks(BoardDocument document, DateTime? referenceDate = null, int windowDays = 7)
+        public static IEnumerable<TaskNodeModel> GetDueVerySoonTasks(BoardDocument document, DateTime? referenceDate = null)
+        {
+            return GetOpenTasks(document).Where(task => IsTaskDueVerySoon(task, referenceDate));
+        }
+
+        public static IEnumerable<TaskNodeModel> GetDueSoonTasks(BoardDocument document, DateTime? referenceDate = null, int windowDays = DueSoonWindowDays)
         {
             return GetOpenTasks(document).Where(task => IsTaskDueSoon(task, referenceDate, windowDays));
         }
@@ -351,14 +502,14 @@ namespace ProjectDesigner.V2.Data
                         DisplayName = ProjectDesignerTeamRosterResolver.GetDisplayName(resolvedRoster, assigneeId),
                         AccentColor = ProjectDesignerTeamRosterResolver.GetAccentColor(resolvedRoster, assigneeId),
                         OpenTaskCount = tasks.Count,
-                        TotalEstimatePoints = tasks.Sum(task => task.EstimatePoints),
+                        TotalEstimateMinutes = tasks.Sum(GetTaskEstimateMinutes),
                         BlockedTaskCount = tasks.Count(task => IsTaskBlocked(document, task)),
                         OverdueTaskCount = tasks.Count(task => IsTaskOverdue(task, referenceDate)),
-                        HasOverload = tasks.Count >= 5 || tasks.Sum(task => task.EstimatePoints) >= 13
+                        HasOverload = tasks.Count >= 5 || tasks.Sum(GetTaskEstimateMinutes) >= HeavyLoadWorkdays * WorkHoursPerDay * WorkMinutesPerHour
                     };
                 })
                 .OrderByDescending(summary => summary.OpenTaskCount)
-                .ThenByDescending(summary => summary.TotalEstimatePoints)
+                .ThenByDescending(summary => summary.TotalEstimateMinutes)
                 .ThenBy(summary => summary.DisplayName)
                 .ToList();
         }
@@ -477,6 +628,55 @@ namespace ProjectDesigner.V2.Data
             }
 
             return true;
+        }
+
+        private static int GetDurationUnitMinutes(string unit)
+        {
+            switch ((unit ?? string.Empty).Trim().ToLowerInvariant())
+            {
+                case "min":
+                    return 1;
+                case "h":
+                    return WorkMinutesPerHour;
+                case "d":
+                    return WorkHoursPerDay * WorkMinutesPerHour;
+                case "w":
+                    return WorkDaysPerWeek * WorkHoursPerDay * WorkMinutesPerHour;
+                case "m":
+                    return WorkWeeksPerMonth * WorkDaysPerWeek * WorkHoursPerDay * WorkMinutesPerHour;
+                default:
+                    return 0;
+            }
+        }
+
+        private static bool IsOnlyWhitespace(string text, int startIndex, int length)
+        {
+            if (length < 0)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < length; i++)
+            {
+                if (!char.IsWhiteSpace(text[startIndex + i]))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private static void AppendDurationPart(List<string> parts, ref int totalMinutes, int unitMinutes, string suffix)
+        {
+            int count = totalMinutes / unitMinutes;
+            if (count <= 0)
+            {
+                return;
+            }
+
+            parts.Add(string.Format("{0}{1}", count, suffix));
+            totalMinutes -= count * unitMinutes;
         }
 
         private static DateTime ResolveReferenceDate(DateTime? referenceDate)

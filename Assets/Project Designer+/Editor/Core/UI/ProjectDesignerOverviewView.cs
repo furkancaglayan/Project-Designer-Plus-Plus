@@ -125,7 +125,7 @@ namespace ProjectDesigner.V2.Editor
             titleLabel.AddToClassList("pd-overview-label");
             card.Add(titleLabel);
 
-            var detailLabel = new Label(summary.TotalEstimatePoints + " pts" + (summary.HasOverload ? " | Heavy" : string.Empty));
+            var detailLabel = new Label(BoardInsights.FormatDuration(summary.TotalEstimateMinutes) + (summary.HasOverload ? " | Heavy" : string.Empty));
             detailLabel.AddToClassList("pd-overview-detail");
             card.Add(detailLabel);
 

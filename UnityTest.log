@@ -1,0 +1,7 @@
+[Licensing::Module] Trying to connect to existing licensing client channel...
+[Licensing::IpcConnector] Connection to channel LicenseClient-furka refused
+[Licensing::Module] Successfully launched the LicensingClient (PId: 41220)
+[Licensing::IpcConnector] Connection to channel LicenseClient-furka refused
+[Licensing::Module] Timed-out after 60.02s, waiting for channel: "LicenseClient-furka"
+IPC channel to LicensingClient doesn't exist; aborting
+Exiting without the bug reporter. Application will terminate with return code 199

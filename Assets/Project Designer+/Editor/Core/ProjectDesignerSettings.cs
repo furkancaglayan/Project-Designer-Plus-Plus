@@ -20,6 +20,9 @@ namespace ProjectDesigner.V2.Editor
         private bool _autoOpenWorkspaceAfterBoardCreation = true;
 
         [SerializeField]
+        private bool _showAlignmentGuides = true;
+
+        [SerializeField]
         private string _defaultBoardFolder = "Assets/Project Designer Boards";
 
         [SerializeField]
@@ -49,6 +52,11 @@ namespace ProjectDesigner.V2.Editor
         public bool AutoOpenWorkspaceAfterBoardCreation
         {
             get { return _autoOpenWorkspaceAfterBoardCreation; }
+        }
+
+        public bool ShowAlignmentGuides
+        {
+            get { return _showAlignmentGuides; }
         }
 
         public string DefaultBoardFolder

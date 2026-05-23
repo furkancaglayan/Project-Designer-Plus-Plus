@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using NUnit.Framework;
 using ProjectDesigner.V2.BuiltIn;
 using ProjectDesigner.V2.Data;
@@ -203,6 +204,27 @@ namespace ProjectDesigner.V2.Tests
         }
 
         [Test]
+        public void CommandStack_SilentExecutePersistsWithoutRefreshingSubscribers()
+        {
+            int persistCount = 0;
+            int changedCount = 0;
+            ProjectBoardAsset board = ProjectBoardAsset.CreateTransient(BoardPresetFactory.CreateEmpty("Silent Board"));
+            ProjectDesignerCommandStack stack = new ProjectDesignerCommandStack(board, () => persistCount++);
+            stack.Changed += () => changedCount++;
+
+            stack.ExecuteSilently(new CreateNodeCommand(board, new NoteNodeModel { Title = "Accent" }));
+
+            Assert.AreEqual(1, persistCount);
+            Assert.AreEqual(0, changedCount);
+            Assert.AreEqual(1, board.Document.Nodes.Count);
+
+            stack.Undo();
+            Assert.AreEqual(2, persistCount);
+            Assert.AreEqual(1, changedCount);
+            Assert.AreEqual(0, board.Document.Nodes.Count);
+        }
+
+        [Test]
         public void BoardViewState_SupportsPrimaryAndMultiSelection()
         {
             var viewState = new BoardViewState();
@@ -226,7 +248,7 @@ namespace ProjectDesigner.V2.Tests
         [Test]
         public void BoardDocument_RemoveFilterDeletesSavedViewsById()
         {
-            BoardDocument document = BoardPresetFactory.CreateEmpty("Saved View Removal");
+            var document = new BoardDocument("Saved View Removal");
             var planningFilter = new BoardSavedFilter("Planning", string.Empty, BoardNodeCategories.Planning, string.Empty, true);
             var referenceFilter = new BoardSavedFilter("References", string.Empty, BoardNodeCategories.Reference, string.Empty, true);
 
@@ -357,6 +379,22 @@ namespace ProjectDesigner.V2.Tests
 
             Assert.IsInstanceOf<ReferenceNodeModel>(textNode);
             Assert.IsInstanceOf<ClassNodeModel>(classNode);
+        }
+
+        [Test]
+        public void BoardUtility_CreatesBoardsInSelectedFolderOrDefaultFallback()
+        {
+            const string fallbackFolder = "Assets/Project Designer Boards";
+
+            Assert.AreEqual(
+                "Assets/Selected Boards",
+                ProjectDesignerBoardUtility.ResolveBoardCreationFolder("Assets/Selected Boards", true, fallbackFolder));
+            Assert.AreEqual(
+                fallbackFolder,
+                ProjectDesignerBoardUtility.ResolveBoardCreationFolder("Assets/Project Designer+/Editor/BuiltIn/BuiltInInspectors.cs", false, fallbackFolder));
+            Assert.AreEqual(
+                fallbackFolder,
+                ProjectDesignerBoardUtility.ResolveBoardCreationFolder("Packages/com.example/Boards", true, fallbackFolder));
         }
 
         [Test]
@@ -581,6 +619,149 @@ namespace ProjectDesigner.V2.Tests
         }
 
         [Test]
+        public void BoardLayoutUtility_BuildsAlignmentGuidesForMatchingEdgesAndCenters()
+        {
+            Rect active = new Rect(100f, 120f, 320f, 220f);
+            Rect reference = new Rect(100f, 340f, 320f, 220f);
+
+            List<BoardAlignmentGuide> guides = BoardLayoutUtility.BuildAlignmentGuides(
+                active,
+                new[] { reference },
+                1f);
+
+            Assert.IsTrue(guides.Any(guide =>
+                guide.Kind == BoardAlignmentGuideKind.Alignment &&
+                guide.Orientation == BoardAlignmentGuideOrientation.Vertical &&
+                Mathf.Abs(guide.Position - 100f) <= 0.01f));
+            Assert.IsTrue(guides.Any(guide =>
+                guide.Kind == BoardAlignmentGuideKind.Alignment &&
+                guide.Orientation == BoardAlignmentGuideOrientation.Horizontal &&
+                Mathf.Abs(guide.Position - 340f) <= 0.01f));
+        }
+
+        [Test]
+        public void BoardLayoutUtility_DoesNotBuildGuidesBeyondTolerance()
+        {
+            Rect active = new Rect(101.25f, 120f, 320f, 220f);
+            Rect reference = new Rect(100f, 340f, 320f, 220f);
+
+            List<BoardAlignmentGuide> guides = BoardLayoutUtility.BuildAlignmentGuides(
+                active,
+                new[] { reference },
+                1f);
+
+            Assert.IsFalse(guides.Any(guide =>
+                guide.Kind == BoardAlignmentGuideKind.Alignment &&
+                guide.Orientation == BoardAlignmentGuideOrientation.Vertical &&
+                Mathf.Abs(guide.Position - 100f) <= 0.01f));
+        }
+
+        [Test]
+        public void BoardLayoutUtility_PrefersEdgeGuidesWhenResizeMatchesTopAndBottom()
+        {
+            Rect active = new Rect(100f, 120f, 320f, 220f);
+            Rect reference = new Rect(520f, 120f, 320f, 220f);
+
+            List<BoardAlignmentGuide> guides = BoardLayoutUtility.BuildAlignmentGuides(
+                active,
+                new[] { reference },
+                1f);
+
+            List<BoardAlignmentGuide> horizontalGuides = guides
+                .Where(guide => guide.Orientation == BoardAlignmentGuideOrientation.Horizontal)
+                .ToList();
+
+            Assert.IsTrue(horizontalGuides.Any(guide => Mathf.Abs(guide.Position - active.yMin) <= 0.01f));
+            Assert.IsTrue(horizontalGuides.Any(guide => Mathf.Abs(guide.Position - active.yMax) <= 0.01f));
+        }
+
+        [Test]
+        public void ResizeAndEdgeAnchorCommands_PersistThroughUndoRedo()
+        {
+            ProjectBoardAsset board = ProjectBoardAsset.CreateTransient(BoardPresetFactory.CreateEmpty("Resize And Anchors"));
+            ProjectDesignerCommandStack stack = new ProjectDesignerCommandStack(board);
+            var first = new TaskNodeModel { Title = "First" };
+            var second = new TaskNodeModel { Title = "Second" };
+            board.Document.AddNode(first);
+            board.Document.AddNode(second);
+            var edge = new BoardEdgeModel(BoardEdgeTypeIds.Reference, first.Id, second.Id);
+            board.Document.AddEdge(edge);
+            Assert.AreEqual(BoardEdgeAnchor.Auto, edge.SourceAnchor);
+            Assert.AreEqual(BoardEdgeAnchor.Auto, edge.TargetAnchor);
+
+            stack.Execute(new ResizeNodeCommand(board, first.Id, new Vector2(420f, 260f)));
+            Assert.AreEqual(new Vector2(420f, 260f), board.Document.GetNode(first.Id).Size);
+
+            stack.Undo();
+            Assert.AreEqual(new Vector2(320f, 220f), board.Document.GetNode(first.Id).Size);
+
+            stack.Redo();
+            Assert.AreEqual(new Vector2(420f, 260f), board.Document.GetNode(first.Id).Size);
+
+            stack.Execute(new SetEdgeAnchorsCommand(board, edge.Id, BoardEdgeAnchor.Right, BoardEdgeAnchor.Top));
+            BoardEdgeModel updatedEdge = board.Document.Edges.First(item => item.Id == edge.Id);
+            Assert.AreEqual(BoardEdgeAnchor.Right, updatedEdge.SourceAnchor);
+            Assert.AreEqual(BoardEdgeAnchor.Top, updatedEdge.TargetAnchor);
+        }
+
+        [Test]
+        public void BoardNodeModel_ClampsReadableMinimumSize()
+        {
+            var task = new TaskNodeModel();
+
+            task.Size = new Vector2(80f, 90f);
+
+            Assert.AreEqual(BoardNodeModel.MinimumWidth, task.Size.x);
+            Assert.AreEqual(BoardNodeModel.MinimumHeight, task.Size.y);
+        }
+
+        [Test]
+        public void BoardInsights_ParseDurationUsesWorkCalendarUnits()
+        {
+            AssertDuration("1d", 8 * 60);
+            AssertDuration("1w", 5 * 8 * 60);
+            AssertDuration("1m", 4 * 5 * 8 * 60);
+            AssertDuration("3w 1d", 16 * 8 * 60);
+            AssertDuration("2.5h", 150);
+            AssertDuration("30min", 30);
+            AssertDuration("5000min", 5000);
+
+            Assert.IsFalse(BoardInsights.TryParseDuration("tomorrow", out _));
+            Assert.IsFalse(BoardInsights.TryParseDuration("-1d", out _));
+            Assert.AreEqual("3w 1d", BoardInsights.FormatDuration(16 * 8 * 60));
+        }
+
+        [Test]
+        public void TaskNodeModel_MigratesLegacyEstimateValuesToDurationDays()
+        {
+            var task = new TaskNodeModel();
+            FieldInfo legacyField = typeof(TaskNodeModel).GetField("_legacyEstimateDays", BindingFlags.Instance | BindingFlags.NonPublic);
+            Assert.IsNotNull(legacyField);
+            legacyField.SetValue(task, 3);
+
+            Assert.AreEqual("3d", task.EstimateDurationText);
+            Assert.AreEqual(3 * BoardInsights.WorkHoursPerDay * BoardInsights.WorkMinutesPerHour, BoardInsights.GetTaskEstimateMinutes(task));
+        }
+
+        [Test]
+        public void BoardInsights_DateHelpersExposeReadableLabelsAndUrgencyWindows()
+        {
+            DateTime referenceDate = new DateTime(2026, 5, 20);
+            var overdue = new TaskNodeModel { DueDateIso = "2026-05-19" };
+            var verySoon = new TaskNodeModel { DueDateIso = "2026-05-23" };
+            var soon = new TaskNodeModel { DueDateIso = "2026-05-27" };
+            var later = new TaskNodeModel { DueDateIso = "2026-05-28" };
+
+            Assert.IsTrue(BoardInsights.TryFormatDateLong("2026-05-15", out string formattedDate));
+            Assert.AreEqual("Friday, May 15, 2026", formattedDate);
+            Assert.IsFalse(BoardInsights.TryParseDate("not-a-date", out _));
+            Assert.IsTrue(BoardInsights.IsTaskOverdue(overdue, referenceDate));
+            Assert.IsTrue(BoardInsights.IsTaskDueVerySoon(verySoon, referenceDate));
+            Assert.IsTrue(BoardInsights.IsTaskDueSoon(soon, referenceDate));
+            Assert.IsFalse(BoardInsights.IsTaskDueSoon(later, referenceDate));
+        }
+
+        [Test]
         public void BoardInsights_AssigneeSummariesAggregateOpenWorkload()
         {
             BoardDocument document = BoardPresetFactory.CreateEmpty("Workload");
@@ -590,9 +771,9 @@ namespace ProjectDesigner.V2.Tests
                 new ProjectDesignerTeamMemberData { Id = "aylin", DisplayName = "Aylin", Role = "Producer", AccentColor = "#55AAFF" },
                 new ProjectDesignerTeamMemberData { Id = "mert", DisplayName = "Mert", Role = "Engineer", AccentColor = "#66CC88" });
 
-            var first = new TaskNodeModel { Title = "First", AssigneeId = "aylin", EstimatePoints = 5, DueDateIso = "2026-04-27" };
-            var second = new TaskNodeModel { Title = "Second", AssigneeId = "aylin", EstimatePoints = 8, Status = TaskNodeStatus.Blocked };
-            var third = new TaskNodeModel { Title = "Third", AssigneeId = "mert", EstimatePoints = 2, Status = TaskNodeStatus.Done };
+            var first = new TaskNodeModel { Title = "First", AssigneeId = "aylin", EstimateDurationText = "5d", DueDateIso = "2026-04-27" };
+            var second = new TaskNodeModel { Title = "Second", AssigneeId = "aylin", EstimateDurationText = "8d", Status = TaskNodeStatus.Blocked };
+            var third = new TaskNodeModel { Title = "Third", AssigneeId = "mert", EstimateDurationText = "2d", Status = TaskNodeStatus.Done };
             document.AddNode(first);
             document.AddNode(second);
             document.AddNode(third);
@@ -601,7 +782,7 @@ namespace ProjectDesigner.V2.Tests
             BoardAssigneeSummary aylin = summaries.First(summary => summary.AssigneeId == "aylin");
 
             Assert.AreEqual(2, aylin.OpenTaskCount);
-            Assert.AreEqual(13, aylin.TotalEstimatePoints);
+            Assert.AreEqual(13 * BoardInsights.WorkHoursPerDay * BoardInsights.WorkMinutesPerHour, aylin.TotalEstimateMinutes);
             Assert.AreEqual(1, aylin.BlockedTaskCount);
             Assert.AreEqual(1, aylin.OverdueTaskCount);
             Assert.IsTrue(aylin.HasOverload);
@@ -712,7 +893,7 @@ namespace ProjectDesigner.V2.Tests
             IReadOnlyList<ProjectDesignerCardSignal> signals = ProjectDesignerCardPresentation.GetTaskSignals(task, document, roster);
 
             CollectionAssert.AreEqual(
-                new[] { "In Progress", "Producer", "Blocked" },
+                new[] { "In Progress", "Producer", "Blocked", "Due Very Soon" },
                 signals.Select(signal => signal.Text).ToArray());
         }
 
@@ -723,15 +904,17 @@ namespace ProjectDesigner.V2.Tests
             {
                 Title = "Audience",
                 Priority = TaskNodePriority.High,
+                StartDateIso = "2026-05-04",
                 DueDateIso = "2026-05-08",
-                EstimatePoints = 5
+                EstimateDurationText = "5d"
             };
 
-            Assert.AreEqual("High | Due 2026-05-08 | 5 pts", ProjectDesignerCardPresentation.GetTaskSecondaryMetaText(task));
+            Assert.AreEqual("High | Start May 4 | Due May 8 | Est 1w", ProjectDesignerCardPresentation.GetTaskSecondaryMetaText(task));
 
             task.Priority = TaskNodePriority.Medium;
+            task.StartDateIso = string.Empty;
             task.DueDateIso = string.Empty;
-            task.EstimatePoints = 0;
+            task.EstimateDurationText = string.Empty;
 
             Assert.AreEqual(string.Empty, ProjectDesignerCardPresentation.GetTaskSecondaryMetaText(task));
         }
@@ -765,6 +948,76 @@ namespace ProjectDesigner.V2.Tests
             string preview = definition.GetPreview(task, BoardPresetFactory.CreateEmpty("Preview"));
 
             Assert.AreEqual("Clarify who the vertical slice is meant to impress.", preview);
+        }
+
+        [Test]
+        public void CardPresentation_PreviewsCleanRichTextBeforeTruncation()
+        {
+            var definition = new TaskNodeDefinition();
+            var task = new TaskNodeModel
+            {
+                Description = "Line one<br><b>Line two</b> <color=red>hot</color> &amp; clear <broken"
+            };
+
+            string preview = ProjectDesignerCardPresentation.GetPreviewText(task, definition, BoardPresetFactory.CreateEmpty("Rich Text"));
+
+            Assert.AreEqual("Line one\nLine two hot & clear", preview);
+        }
+
+        [Test]
+        public void CardPresentation_NotePreviewPreservesCleanedLineBreaks()
+        {
+            var definition = new NoteNodeDefinition();
+            var note = new NoteNodeModel
+            {
+                Body = "First line<br><b>Important</b> &amp; visible<br/><color=red>Risk</color>"
+            };
+
+            string preview = ProjectDesignerCardPresentation.GetPreviewText(note, definition, BoardPresetFactory.CreateEmpty("Note Rich Text"));
+
+            Assert.AreEqual("First line\nImportant & visible\nRisk", preview);
+        }
+
+        [Test]
+        public void CardPresentation_LargerCardsRevealLongerPreviews()
+        {
+            var definition = new NoteNodeDefinition();
+            var note = new NoteNodeModel
+            {
+                Body = string.Join(" ", new[]
+                {
+                    "First detail explains the stakeholder concern.",
+                    "Second detail captures the production risk.",
+                    "Third detail keeps the playtest question visible.",
+                    "Fourth detail documents the proposed follow up.",
+                    "Fifth detail should only appear on larger cards."
+                })
+            };
+            BoardDocument document = BoardPresetFactory.CreateEmpty("Size Aware Preview");
+
+            string smallPreview = ProjectDesignerCardPresentation.GetPreviewText(note, definition, document, new Vector2(300f, 220f));
+            string largePreview = ProjectDesignerCardPresentation.GetPreviewText(note, definition, document, new Vector2(900f, 520f));
+
+            Assert.IsTrue(smallPreview.EndsWith("..."));
+            Assert.Greater(largePreview.Length, smallPreview.Length);
+            StringAssert.Contains("Fifth detail", largePreview);
+        }
+
+        [Test]
+        public void NoteNodeModel_NormalizesAccentColorAndKeepsFallbackForInvalidText()
+        {
+            var note = new NoteNodeModel { AccentHex = "f28c38" };
+
+            Assert.AreEqual("#F28C38", note.AccentHex);
+            Assert.AreEqual("#F28C38", note.ResolvedAccentHex);
+
+            note.AccentHex = "not-a-color";
+            Assert.AreEqual("not-a-color", note.AccentHex);
+            Assert.AreEqual("#F28C38", note.ResolvedAccentHex);
+
+            Assert.IsTrue(NoteNodeModel.TryNormalizeAccentHex("#123456", out string normalized));
+            Assert.AreEqual("#123456", normalized);
+            Assert.IsFalse(NoteNodeModel.TryNormalizeAccentHex("not-a-color", out _));
         }
 
         [Test]
@@ -945,15 +1198,35 @@ namespace ProjectDesigner.V2.Tests
             string sampleCode = File.ReadAllText(sampleCodePath);
             string sampleReadme = File.ReadAllText(sampleReadmePath);
             string sampleBoard = File.ReadAllText(sampleBoardPath);
+            string projectBoardAssetGuid = AssetDatabase.AssetPathToGUID("Assets/Project Designer+/Runtime/ProjectBoardAsset.cs");
 
+            Assert.IsNotEmpty(projectBoardAssetGuid);
             StringAssert.Contains("Project Designer+ Redo Demo Board", showcaseReadme);
+            StringAssert.Contains("guid: " + projectBoardAssetGuid, showcaseBoard);
             StringAssert.Contains("ProjectDesignerWorkspaceView", showcaseBoard);
             StringAssert.Contains("Project Designer+ Redo Demo Board", showcaseBoard);
+            Assert.IsFalse(showcaseBoard.Contains("_estimatePoints"));
+            StringAssert.Contains("_estimateDurationText: 3d", showcaseBoard);
+            StringAssert.Contains("guid: " + projectBoardAssetGuid, sampleBoard);
             StringAssert.Contains("StatusReportNodeModel", sampleCode);
             StringAssert.Contains("StatusReportExtensionRegistration", sampleCode);
             StringAssert.Contains("demo board", sampleReadme.ToLowerInvariant());
             StringAssert.Contains("StatusReportNodeModel", sampleBoard);
             StringAssert.Contains("Status Report Demo Board", sampleBoard);
+            Assert.IsFalse(sampleBoard.Contains("_estimatePoints"));
+        }
+
+        [Test]
+        public void ReleaseMetadata_ReportsVersion320AndChangelogEntry()
+        {
+            Assert.AreEqual("3.2.0", ProjectDesignerPackageInfo.GetInstalledVersion());
+            StringAssert.Contains("## 3.2.0", File.ReadAllText("Assets/Project Designer+/CHANGELOG.md"));
+        }
+
+        private static void AssertDuration(string durationText, int expectedMinutes)
+        {
+            Assert.IsTrue(BoardInsights.TryParseDuration(durationText, out int totalMinutes), durationText);
+            Assert.AreEqual(expectedMinutes, totalMinutes, durationText);
         }
 
         private static ProjectDesignerTeamRosterAsset CreateRoster(params ProjectDesignerTeamMemberData[] members)

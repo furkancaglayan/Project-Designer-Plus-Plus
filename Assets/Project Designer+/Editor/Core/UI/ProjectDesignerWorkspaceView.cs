@@ -14,7 +14,12 @@ namespace ProjectDesigner.V2.Editor
     {
         private const string LibraryExpandedSessionKey = "ProjectDesigner.V2.LibraryExpanded";
         private const string InspectorExpandedSessionKey = "ProjectDesigner.V2.InspectorExpanded";
+        private const string InspectorWidthSessionKey = "ProjectDesigner.V2.InspectorWidth";
         private const string InspectorFoldoutSessionKeyPrefix = "ProjectDesigner.V2.InspectorFoldout.";
+        private const float InspectorDefaultWidth = 380f;
+        private const float InspectorMinWidth = 280f;
+        private const float InspectorMaxWidth = 520f;
+        private const float InspectorCollapsedWidth = 154f;
         internal const int ToolbarTitleMaxLength = 40;
         internal const int InspectorSummaryMaxLength = 22;
 
@@ -27,6 +32,7 @@ namespace ProjectDesigner.V2.Editor
         private readonly Label _librarySummaryLabel;
         private readonly Button _libraryToggleButton;
         private readonly VisualElement _inspectorPanel;
+        private readonly VisualElement _inspectorSplitter;
         private readonly ScrollView _inspectorView;
         private readonly Label _inspectorSummaryLabel;
         private readonly Button _inspectorToggleButton;
@@ -37,6 +43,11 @@ namespace ProjectDesigner.V2.Editor
         private Label _toolbarTitle;
         private bool _libraryExpanded;
         private bool _inspectorExpanded;
+        private bool _resizingInspector;
+        private int _inspectorResizePointerId = -1;
+        private float _inspectorResizeStartMouseX;
+        private float _inspectorResizeStartWidth;
+        private float _inspectorWidth;
         private int _createSequence;
 
         public ProjectDesignerWorkspaceView(ProjectBoardAsset boardAsset, Action<ProjectBoardAsset> setBoard)
@@ -49,6 +60,7 @@ namespace ProjectDesigner.V2.Editor
             _commandStack.Changed += RefreshAll;
             _libraryExpanded = SessionState.GetBool(LibraryExpandedSessionKey, true);
             _inspectorExpanded = SessionState.GetBool(InspectorExpandedSessionKey, false);
+            _inspectorWidth = Mathf.Clamp(SessionState.GetFloat(InspectorWidthSessionKey, InspectorDefaultWidth), InspectorMinWidth, InspectorMaxWidth);
 
             AddToClassList("pd-workspace");
 
@@ -94,6 +106,14 @@ namespace ProjectDesigner.V2.Editor
 
             _overviewView = new ProjectDesignerOverviewView(ToggleQuickFilter);
             centerColumn.Add(_overviewView);
+
+            _inspectorSplitter = new VisualElement();
+            _inspectorSplitter.AddToClassList("pd-inspector-splitter");
+            _inspectorSplitter.RegisterCallback<PointerDownEvent>(OnInspectorSplitterPointerDown);
+            _inspectorSplitter.RegisterCallback<PointerMoveEvent>(OnInspectorSplitterPointerMove);
+            _inspectorSplitter.RegisterCallback<PointerUpEvent>(OnInspectorSplitterPointerUp);
+            _inspectorSplitter.RegisterCallback<PointerCaptureOutEvent>(OnInspectorSplitterCaptureOut);
+            body.Add(_inspectorSplitter);
 
             _inspectorPanel = new VisualElement();
             _inspectorPanel.AddToClassList("pd-inspector-panel");
@@ -242,6 +262,9 @@ namespace ProjectDesigner.V2.Editor
             _libraryView.Add(savedViewActions);
 
             _libraryView.Add(_savedFiltersContainer);
+            var shortcutInfo = CreateMutedBodyLabel("Shortcuts: F focus selected, Delete remove selected, Ctrl+D duplicate, Ctrl+A select visible, Esc cancel or clear.");
+            shortcutInfo.AddToClassList("pd-shortcut-info");
+            _libraryView.Add(shortcutInfo);
             _savedFiltersContainer.Clear();
 
             if (_boardAsset.Document.SavedFilters.Count == 0)
@@ -277,6 +300,7 @@ namespace ProjectDesigner.V2.Editor
 
         private void RefreshInspector()
         {
+            _canvasView.SetHoveredEdge(string.Empty);
             _inspectorView.Clear();
 
             List<BoardNodeModel> selectedNodes = GetSelectedNodes();
@@ -307,13 +331,25 @@ namespace ProjectDesigner.V2.Editor
             title.AddToClassList("pd-inspector-title");
             _inspectorView.Add(title);
 
+            var actionRow = CreateActionRow();
+            actionRow.Add(CreateInspectorButton("Duplicate", DuplicateSelection));
+            actionRow.Add(CreateInspectorButton("Delete", DeleteSelectedNode));
+            actionRow.Add(CreateInspectorButton("Focus", FocusSelection));
+            _inspectorView.Add(actionRow);
+
             IProjectDesignerInspector inspector = ProjectDesignerRegistry.GetInspector(selectedNode.TypeId);
             if (inspector != null)
             {
-                _inspectorView.Add(inspector.BuildInspector(_boardAsset, selectedNode, _commandStack, RefreshAll));
+                _inspectorView.Add(inspector.BuildInspector(_boardAsset, selectedNode, _commandStack, RefreshCanvasOnly));
             }
 
             BuildConnectionsInspector(selectedNode);
+        }
+
+        private void RefreshCanvasOnly()
+        {
+            _canvasView.Refresh();
+            _overviewView.Refresh(_boardAsset.Document);
         }
 
         private void BuildBoardInspector()
@@ -468,7 +504,7 @@ namespace ProjectDesigner.V2.Editor
             VisualElement firstRow = CreateActionRow();
             firstRow.Add(CreateInspectorButton("Duplicate", DuplicateSelection));
             firstRow.Add(CreateInspectorButton("Delete", DeleteSelectedNode));
-            firstRow.Add(CreateInspectorButton("Frame", FrameSelection));
+            firstRow.Add(CreateInspectorButton("Focus", FocusSelection));
             _inspectorView.Add(firstRow);
 
             VisualElement secondRow = CreateActionRow();
@@ -495,88 +531,105 @@ namespace ProjectDesigner.V2.Editor
             if (options.Count == 0)
             {
                 connectionsFoldout.Add(new Label("No valid links are available for this card right now."));
-                return;
             }
-
-            List<IProjectDesignerEdgeDefinition> availableDefinitions = options
-                .Select(option => option.Definition)
-                .GroupBy(definition => definition.TypeId)
-                .Select(group => group.First())
-                .ToList();
-
-            var edgePicker = new PopupField<string>("Link Type", availableDefinitions.Select(definition => definition.DisplayName).ToList(), 0);
-            var targetPicker = new PopupField<ProjectDesignerLinkTargetChoice>(
-                "Linked Card",
-                new List<ProjectDesignerLinkTargetChoice>(),
-                0,
-                choice => choice == null ? string.Empty : choice.DisplayLabel,
-                choice => choice == null ? string.Empty : choice.DisplayLabel);
-            var directionHint = CreateMutedBodyLabel(string.Empty);
-            connectionsFoldout.Add(edgePicker);
-            connectionsFoldout.Add(targetPicker);
-            connectionsFoldout.Add(directionHint);
-
-            List<ProjectDesignerLinkOption> activeOptions = new List<ProjectDesignerLinkOption>();
-            List<ProjectDesignerLinkTargetChoice> activeTargetChoices = new List<ProjectDesignerLinkTargetChoice>();
-            Action refreshTargetPicker = () =>
+            else
             {
-                IProjectDesignerEdgeDefinition selectedDefinition = availableDefinitions
-                    .FirstOrDefault(definition => definition.DisplayName == edgePicker.value);
-                activeOptions = options
-                    .Where(option => option.Definition.TypeId == (selectedDefinition == null ? string.Empty : selectedDefinition.TypeId))
+                List<IProjectDesignerEdgeDefinition> availableDefinitions = options
+                    .Select(option => option.Definition)
+                    .GroupBy(definition => definition.TypeId)
+                    .Select(group => group.First())
                     .ToList();
 
-                activeTargetChoices = ProjectDesignerLinkUtility.GetTargetChoicesForDefinition(
-                    _boardAsset.Document,
-                    selectedNode,
-                    selectedDefinition == null ? string.Empty : selectedDefinition.TypeId);
-
-                targetPicker.choices = activeTargetChoices;
-                if (activeTargetChoices.Count > 0)
+                var edgePicker = new PopupField<string>("Link Type", availableDefinitions.Select(definition => definition.DisplayName).ToList(), 0);
+                var targetPicker = new PopupField<ProjectDesignerLinkTargetChoice>(
+                    "Linked Card",
+                    new List<ProjectDesignerLinkTargetChoice>(),
+                    0,
+                    choice => choice == null ? string.Empty : choice.DisplayLabel,
+                    choice => choice == null ? string.Empty : choice.DisplayLabel);
+                var directionHint = CreateMutedBodyLabel(string.Empty);
+                Label linkDescription = CreateMutedBodyLabel(GetLinkDescription(availableDefinitions[0].TypeId));
+                if (availableDefinitions.Count > 1)
                 {
-                    targetPicker.index = 0;
-                    targetPicker.SetValueWithoutNotify(activeTargetChoices[0]);
+                    connectionsFoldout.Add(edgePicker);
                 }
                 else
                 {
-                    targetPicker.index = -1;
+                    connectionsFoldout.Add(CreateMutedBodyLabel("Link Type: " + availableDefinitions[0].DisplayName));
                 }
 
-                bool pointsIntoSelectedNode = activeOptions.Any(option => !option.SelectedNodeIsSource);
-                directionHint.text = pointsIntoSelectedNode
-                    ? "Some link choices will point into the selected card instead of away from it."
-                    : "Only valid link targets are shown here.";
-            };
+                connectionsFoldout.Add(linkDescription);
+                connectionsFoldout.Add(targetPicker);
+                connectionsFoldout.Add(directionHint);
 
-            edgePicker.RegisterValueChangedCallback(evt => refreshTargetPicker());
-            refreshTargetPicker();
-
-            var createButton = new Button(() =>
-            {
-                if (activeTargetChoices.Count == 0 || targetPicker.index < 0 || targetPicker.index >= activeTargetChoices.Count)
+                List<ProjectDesignerLinkOption> activeOptions = new List<ProjectDesignerLinkOption>();
+                List<ProjectDesignerLinkTargetChoice> activeTargetChoices = new List<ProjectDesignerLinkTargetChoice>();
+                Action refreshTargetPicker = () =>
                 {
-                    return;
-                }
+                    IProjectDesignerEdgeDefinition selectedDefinition = availableDefinitions
+                        .FirstOrDefault(definition => definition.DisplayName == edgePicker.value);
+                    activeOptions = options
+                        .Where(option => option.Definition.TypeId == (selectedDefinition == null ? string.Empty : selectedDefinition.TypeId))
+                        .ToList();
 
-                ProjectDesignerLinkTargetChoice selectedChoice = targetPicker.value ?? activeTargetChoices[targetPicker.index];
-                ProjectDesignerLinkOption option = selectedChoice == null ? null : selectedChoice.Option;
-                if (option == null)
+                    activeTargetChoices = ProjectDesignerLinkUtility.GetTargetChoicesForDefinition(
+                        _boardAsset.Document,
+                        selectedNode,
+                        selectedDefinition == null ? string.Empty : selectedDefinition.TypeId);
+
+                    targetPicker.choices = activeTargetChoices;
+                    if (activeTargetChoices.Count > 0)
+                    {
+                        targetPicker.index = 0;
+                        targetPicker.SetValueWithoutNotify(activeTargetChoices[0]);
+                    }
+                    else
+                    {
+                        targetPicker.index = -1;
+                    }
+
+                    if (linkDescription != null)
+                    {
+                        linkDescription.text = GetLinkDescription(selectedDefinition == null ? string.Empty : selectedDefinition.TypeId);
+                    }
+
+                    bool linksIntoSelectedNode = activeOptions.Any(option => !option.SelectedNodeIsSource);
+                    directionHint.text = linksIntoSelectedNode
+                        ? "Some link choices will point into the selected card instead of away from it."
+                        : "Only valid link targets are shown here.";
+                };
+
+                edgePicker.RegisterValueChangedCallback(evt => refreshTargetPicker());
+                refreshTargetPicker();
+
+                var createButton = new Button(() =>
                 {
-                    return;
-                }
+                    if (activeTargetChoices.Count == 0 || targetPicker.index < 0 || targetPicker.index >= activeTargetChoices.Count)
+                    {
+                        return;
+                    }
 
-                string sourceId = option.SelectedNodeIsSource ? selectedNode.Id : option.OtherNode.Id;
-                string targetId = option.SelectedNodeIsSource ? option.OtherNode.Id : selectedNode.Id;
+                    ProjectDesignerLinkTargetChoice selectedChoice = targetPicker.value ?? activeTargetChoices[targetPicker.index];
+                    ProjectDesignerLinkOption option = selectedChoice == null ? null : selectedChoice.Option;
+                    if (option == null)
+                    {
+                        return;
+                    }
 
-                var edge = new BoardEdgeModel(option.Definition.TypeId, sourceId, targetId);
-                edge.Label = option.Definition.GetLabel(edge, _boardAsset.Document);
-                _commandStack.Execute(new CreateEdgeCommand(_boardAsset, edge));
-            })
-            {
-                text = "Create Link"
-            };
-            createButton.AddToClassList("pd-primary-button");
-            connectionsFoldout.Add(createButton);
+                    string sourceId = option.SelectedNodeIsSource ? selectedNode.Id : option.OtherNode.Id;
+                    string targetId = option.SelectedNodeIsSource ? option.OtherNode.Id : selectedNode.Id;
+
+                    var edge = new BoardEdgeModel(option.Definition.TypeId, sourceId, targetId);
+                    edge.Label = option.Definition.GetLabel(edge, _boardAsset.Document);
+                    _commandStack.Execute(new CreateEdgeCommand(_boardAsset, edge));
+                })
+                {
+                    text = "Create Link"
+                };
+                createButton.AddToClassList("pd-primary-button");
+                createButton.AddToClassList("pd-link-create-button");
+                connectionsFoldout.Add(createButton);
+            }
 
             foreach (BoardEdgeModel edge in _boardAsset.Document.Edges.Where(item => item.SourceNodeId == selectedNode.Id || item.TargetNodeId == selectedNode.Id))
             {
@@ -591,7 +644,24 @@ namespace ProjectDesigner.V2.Editor
                 string edgeLabel = edgeDefinition == null ? edge.TypeId : edgeDefinition.DisplayName;
                 var row = new VisualElement();
                 row.AddToClassList("pd-edge-row");
+                string edgeId = edge.Id;
+                row.RegisterCallback<MouseEnterEvent>(_ =>
+                {
+                    row.EnableInClassList("pd-edge-row-hovered", true);
+                    _canvasView.SetHoveredEdge(edgeId);
+                });
+                row.RegisterCallback<MouseLeaveEvent>(_ =>
+                {
+                    row.EnableInClassList("pd-edge-row-hovered", false);
+                    _canvasView.SetHoveredEdge(string.Empty);
+                });
                 row.Add(new Label(relatedNode.Title + " [" + edgeLabel + "]"));
+
+                var anchorRow = new VisualElement();
+                anchorRow.AddToClassList("pd-edge-anchor-row");
+                anchorRow.Add(CreateAnchorPopup("Source", edge.SourceAnchor, value => SetEdgeAnchors(edge.Id, value, edge.TargetAnchor)));
+                anchorRow.Add(CreateAnchorPopup("Target", edge.TargetAnchor, value => SetEdgeAnchors(edge.Id, edge.SourceAnchor, value)));
+                row.Add(anchorRow);
 
                 var removeButton = new Button(() => _commandStack.Execute(new DeleteEdgeCommand(_boardAsset, edge.Id)))
                 {
@@ -600,6 +670,40 @@ namespace ProjectDesigner.V2.Editor
                 removeButton.AddToClassList("pd-secondary-button");
                 row.Add(removeButton);
                 connectionsFoldout.Add(row);
+            }
+        }
+
+        private PopupField<BoardEdgeAnchor> CreateAnchorPopup(string label, BoardEdgeAnchor anchor, Action<BoardEdgeAnchor> onChanged)
+        {
+            var popup = new PopupField<BoardEdgeAnchor>(
+                label,
+                Enum.GetValues(typeof(BoardEdgeAnchor)).Cast<BoardEdgeAnchor>().ToList(),
+                anchor);
+            popup.tooltip = label + " edge anchor";
+            popup.AddToClassList("pd-edge-anchor-field");
+            popup.RegisterValueChangedCallback(evt => onChanged(evt.newValue));
+            return popup;
+        }
+
+        private void SetEdgeAnchors(string edgeId, BoardEdgeAnchor sourceAnchor, BoardEdgeAnchor targetAnchor)
+        {
+            _commandStack.Execute(new SetEdgeAnchorsCommand(_boardAsset, edgeId, sourceAnchor, targetAnchor));
+        }
+
+        private static string GetLinkDescription(string typeId)
+        {
+            switch (typeId)
+            {
+                case BoardEdgeTypeIds.Dependency:
+                    return "Dependency: task A needs task B to finish first.";
+                case BoardEdgeTypeIds.Milestone:
+                    return "Milestone Link: counts a task under a milestone or deliverable for milestone progress.";
+                case BoardEdgeTypeIds.Reference:
+                    return "Reference Link: connects supporting context, source material, or notes without affecting progress.";
+                case BoardEdgeTypeIds.TechnicalRelation:
+                    return "Technical Relation: class or architecture cards are related.";
+                default:
+                    return "Create a relationship between two cards.";
             }
         }
 
@@ -649,7 +753,78 @@ namespace ProjectDesigner.V2.Editor
             _inspectorSummaryLabel.text = BuildInspectorSummaryLabel(_inspectorExpanded, selectedNodes);
             _inspectorSummaryLabel.tooltip = _inspectorExpanded ? expandedSummary : "Details panel";
             _inspectorPanel.EnableInClassList("pd-inspector-panel-collapsed", !_inspectorExpanded);
+            _inspectorSplitter.style.display = _inspectorExpanded ? DisplayStyle.Flex : DisplayStyle.None;
             _inspectorToggleButton.text = _inspectorExpanded ? "Hide" : "Show";
+            UpdateInspectorPanelWidth();
+        }
+
+        private void UpdateInspectorPanelWidth()
+        {
+            float width = _inspectorExpanded ? _inspectorWidth : InspectorCollapsedWidth;
+            _inspectorPanel.style.width = width;
+            _inspectorPanel.style.minWidth = width;
+            _inspectorPanel.style.maxWidth = width;
+        }
+
+        private void OnInspectorSplitterPointerDown(PointerDownEvent evt)
+        {
+            if (evt.button != 0 || !_inspectorExpanded)
+            {
+                return;
+            }
+
+            _resizingInspector = true;
+            _inspectorResizePointerId = evt.pointerId;
+            _inspectorResizeStartMouseX = evt.position.x;
+            _inspectorResizeStartWidth = _inspectorWidth;
+            PointerCaptureHelper.CapturePointer(_inspectorSplitter, evt.pointerId);
+            evt.StopPropagation();
+        }
+
+        private void OnInspectorSplitterPointerMove(PointerMoveEvent evt)
+        {
+            if (!_resizingInspector || evt.pointerId != _inspectorResizePointerId)
+            {
+                return;
+            }
+
+            float delta = evt.position.x - _inspectorResizeStartMouseX;
+            _inspectorWidth = Mathf.Clamp(_inspectorResizeStartWidth - delta, InspectorMinWidth, InspectorMaxWidth);
+            UpdateInspectorPanelWidth();
+            evt.StopPropagation();
+        }
+
+        private void OnInspectorSplitterPointerUp(PointerUpEvent evt)
+        {
+            if (!_resizingInspector || evt.pointerId != _inspectorResizePointerId)
+            {
+                return;
+            }
+
+            FinishInspectorResize();
+            evt.StopPropagation();
+        }
+
+        private void OnInspectorSplitterCaptureOut(PointerCaptureOutEvent evt)
+        {
+            FinishInspectorResize();
+        }
+
+        private void FinishInspectorResize()
+        {
+            if (!_resizingInspector)
+            {
+                return;
+            }
+
+            int pointerId = _inspectorResizePointerId;
+            _resizingInspector = false;
+            _inspectorResizePointerId = -1;
+            SessionState.SetFloat(InspectorWidthSessionKey, _inspectorWidth);
+            if (pointerId >= 0 && PointerCaptureHelper.HasPointerCapture(_inspectorSplitter, pointerId))
+            {
+                PointerCaptureHelper.ReleasePointer(_inspectorSplitter, pointerId);
+            }
         }
 
         private void ToggleInspectorExpanded(bool persist)
@@ -847,7 +1022,7 @@ namespace ProjectDesigner.V2.Editor
 
             if (!evt.ctrlKey && evt.keyCode == KeyCode.F)
             {
-                FrameSelection();
+                FocusSelection();
                 evt.StopPropagation();
                 return;
             }
@@ -1055,16 +1230,62 @@ namespace ProjectDesigner.V2.Editor
         private void PopulateNodeContextMenu(DropdownMenu menu, string contextNodeId)
         {
             AppendAction(menu, "Duplicate", _ => DuplicateSelection(), HasSelection());
-            AppendAction(menu, "Delete", _ => DeleteSelectedNode(), HasSelection());
+            AppendAction(menu, "Delete Selected", _ => DeleteSelectedNode(), HasSelection());
+            AppendAction(menu, "Focus Selected", _ => FocusSelection(), HasSelection());
             AppendAction(menu, "Frame Selection", _ => FrameSelection(), HasSelection());
 
             menu.AppendSeparator();
+            AppendCreateLinkActions(menu, _boardAsset.Document.GetNode(contextNodeId));
             AppendReferenceContextActions(menu, contextNodeId);
             AppendAction(menu, "Arrange/Auto Layout Left To Right", _ => AutoLayoutSelectionOrVisible(), HasSelection());
             AppendArrangeActions(menu, GetSelectedNodes().Count > 1);
             menu.AppendSeparator();
             AppendAction(menu, _libraryExpanded ? "Hide Library" : "Show Library", _ => ToggleLibraryExpanded(true), true);
             AppendAction(menu, _inspectorExpanded ? "Hide Details" : "Show Details", _ => ToggleInspectorExpanded(true), true);
+        }
+
+        private void AppendCreateLinkActions(DropdownMenu menu, BoardNodeModel selectedNode)
+        {
+            if (selectedNode == null)
+            {
+                return;
+            }
+
+            List<ProjectDesignerLinkOption> options = ProjectDesignerLinkUtility.GetLinkOptions(_boardAsset.Document, selectedNode);
+            if (options.Count == 0)
+            {
+                AppendAction(menu, "Create Link/No valid targets", _ => { }, false);
+                return;
+            }
+
+            foreach (ProjectDesignerLinkOption option in options)
+            {
+                ProjectDesignerLinkOption localOption = option;
+                string targetTitle = option.OtherNode == null ? "Card" : SanitizeMenuPathPart(option.OtherNode.Title);
+                string path = "Create Link/" + SanitizeMenuPathPart(option.Definition.DisplayName) + "/" + targetTitle;
+                AppendAction(menu, path, _ => CreateEdgeFromLinkOption(localOption, selectedNode.Id), true);
+            }
+        }
+
+        private void CreateEdgeFromLinkOption(ProjectDesignerLinkOption option, string selectedNodeId)
+        {
+            if (option == null || option.Definition == null || option.OtherNode == null)
+            {
+                return;
+            }
+
+            string sourceId = option.SelectedNodeIsSource ? selectedNodeId : option.OtherNode.Id;
+            string targetId = option.SelectedNodeIsSource ? option.OtherNode.Id : selectedNodeId;
+            var edge = new BoardEdgeModel(option.Definition.TypeId, sourceId, targetId);
+            edge.Label = option.Definition.GetLabel(edge, _boardAsset.Document);
+            _commandStack.Execute(new CreateEdgeCommand(_boardAsset, edge));
+        }
+
+        private static string SanitizeMenuPathPart(string value)
+        {
+            return string.IsNullOrWhiteSpace(value)
+                ? "Card"
+                : value.Trim().Replace("/", "-").Replace("\\", "-");
         }
 
         private void AppendReferenceContextActions(DropdownMenu menu, string contextNodeId)
@@ -1163,7 +1384,13 @@ namespace ProjectDesigner.V2.Editor
             AppendAction(menu, "Undo", _ => _commandStack.Undo(), _commandStack.CanUndo);
             AppendAction(menu, "Redo", _ => _commandStack.Redo(), _commandStack.CanRedo);
             AppendAction(menu, "Select All Visible", _ => SelectAllVisibleNodes(), true);
+            AppendAction(menu, "Delete Selected", _ => DeleteSelectedNode(), HasSelection());
+            AppendAction(menu, "Focus Selected", _ => FocusSelection(), HasSelection());
             AppendAction(menu, "Frame All", _ => _canvasView.FrameAll(), true);
+            if (_boardAsset.Document.ViewState.SelectedNodeIds.Count == 1)
+            {
+                AppendCreateLinkActions(menu, _boardAsset.Document.GetNode(_boardAsset.Document.ViewState.SelectedNodeId));
+            }
             AppendAction(menu, "Arrange/Auto Layout Left To Right", _ => AutoLayoutSelectionOrVisible(), _boardAsset.Document.Nodes.Count > 1);
             AppendAction(menu,
                 _boardAsset.Document.ViewState.SnapToGrid ? "Snap To Grid/Turn Off" : "Snap To Grid/Turn On",
@@ -1525,6 +1752,16 @@ namespace ProjectDesigner.V2.Editor
             _canvasView.FrameSelection();
         }
 
+        internal void FocusSelection()
+        {
+            if (_boardAsset.Document.ViewState.SelectedNodeIds.Count == 0)
+            {
+                return;
+            }
+
+            _canvasView.FocusSelection();
+        }
+
         internal void ArrangeSelection(BoardArrangeMode arrangeMode)
         {
             List<string> selectedIds = _boardAsset.Document.ViewState.SelectedNodeIds.ToList();
@@ -1605,7 +1842,7 @@ namespace ProjectDesigner.V2.Editor
             {
                 foreach (BoardAssigneeSummary summary in assigneeSummaries.Take(5))
                 {
-                    string detail = summary.DisplayName + ": " + summary.OpenTaskCount + " open tasks | " + summary.TotalEstimatePoints + " pts";
+                    string detail = summary.DisplayName + ": " + summary.OpenTaskCount + " open tasks | " + BoardInsights.FormatDuration(summary.TotalEstimateMinutes);
                     if (summary.BlockedTaskCount > 0)
                     {
                         detail += " | " + summary.BlockedTaskCount + " blocked";
@@ -1638,6 +1875,7 @@ namespace ProjectDesigner.V2.Editor
 
             Foldout riskFoldout = CreatePersistentInspectorFoldout("Board.TimelineAndRisk", "Timeline & Risk", false);
             riskFoldout.Add(CreateMutedBodyLabel(BoardInsights.GetOverdueTasks(_boardAsset.Document).Count() + " overdue tasks"));
+            riskFoldout.Add(CreateMutedBodyLabel(BoardInsights.GetDueVerySoonTasks(_boardAsset.Document).Count() + " due very soon tasks"));
             riskFoldout.Add(CreateMutedBodyLabel(BoardInsights.GetDueSoonTasks(_boardAsset.Document).Count() + " due soon tasks"));
             riskFoldout.Add(CreateMutedBodyLabel(BoardInsights.CountAtRiskNodes(_boardAsset.Document) + " at-risk cards"));
             foreach (BoardMilestoneHealthReport report in BoardInsights.GetAtRiskMilestones(_boardAsset.Document).Take(3))

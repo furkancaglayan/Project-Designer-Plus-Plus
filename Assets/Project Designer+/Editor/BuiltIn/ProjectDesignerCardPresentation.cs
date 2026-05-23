@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
+using System.Net;
+using System.Text.RegularExpressions;
 using ProjectDesigner.V2.Data;
 using UnityEngine;
 
@@ -34,16 +37,27 @@ namespace ProjectDesigner.V2.BuiltIn
     {
         internal const int MaxVisibleTags = 2;
         private const string ReferencePlaceholderSummary = "Link assets, screenshots, and inspiration to the board.";
+        private static readonly Regex LineBreakTagPattern = new Regex(@"<\s*br\s*/?\s*>", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        private static readonly Regex ParagraphBreakTagPattern = new Regex(@"<\s*/\s*p\s*>", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        private static readonly Regex TagPattern = new Regex(@"<[^>]*>", RegexOptions.Compiled);
+        private static readonly Regex UnterminatedTagPattern = new Regex(@"<[^>\r\n]*$", RegexOptions.Compiled);
 
         public static string GetPreviewText(BoardNodeModel node, IProjectDesignerNodeDefinition definition, BoardDocument document)
         {
+            return GetPreviewText(node, definition, document, node == null ? Vector2.zero : node.Size);
+        }
+
+        public static string GetPreviewText(BoardNodeModel node, IProjectDesignerNodeDefinition definition, BoardDocument document, Vector2 cardSize)
+        {
             string preview = definition == null ? string.Empty : definition.GetPreview(node, document);
-            if (node is ReferenceNodeModel)
+            preview = CleanRichTextPreview(preview);
+            int previewLimit = GetPreviewCharacterLimit(node, cardSize);
+            if (ContainsLineBreak(preview))
             {
-                return Truncate(NormalizeMultilinePreview(preview), GetPreviewCharacterLimit(node));
+                return Truncate(NormalizeMultilinePreview(preview), previewLimit);
             }
 
-            return Truncate(NormalizeWhitespace(preview), GetPreviewCharacterLimit(node));
+            return Truncate(NormalizeWhitespace(preview), previewLimit);
         }
 
         public static IReadOnlyList<ProjectDesignerCardSignal> GetSignals(BoardNodeModel node, BoardDocument document)
@@ -120,9 +134,14 @@ namespace ProjectDesigner.V2.BuiltIn
             {
                 signals.Add(new ProjectDesignerCardSignal("Blocked", new Color(0.88f, 0.37f, 0.26f)));
             }
-            else if (BoardInsights.IsTaskOverdue(task))
+
+            if (BoardInsights.IsTaskOverdue(task))
             {
                 signals.Add(new ProjectDesignerCardSignal("Overdue", new Color(0.84f, 0.25f, 0.27f)));
+            }
+            else if (BoardInsights.IsTaskDueVerySoon(task))
+            {
+                signals.Add(new ProjectDesignerCardSignal("Due Very Soon", new Color(0.9f, 0.46f, 0.2f)));
             }
             else if (BoardInsights.IsTaskDueSoon(task))
             {
@@ -294,14 +313,20 @@ namespace ProjectDesigner.V2.BuiltIn
                 parts.Add(priorityLabel);
             }
 
-            if (!string.IsNullOrWhiteSpace(task.DueDateIso))
+            if (BoardInsights.HasStartDate(task, out DateTime startDate))
             {
-                parts.Add("Due " + task.DueDateIso.Trim());
+                parts.Add("Start " + startDate.ToString("MMM d", CultureInfo.InvariantCulture));
             }
 
-            if (task.EstimatePoints > 0)
+            if (BoardInsights.HasDueDate(task, out DateTime dueDate))
             {
-                parts.Add(task.EstimatePoints + " pts");
+                parts.Add("Due " + dueDate.ToString("MMM d", CultureInfo.InvariantCulture));
+            }
+
+            int estimateMinutes = BoardInsights.GetTaskEstimateMinutes(task);
+            if (estimateMinutes > 0)
+            {
+                parts.Add("Est " + BoardInsights.FormatDuration(estimateMinutes));
             }
 
             return string.Join(" | ", parts);
@@ -355,7 +380,26 @@ namespace ProjectDesigner.V2.BuiltIn
             return Array.Empty<ProjectDesignerCardSignal>();
         }
 
-        private static int GetPreviewCharacterLimit(BoardNodeModel node)
+        private static int GetPreviewCharacterLimit(BoardNodeModel node, Vector2 cardSize)
+        {
+            int baseLimit = GetBasePreviewCharacterLimit(node);
+            if (cardSize.x <= 0f || cardSize.y <= 0f)
+            {
+                return baseLimit;
+            }
+
+            Vector2 baselineSize = GetPreviewBaselineSize(node);
+            float extraWidth = Mathf.Max(0f, cardSize.x - baselineSize.x);
+            float extraHeight = Mathf.Max(0f, cardSize.y - baselineSize.y);
+            int extraCharacters = Mathf.RoundToInt(
+                extraWidth / 8f +
+                extraHeight / 4f +
+                (extraWidth * extraHeight) / 2400f);
+
+            return Mathf.Clamp(baseLimit + extraCharacters, baseLimit, 900);
+        }
+
+        private static int GetBasePreviewCharacterLimit(BoardNodeModel node)
         {
             if (node is ProjectBriefNodeModel)
             {
@@ -375,6 +419,31 @@ namespace ProjectDesigner.V2.BuiltIn
             return 120;
         }
 
+        private static Vector2 GetPreviewBaselineSize(BoardNodeModel node)
+        {
+            if (node is ProjectBriefNodeModel)
+            {
+                return new Vector2(360f, 280f);
+            }
+
+            if (node is ClassNodeModel)
+            {
+                return new Vector2(340f, 260f);
+            }
+
+            if (node is MilestoneNodeModel)
+            {
+                return new Vector2(320f, 200f);
+            }
+
+            if (node is NoteNodeModel)
+            {
+                return new Vector2(300f, 220f);
+            }
+
+            return new Vector2(320f, 220f);
+        }
+
         private static string NormalizeWhitespace(string value)
         {
             if (string.IsNullOrWhiteSpace(value))
@@ -383,6 +452,26 @@ namespace ProjectDesigner.V2.BuiltIn
             }
 
             return string.Join(" ", value.Split(new[] { ' ', '\r', '\n', '\t' }, StringSplitOptions.RemoveEmptyEntries));
+        }
+
+        private static bool ContainsLineBreak(string value)
+        {
+            return !string.IsNullOrEmpty(value) && (value.IndexOf('\n') >= 0 || value.IndexOf('\r') >= 0);
+        }
+
+        internal static string CleanRichTextPreview(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return string.Empty;
+            }
+
+            string cleaned = LineBreakTagPattern.Replace(value, "\n");
+            cleaned = ParagraphBreakTagPattern.Replace(cleaned, "\n");
+            cleaned = TagPattern.Replace(cleaned, string.Empty);
+            cleaned = UnterminatedTagPattern.Replace(cleaned, string.Empty);
+            cleaned = WebUtility.HtmlDecode(cleaned);
+            return cleaned ?? string.Empty;
         }
 
         private static string NormalizeMultilinePreview(string value)

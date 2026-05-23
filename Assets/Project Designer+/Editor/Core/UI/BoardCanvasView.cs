@@ -22,9 +22,11 @@ namespace ProjectDesigner.V2.Editor
             private readonly ProjectBoardAsset _boardAsset;
 
             public IDictionary<string, Vector2> PreviewNodePositions { get; set; }
+            public IDictionary<string, Vector2> PreviewNodeSizes { get; set; }
             public HashSet<string> VisibleNodeIds { get; set; }
             public HashSet<string> SelectedNodeIds { get; set; }
             public string HoveredNodeId { get; set; }
+            public string HoveredEdgeId { get; set; }
             public ConnectionPreviewData PreviewConnection { get; set; }
 
             public EdgeLayerElement(ProjectBoardAsset boardAsset)
@@ -59,12 +61,21 @@ namespace ProjectDesigner.V2.Editor
                     }
 
                     IProjectDesignerEdgeDefinition definition = ProjectDesignerRegistry.GetEdgeDefinition(edge.TypeId);
+                    bool isHoveredEdge = IsHoveredEdge(edge);
                     bool isHighlighted = IsHighlighted(edge);
-                    painter.lineWidth = isHighlighted ? 2.4f : 1.45f;
+                    painter.lineWidth = isHoveredEdge ? 3.2f : (isHighlighted ? 2.4f : 1.45f);
                     painter.strokeColor = ApplyAlpha(
                         ParseColor(definition == null ? "#9AA3AF" : definition.AccentColor, new Color(0.6f, 0.6f, 0.6f)),
-                        isHighlighted ? 0.86f : 0.2f);
-                    DrawCurve(painter, source, target, GetNodePosition(source), GetNodePosition(target));
+                        isHoveredEdge ? 0.98f : (isHighlighted ? 0.86f : 0.2f));
+                    DrawCurve(
+                        painter,
+                        edge,
+                        source,
+                        target,
+                        GetNodePosition(source),
+                        GetNodePosition(target),
+                        GetNodeSize(source),
+                        GetNodeSize(target));
                 }
 
                 if (PreviewConnection == null)
@@ -79,15 +90,17 @@ namespace ProjectDesigner.V2.Editor
                 }
 
                 Vector2 sourcePosition = GetNodePosition(previewSource);
-                Vector2 start = GetOutputAnchor(previewSource, sourcePosition);
+                Vector2 start = GetAnchorPoint(previewSource, sourcePosition, GetNodeSize(previewSource), BoardEdgeAnchor.Auto, true, PreviewConnection.EndPosition);
                 Vector2 end = PreviewConnection.EndPosition;
-                float tangent = Mathf.Max(80f, Mathf.Abs(end.x - start.x) * 0.35f);
+                Vector2 startDirection = GetAnchorDirection(start, end, BoardEdgeAnchor.Auto, true);
+                Vector2 endDirection = GetAnchorDirection(end, start, BoardEdgeAnchor.Auto, false);
+                float tangent = Mathf.Max(80f, Vector2.Distance(start, end) * 0.35f);
 
                 painter.strokeColor = PreviewConnection.AccentColor;
                 painter.lineWidth = 3f;
                 painter.BeginPath();
                 painter.MoveTo(start);
-                painter.BezierCurveTo(start + Vector2.right * tangent, end + Vector2.left * tangent, end);
+                painter.BezierCurveTo(start + startDirection * tangent, end + endDirection * tangent, end);
                 painter.Stroke();
             }
 
@@ -96,6 +109,11 @@ namespace ProjectDesigner.V2.Editor
                 if (edge == null)
                 {
                     return false;
+                }
+
+                if (!string.IsNullOrEmpty(HoveredEdgeId))
+                {
+                    return IsHoveredEdge(edge);
                 }
 
                 if (!string.IsNullOrEmpty(HoveredNodeId) &&
@@ -109,15 +127,32 @@ namespace ProjectDesigner.V2.Editor
                        (SelectedNodeIds.Contains(edge.SourceNodeId) || SelectedNodeIds.Contains(edge.TargetNodeId));
             }
 
-            private void DrawCurve(UnityEngine.UIElements.Painter2D painter, BoardNodeModel source, BoardNodeModel target, Vector2 sourcePosition, Vector2 targetPosition)
+            private bool IsHoveredEdge(BoardEdgeModel edge)
             {
-                Vector2 start = GetOutputAnchor(source, sourcePosition);
-                Vector2 end = GetInputAnchor(target, targetPosition);
-                float tangent = Mathf.Max(80f, Mathf.Abs(end.x - start.x) * 0.35f);
+                return edge != null && string.Equals(edge.Id, HoveredEdgeId, StringComparison.Ordinal);
+            }
+
+            private void DrawCurve(
+                UnityEngine.UIElements.Painter2D painter,
+                BoardEdgeModel edge,
+                BoardNodeModel source,
+                BoardNodeModel target,
+                Vector2 sourcePosition,
+                Vector2 targetPosition,
+                Vector2 sourceSize,
+                Vector2 targetSize)
+            {
+                Vector2 sourceCenter = sourcePosition + sourceSize * 0.5f;
+                Vector2 targetCenter = targetPosition + targetSize * 0.5f;
+                Vector2 start = GetAnchorPoint(source, sourcePosition, sourceSize, edge.SourceAnchor, true, targetCenter);
+                Vector2 end = GetAnchorPoint(target, targetPosition, targetSize, edge.TargetAnchor, false, sourceCenter);
+                Vector2 startDirection = GetAnchorDirection(start, end, edge.SourceAnchor, true);
+                Vector2 endDirection = GetAnchorDirection(end, start, edge.TargetAnchor, false);
+                float tangent = Mathf.Max(80f, Vector2.Distance(start, end) * 0.35f);
 
                 painter.BeginPath();
                 painter.MoveTo(start);
-                painter.BezierCurveTo(start + Vector2.right * tangent, end + Vector2.left * tangent, end);
+                painter.BezierCurveTo(start + startDirection * tangent, end + endDirection * tangent, end);
                 painter.Stroke();
             }
 
@@ -136,14 +171,81 @@ namespace ProjectDesigner.V2.Editor
                 return node.Position;
             }
 
-            private static Vector2 GetOutputAnchor(BoardNodeModel node, Vector2 nodePosition)
+            private Vector2 GetNodeSize(BoardNodeModel node)
             {
-                return new Vector2(nodePosition.x + node.Size.x, nodePosition.y + node.Size.y * 0.5f);
+                if (node == null)
+                {
+                    return Vector2.zero;
+                }
+
+                if (PreviewNodeSizes != null && PreviewNodeSizes.TryGetValue(node.Id, out Vector2 previewSize))
+                {
+                    return previewSize;
+                }
+
+                return node.Size;
             }
 
-            private static Vector2 GetInputAnchor(BoardNodeModel node, Vector2 nodePosition)
+            private static Vector2 GetAnchorPoint(BoardNodeModel node, Vector2 nodePosition, Vector2 nodeSize, BoardEdgeAnchor anchor, bool isSource, Vector2 otherCenter)
             {
-                return new Vector2(nodePosition.x, nodePosition.y + node.Size.y * 0.5f);
+                if (anchor == BoardEdgeAnchor.Auto)
+                {
+                    anchor = ResolveAutoAnchor(nodePosition, nodeSize, otherCenter, isSource);
+                }
+
+                switch (anchor)
+                {
+                    case BoardEdgeAnchor.Left:
+                        return new Vector2(nodePosition.x, nodePosition.y + nodeSize.y * 0.5f);
+                    case BoardEdgeAnchor.Right:
+                        return new Vector2(nodePosition.x + nodeSize.x, nodePosition.y + nodeSize.y * 0.5f);
+                    case BoardEdgeAnchor.Top:
+                        return new Vector2(nodePosition.x + nodeSize.x * 0.5f, nodePosition.y);
+                    case BoardEdgeAnchor.Bottom:
+                        return new Vector2(nodePosition.x + nodeSize.x * 0.5f, nodePosition.y + nodeSize.y);
+                    default:
+                        return nodePosition + nodeSize * 0.5f;
+                }
+            }
+
+            private static BoardEdgeAnchor ResolveAutoAnchor(Vector2 nodePosition, Vector2 nodeSize, Vector2 otherCenter, bool isSource)
+            {
+                Vector2 center = nodePosition + nodeSize * 0.5f;
+                Vector2 delta = otherCenter - center;
+                if (Mathf.Abs(delta.x) >= Mathf.Abs(delta.y))
+                {
+                    return delta.x >= 0f ? BoardEdgeAnchor.Right : BoardEdgeAnchor.Left;
+                }
+
+                return delta.y >= 0f ? BoardEdgeAnchor.Bottom : BoardEdgeAnchor.Top;
+            }
+
+            private static Vector2 GetAnchorDirection(Vector2 anchorPoint, Vector2 otherPoint, BoardEdgeAnchor anchor, bool isSource)
+            {
+                if (anchor == BoardEdgeAnchor.Auto)
+                {
+                    Vector2 delta = otherPoint - anchorPoint;
+                    if (Mathf.Abs(delta.x) >= Mathf.Abs(delta.y))
+                    {
+                        return delta.x >= 0f ? Vector2.right : Vector2.left;
+                    }
+
+                    return delta.y >= 0f ? Vector2.up : Vector2.down;
+                }
+
+                switch (anchor)
+                {
+                    case BoardEdgeAnchor.Left:
+                        return Vector2.left;
+                    case BoardEdgeAnchor.Right:
+                        return Vector2.right;
+                    case BoardEdgeAnchor.Top:
+                        return Vector2.down;
+                    case BoardEdgeAnchor.Bottom:
+                        return Vector2.up;
+                    default:
+                        return isSource ? Vector2.right : Vector2.left;
+                }
             }
 
             private static Color ApplyAlpha(Color color, float alpha)
@@ -153,26 +255,103 @@ namespace ProjectDesigner.V2.Editor
             }
         }
 
+        private sealed class AlignmentGuideLayerElement : VisualElement
+        {
+            public IReadOnlyList<BoardAlignmentGuide> Guides { get; private set; }
+            public float Zoom { get; set; }
+
+            public AlignmentGuideLayerElement()
+            {
+                Guides = new List<BoardAlignmentGuide>();
+                Zoom = 1f;
+                pickingMode = PickingMode.Ignore;
+                generateVisualContent += OnGenerateVisualContent;
+            }
+
+            public void SetGuides(IReadOnlyList<BoardAlignmentGuide> guides)
+            {
+                Guides = guides ?? new List<BoardAlignmentGuide>();
+                MarkDirtyRepaint();
+            }
+
+            private void OnGenerateVisualContent(MeshGenerationContext context)
+            {
+                if (Guides == null || Guides.Count == 0)
+                {
+                    return;
+                }
+
+                var painter = context.painter2D;
+                float zoom = Mathf.Max(0.01f, Zoom);
+                painter.lineWidth = 1.45f / zoom;
+
+                foreach (BoardAlignmentGuide guide in Guides)
+                {
+                    painter.strokeColor = new Color(0.27f, 0.51f, 1f, 0.94f);
+                    Vector2 start = guide.Orientation == BoardAlignmentGuideOrientation.Vertical
+                        ? new Vector2(guide.Position, guide.Start)
+                        : new Vector2(guide.Start, guide.Position);
+                    Vector2 end = guide.Orientation == BoardAlignmentGuideOrientation.Vertical
+                        ? new Vector2(guide.Position, guide.End)
+                        : new Vector2(guide.End, guide.Position);
+                    DrawDottedLine(painter, start, end, 7f / zoom, 5f / zoom);
+                }
+            }
+
+            private static void DrawDottedLine(UnityEngine.UIElements.Painter2D painter, Vector2 start, Vector2 end, float dashLength, float gapLength)
+            {
+                float distance = Vector2.Distance(start, end);
+                if (distance <= 0.01f)
+                {
+                    return;
+                }
+
+                Vector2 direction = (end - start) / distance;
+                float cursor = 0f;
+                painter.BeginPath();
+                while (cursor < distance)
+                {
+                    float dashEnd = Mathf.Min(cursor + Mathf.Max(0.1f, dashLength), distance);
+                    painter.MoveTo(start + direction * cursor);
+                    painter.LineTo(start + direction * dashEnd);
+                    cursor = dashEnd + Mathf.Max(0.1f, gapLength);
+                }
+
+                painter.Stroke();
+            }
+        }
+
         private const string DefaultHintText = "Right-click for board actions. Drag cards to arrange them. Shift-drag empty space to multi-select. Drag from Link to create relationships. Use Ctrl+D, Ctrl+A, Delete, and F for quick editing.";
+        private const float AlignmentGuideBoardTolerance = 1f;
+        private const float LinkClickScreenThreshold = 8f;
 
         private readonly ProjectBoardAsset _boardAsset;
         private readonly IBoardCommandDispatcher _dispatcher;
         private readonly VisualElement _contentLayer;
         private readonly EdgeLayerElement _edgeLayer;
         private readonly VisualElement _nodeLayer;
+        private readonly AlignmentGuideLayerElement _guideLayer;
         private readonly Label _hintLabel;
         private readonly VisualElement _marqueeElement;
         private readonly Dictionary<string, BoardNodeView> _nodeViews = new Dictionary<string, BoardNodeView>();
         private readonly Dictionary<string, Vector2> _previewNodePositions = new Dictionary<string, Vector2>();
+        private readonly Dictionary<string, Vector2> _previewNodeSizes = new Dictionary<string, Vector2>();
         private readonly Dictionary<string, Vector2> _dragStartNodePositions = new Dictionary<string, Vector2>();
+        private HashSet<string> _visibleNodeIds = new HashSet<string>();
         private Dictionary<string, List<ProjectDesignerLinkOption>> _connectionTargetOptions = new Dictionary<string, List<ProjectDesignerLinkOption>>();
 
         private int _dragPointerId = -1;
         private Vector2 _dragStartMousePosition;
         private readonly List<string> _draggingNodeIds = new List<string>();
 
+        private string _resizingNodeId = string.Empty;
+        private int _resizePointerId = -1;
+        private Vector2 _resizeStartMousePosition;
+        private Vector2 _resizeStartSize;
+
         private string _connectingNodeId = string.Empty;
         private int _connectPointerId = -1;
+        private Vector2 _connectStartCanvasPosition;
         private Vector2 _connectPreviewPosition;
         private string _hoveredConnectionTargetId = string.Empty;
         private string _hoveredNodeId = string.Empty;
@@ -201,6 +380,7 @@ namespace ProjectDesigner.V2.Editor
 
             _contentLayer = new VisualElement();
             _contentLayer.usageHints = UsageHints.DynamicTransform;
+            _contentLayer.style.transformOrigin = new TransformOrigin(new Length(0f), new Length(0f), 0f);
             _contentLayer.style.position = Position.Absolute;
             _contentLayer.style.left = 0f;
             _contentLayer.style.top = 0f;
@@ -210,6 +390,7 @@ namespace ProjectDesigner.V2.Editor
 
             _edgeLayer = new EdgeLayerElement(_boardAsset);
             _edgeLayer.PreviewNodePositions = _previewNodePositions;
+            _edgeLayer.PreviewNodeSizes = _previewNodeSizes;
             _edgeLayer.style.position = Position.Absolute;
             _edgeLayer.style.left = 0f;
             _edgeLayer.style.top = 0f;
@@ -224,6 +405,15 @@ namespace ProjectDesigner.V2.Editor
             _nodeLayer.style.right = 0f;
             _nodeLayer.style.bottom = 0f;
             _contentLayer.Add(_nodeLayer);
+
+            _guideLayer = new AlignmentGuideLayerElement();
+            _guideLayer.AddToClassList("pd-alignment-guide-layer");
+            _guideLayer.style.position = Position.Absolute;
+            _guideLayer.style.left = 0f;
+            _guideLayer.style.top = 0f;
+            _guideLayer.style.right = 0f;
+            _guideLayer.style.bottom = 0f;
+            _contentLayer.Add(_guideLayer);
 
             _hintLabel = new Label(DefaultHintText);
             _hintLabel.AddToClassList("pd-canvas-hint");
@@ -251,6 +441,7 @@ namespace ProjectDesigner.V2.Editor
             HideConnectionMenu();
             CancelConnectionPreview();
             CancelMarqueeSelection();
+            ClearAlignmentGuides();
             UpdateTransform();
             RebuildNodes();
             _edgeLayer.MarkDirtyRepaint();
@@ -270,6 +461,12 @@ namespace ProjectDesigner.V2.Editor
             BringSelectionToFront();
             _edgeLayer.MarkDirtyRepaint();
             MarkDirtyRepaint();
+        }
+
+        public void SetHoveredEdge(string edgeId)
+        {
+            _edgeLayer.HoveredEdgeId = edgeId ?? string.Empty;
+            _edgeLayer.MarkDirtyRepaint();
         }
 
         public Vector2 GetViewportCenterOnBoard()
@@ -295,6 +492,15 @@ namespace ProjectDesigner.V2.Editor
                 .Where(node => node != null)
                 .ToList();
             FrameNodes(nodes);
+        }
+
+        public void FocusSelection()
+        {
+            List<BoardNodeModel> nodes = _boardAsset.Document.ViewState.SelectedNodeIds
+                .Select(_boardAsset.Document.GetNode)
+                .Where(node => node != null)
+                .ToList();
+            FocusNodes(nodes);
         }
 
         internal Vector2 GetBoardPositionFromCanvas(Vector2 canvasPosition)
@@ -346,12 +552,40 @@ namespace ProjectDesigner.V2.Editor
             Refresh();
         }
 
+        private void FocusNodes(List<BoardNodeModel> nodes)
+        {
+            if (nodes == null || nodes.Count == 0 || layout.width <= 0f || layout.height <= 0f)
+            {
+                return;
+            }
+
+            Rect bounds = BoardLayoutUtility.GetBounds(nodes);
+            float zoom = Mathf.Clamp(_boardAsset.Document.ViewState.Zoom, 0.35f, 2.5f);
+            if (nodes.Count > 1)
+            {
+                float availableWidth = Mathf.Max(1f, layout.width - 140f);
+                float availableHeight = Mathf.Max(1f, layout.height - 140f);
+                float fitZoom = Mathf.Min(availableWidth / Mathf.Max(1f, bounds.width), availableHeight / Mathf.Max(1f, bounds.height));
+                zoom = Mathf.Clamp(Mathf.Min(zoom, fitZoom), 0.35f, 2.5f);
+            }
+
+            _boardAsset.Document.ViewState.Zoom = zoom;
+            _boardAsset.Document.ViewState.PanOffset = new Vector2(
+                layout.width * 0.5f - bounds.center.x * zoom,
+                layout.height * 0.5f - bounds.center.y * zoom);
+
+            ProjectDesignerBoardUtility.MarkDirty(_boardAsset);
+            Refresh();
+        }
+
         private void RebuildNodes()
         {
             _nodeLayer.Clear();
             _nodeViews.Clear();
             _previewNodePositions.Clear();
+            _previewNodeSizes.Clear();
             HashSet<string> visibleIds = new HashSet<string>(BoardInsights.GetVisibleNodes(_boardAsset.Document).Select(node => node.Id));
+            _visibleNodeIds = visibleIds;
             _edgeLayer.VisibleNodeIds = visibleIds;
             HashSet<string> selectedNodeIds = new HashSet<string>(_boardAsset.Document.ViewState.SelectedNodeIds);
             _edgeLayer.SelectedNodeIds = selectedNodeIds;
@@ -370,6 +604,7 @@ namespace ProjectDesigner.V2.Editor
                 nodeView.Selected += OnNodeSelected;
                 nodeView.DragStarted += OnNodeDragStarted;
                 nodeView.ConnectionStarted += OnNodeConnectionStarted;
+                nodeView.ResizeStarted += OnNodeResizeStarted;
                 nodeView.HoverChanged += OnNodeHoverChanged;
                 _nodeLayer.Add(nodeView);
                 _nodeViews[node.Id] = nodeView;
@@ -391,7 +626,7 @@ namespace ProjectDesigner.V2.Editor
 
         private void OnNodeDragStarted(string nodeId, Vector2 mousePosition, int pointerId)
         {
-            if (IsDraggingNodes || !string.IsNullOrEmpty(_connectingNodeId))
+            if (IsDraggingNodes || !string.IsNullOrEmpty(_connectingNodeId) || !string.IsNullOrEmpty(_resizingNodeId))
             {
                 return;
             }
@@ -437,7 +672,7 @@ namespace ProjectDesigner.V2.Editor
 
         private void OnNodeConnectionStarted(string nodeId, Vector2 mousePosition, int pointerId)
         {
-            if (IsDraggingNodes)
+            if (IsDraggingNodes || !string.IsNullOrEmpty(_resizingNodeId))
             {
                 return;
             }
@@ -453,12 +688,17 @@ namespace ProjectDesigner.V2.Editor
             _connectionTargetOptions = ProjectDesignerLinkUtility.GetLinkOptionsByTarget(_boardAsset.Document, node);
             if (_connectionTargetOptions.Count == 0)
             {
-                UpdateHintLabel();
+                _hintLabel.text = "No valid link targets are available for this card right now.";
+                ShowConnectionMessage(
+                    PanelToCanvas(mousePosition),
+                    "No valid link targets",
+                    "Add another compatible card or use the Details panel to review existing links.");
                 return;
             }
 
             _connectingNodeId = nodeId;
             _connectPointerId = pointerId;
+            _connectStartCanvasPosition = PanelToCanvas(mousePosition);
             _connectPreviewPosition = PanelToBoard(mousePosition);
             _hoveredConnectionTargetId = string.Empty;
             _edgeLayer.PreviewConnection = new ConnectionPreviewData
@@ -475,6 +715,30 @@ namespace ProjectDesigner.V2.Editor
             UpdateHintLabel();
             _edgeLayer.MarkDirtyRepaint();
             MarkDirtyRepaint();
+            Focus();
+        }
+
+        private void OnNodeResizeStarted(string nodeId, Vector2 mousePosition, int pointerId)
+        {
+            if (IsDraggingNodes || !string.IsNullOrEmpty(_connectingNodeId) || !string.IsNullOrEmpty(_resizingNodeId))
+            {
+                return;
+            }
+
+            HideConnectionMenu();
+
+            BoardNodeModel node = _boardAsset.Document.GetNode(nodeId);
+            if (node == null)
+            {
+                return;
+            }
+
+            _resizingNodeId = nodeId;
+            _resizePointerId = pointerId;
+            _resizeStartMousePosition = PanelToCanvas(mousePosition);
+            _resizeStartSize = node.Size;
+            PointerCaptureHelper.CapturePointer(this, pointerId);
+            BringNodeToFront(nodeId);
             Focus();
         }
 
@@ -502,7 +766,7 @@ namespace ProjectDesigner.V2.Editor
 
             HideConnectionMenu();
 
-            if (IsDraggingNodes || !string.IsNullOrEmpty(_connectingNodeId) || evt.button != 0 || !IsEmptyTarget(evt.target))
+            if (IsDraggingNodes || !string.IsNullOrEmpty(_connectingNodeId) || !string.IsNullOrEmpty(_resizingNodeId) || evt.button != 0 || !IsEmptyTarget(evt.target))
             {
                 return;
             }
@@ -552,6 +816,40 @@ namespace ProjectDesigner.V2.Editor
                 return;
             }
 
+            if (!string.IsNullOrEmpty(_resizingNodeId))
+            {
+                if (evt.pointerId != _resizePointerId)
+                {
+                    return;
+                }
+
+                float zoom = Mathf.Max(0.01f, _boardAsset.Document.ViewState.Zoom);
+                Vector2 resizeDelta = (PanelToCanvas(GetEventPosition(evt.position)) - _resizeStartMousePosition) / zoom;
+                Vector2 previewSize = _resizeStartSize + resizeDelta;
+                if (_boardAsset.Document.ViewState.SnapToGrid)
+                {
+                    previewSize = SnapSize(previewSize);
+                }
+
+                BoardNodeModel node = _boardAsset.Document.GetNode(_resizingNodeId);
+                if (node != null)
+                {
+                    previewSize = BoardNodeModel.ClampSize(previewSize);
+                    _previewNodeSizes[_resizingNodeId] = previewSize;
+                    if (_nodeViews.TryGetValue(_resizingNodeId, out BoardNodeView nodeView))
+                    {
+                        nodeView.SetPreviewSize(previewSize);
+                    }
+
+                    UpdateAlignmentGuidesForResize(node, previewSize);
+                }
+
+                _edgeLayer.MarkDirtyRepaint();
+                MarkDirtyRepaint();
+                evt.StopPropagation();
+                return;
+            }
+
             if (IsDraggingNodes)
             {
                 if (evt.pointerId != _dragPointerId)
@@ -576,6 +874,7 @@ namespace ProjectDesigner.V2.Editor
                     }
                 }
 
+                UpdateAlignmentGuidesForDrag();
                 _edgeLayer.MarkDirtyRepaint();
                 MarkDirtyRepaint();
                 evt.StopPropagation();
@@ -630,6 +929,23 @@ namespace ProjectDesigner.V2.Editor
                 return;
             }
 
+            if (!string.IsNullOrEmpty(_resizingNodeId))
+            {
+                if (evt.pointerId != _resizePointerId)
+                {
+                    return;
+                }
+
+                int resizePointerId = _resizePointerId;
+                CompleteNodeResize();
+                if (resizePointerId >= 0 && PointerCaptureHelper.HasPointerCapture(this, resizePointerId))
+                {
+                    PointerCaptureHelper.ReleasePointer(this, resizePointerId);
+                }
+                evt.StopPropagation();
+                return;
+            }
+
             if (IsDraggingNodes)
             {
                 if (evt.pointerId != _dragPointerId)
@@ -677,6 +993,7 @@ namespace ProjectDesigner.V2.Editor
         {
             CancelNodeDragPreview();
             CancelConnectionPreview();
+            CancelNodeResizePreview();
             CancelMarqueeSelection();
             _panning = false;
         }
@@ -745,21 +1062,23 @@ namespace ProjectDesigner.V2.Editor
             }
 
             bool hadConnectionState = !string.IsNullOrEmpty(_connectingNodeId) || _connectionMenu != null;
+            bool hadResizeState = !string.IsNullOrEmpty(_resizingNodeId);
             HideConnectionMenu();
             CancelConnectionPreview();
+            CancelNodeResizePreview();
             if (_marqueeSelecting)
             {
                 CancelMarqueeSelection();
             }
 
-            if (!hadConnectionState && _boardAsset.Document.ViewState.SelectedNodeIds.Count > 0)
+            if (!hadConnectionState && !hadResizeState && _boardAsset.Document.ViewState.SelectedNodeIds.Count > 0)
             {
                 ClearSelection();
                 evt.StopPropagation();
                 return;
             }
 
-            if (hadConnectionState)
+            if (hadConnectionState || hadResizeState)
             {
                 evt.StopPropagation();
             }
@@ -771,6 +1090,7 @@ namespace ProjectDesigner.V2.Editor
             Vector2 pan = _boardAsset.Document.ViewState.PanOffset;
             _contentLayer.transform.position = new Vector3(pan.x, pan.y, 0f);
             _contentLayer.transform.scale = new Vector3(zoom, zoom, 1f);
+            _guideLayer.Zoom = zoom;
         }
 
         private Vector2 CanvasToBoard(Vector2 canvasPosition)
@@ -893,14 +1213,25 @@ namespace ProjectDesigner.V2.Editor
             Dictionary<string, List<ProjectDesignerLinkOption>> optionsByTarget = _connectionTargetOptions;
 
             BoardNodeModel sourceNode = _boardAsset.Document.GetNode(connectingNodeId);
+            bool isClick = (localMousePosition - _connectStartCanvasPosition).sqrMagnitude <= LinkClickScreenThreshold * LinkClickScreenThreshold;
             string targetNodeId = !string.IsNullOrEmpty(hoveredTargetId)
                 ? hoveredTargetId
                 : GetNodeIdAtBoardPosition(boardPosition, connectingNodeId);
 
             CancelConnectionPreview();
 
-            if (sourceNode == null || string.IsNullOrEmpty(targetNodeId))
+            if (sourceNode == null)
             {
+                return;
+            }
+
+            if (string.IsNullOrEmpty(targetNodeId))
+            {
+                if (isClick)
+                {
+                    ShowConnectionTargetMenu(localMousePosition, sourceNode, optionsByTarget);
+                }
+
                 return;
             }
 
@@ -970,6 +1301,99 @@ namespace ProjectDesigner.V2.Editor
             Add(_connectionMenu);
             _connectionMenu.BringToFront();
             UpdateHintLabel();
+        }
+
+        private void ShowConnectionTargetMenu(Vector2 localMousePosition, BoardNodeModel sourceNode, Dictionary<string, List<ProjectDesignerLinkOption>> optionsByTarget)
+        {
+            List<ProjectDesignerLinkOption> options = (optionsByTarget ?? new Dictionary<string, List<ProjectDesignerLinkOption>>())
+                .SelectMany(pair => pair.Value ?? new List<ProjectDesignerLinkOption>())
+                .Where(option => option != null && option.Definition != null && option.OtherNode != null)
+                .OrderBy(option => option.DisplayLabel)
+                .ThenBy(option => option.Definition.DisplayName)
+                .ToList();
+            if (options.Count == 0)
+            {
+                return;
+            }
+
+            HideConnectionMenu();
+
+            var menu = new VisualElement();
+            menu.AddToClassList("pd-inline-link-menu");
+
+            float left = Mathf.Clamp(localMousePosition.x + 12f, 12f, Mathf.Max(12f, layout.width - 320f));
+            float top = Mathf.Clamp(localMousePosition.y + 12f, 12f, Mathf.Max(12f, layout.height - 300f));
+            menu.style.left = left;
+            menu.style.top = top;
+
+            var title = new Label("Create link");
+            title.AddToClassList("pd-inline-link-menu-title");
+            menu.Add(title);
+
+            var body = new Label("Choose a target for " + sourceNode.Title);
+            body.AddToClassList("pd-inline-link-menu-body");
+            menu.Add(body);
+
+            foreach (ProjectDesignerLinkOption option in options)
+            {
+                ProjectDesignerLinkOption localOption = option;
+                var button = new Button(() =>
+                {
+                    HideConnectionMenu();
+                    CreateEdgeFromOption(localOption, sourceNode.Id);
+                })
+                {
+                    text = option.DisplayLabel + " [" + ProjectDesignerLinkUtility.GetInlineActionLabel(option) + "]"
+                };
+                button.AddToClassList("pd-secondary-button");
+                button.AddToClassList("pd-link-menu-button");
+                menu.Add(button);
+            }
+
+            var cancelButton = new Button(() => HideConnectionMenu())
+            {
+                text = "Cancel"
+            };
+            cancelButton.AddToClassList("pd-secondary-button");
+            menu.Add(cancelButton);
+
+            _connectionMenu = menu;
+            Add(_connectionMenu);
+            _connectionMenu.BringToFront();
+            UpdateHintLabel();
+        }
+
+        private void ShowConnectionMessage(Vector2 localMousePosition, string titleText, string bodyText)
+        {
+            HideConnectionMenu();
+
+            var menu = new VisualElement();
+            menu.AddToClassList("pd-inline-link-menu");
+
+            float left = Mathf.Clamp(localMousePosition.x + 12f, 12f, Mathf.Max(12f, layout.width - 300f));
+            float top = Mathf.Clamp(localMousePosition.y + 12f, 12f, Mathf.Max(12f, layout.height - 220f));
+            menu.style.left = left;
+            menu.style.top = top;
+
+            var title = new Label(titleText);
+            title.AddToClassList("pd-inline-link-menu-title");
+            menu.Add(title);
+
+            var body = new Label(bodyText);
+            body.AddToClassList("pd-inline-link-menu-body");
+            menu.Add(body);
+
+            var closeButton = new Button(() => HideConnectionMenu())
+            {
+                text = "OK"
+            };
+            closeButton.AddToClassList("pd-secondary-button");
+            menu.Add(closeButton);
+
+            _connectionMenu = menu;
+            Add(_connectionMenu);
+            _connectionMenu.BringToFront();
+            _hintLabel.text = bodyText;
         }
 
         private void HideConnectionMenu()
@@ -1088,9 +1512,119 @@ namespace ProjectDesigner.V2.Editor
             return new Vector2(position.x, position.y);
         }
 
+        private void UpdateAlignmentGuidesForDrag()
+        {
+            Rect activeBounds = GetPreviewBounds(_draggingNodeIds);
+            if (activeBounds.width <= 0f || activeBounds.height <= 0f)
+            {
+                ClearAlignmentGuides();
+                return;
+            }
+
+            UpdateAlignmentGuides(activeBounds, new HashSet<string>(_draggingNodeIds));
+        }
+
+        private void UpdateAlignmentGuidesForResize(BoardNodeModel node, Vector2 previewSize)
+        {
+            if (node == null)
+            {
+                ClearAlignmentGuides();
+                return;
+            }
+
+            Rect activeRect = new Rect(node.Position, previewSize);
+            UpdateAlignmentGuides(activeRect, new HashSet<string> { node.Id });
+        }
+
+        private void UpdateAlignmentGuides(Rect activeRect, HashSet<string> excludedNodeIds)
+        {
+            if (!ProjectDesignerSettings.instance.ShowAlignmentGuides)
+            {
+                ClearAlignmentGuides();
+                return;
+            }
+
+            float zoom = Mathf.Max(0.01f, _boardAsset.Document.ViewState.Zoom);
+            List<Rect> referenceRects = GetAlignmentReferenceRects(excludedNodeIds);
+            _guideLayer.Zoom = zoom;
+            _guideLayer.SetGuides(BoardLayoutUtility.BuildAlignmentGuides(activeRect, referenceRects, AlignmentGuideBoardTolerance));
+        }
+
+        private List<Rect> GetAlignmentReferenceRects(HashSet<string> excludedNodeIds)
+        {
+            var rects = new List<Rect>();
+            foreach (BoardNodeModel node in _boardAsset.Document.Nodes)
+            {
+                if (node == null ||
+                    (excludedNodeIds != null && excludedNodeIds.Contains(node.Id)) ||
+                    (_visibleNodeIds.Count > 0 && !_visibleNodeIds.Contains(node.Id)))
+                {
+                    continue;
+                }
+
+                rects.Add(GetNodePreviewRect(node));
+            }
+
+            return rects;
+        }
+
+        private Rect GetPreviewBounds(IEnumerable<string> nodeIds)
+        {
+            List<Rect> rects = (nodeIds ?? Enumerable.Empty<string>())
+                .Select(_boardAsset.Document.GetNode)
+                .Where(node => node != null)
+                .Select(GetNodePreviewRect)
+                .ToList();
+
+            if (rects.Count == 0)
+            {
+                return new Rect(0f, 0f, 0f, 0f);
+            }
+
+            return GetBounds(rects);
+        }
+
+        private Rect GetNodePreviewRect(BoardNodeModel node)
+        {
+            Vector2 position = _previewNodePositions.TryGetValue(node.Id, out Vector2 previewPosition)
+                ? previewPosition
+                : node.Position;
+            Vector2 size = _previewNodeSizes.TryGetValue(node.Id, out Vector2 previewSize)
+                ? previewSize
+                : node.Size;
+            return new Rect(position, size);
+        }
+
+        private static Rect GetBounds(IReadOnlyList<Rect> rects)
+        {
+            float minX = rects.Min(rect => rect.xMin);
+            float minY = rects.Min(rect => rect.yMin);
+            float maxX = rects.Max(rect => rect.xMax);
+            float maxY = rects.Max(rect => rect.yMax);
+            return Rect.MinMaxRect(minX, minY, maxX, maxY);
+        }
+
+        private void ClearAlignmentGuides()
+        {
+            if (_guideLayer == null || _guideLayer.Guides == null || _guideLayer.Guides.Count == 0)
+            {
+                return;
+            }
+
+            _guideLayer.SetGuides(new List<BoardAlignmentGuide>());
+        }
+
         private bool IsDraggingNodes
         {
             get { return _draggingNodeIds.Count > 0; }
+        }
+
+        private static Vector2 SnapSize(Vector2 size)
+        {
+            float grid = Mathf.Max(1f, ProjectDesignerProductInfo.GridSize);
+            return new Vector2(
+                Mathf.Round(size.x / grid) * grid,
+                Mathf.Round(size.y / grid) * grid);
         }
 
         private void BringNodeToFront(string nodeId)
@@ -1145,6 +1679,7 @@ namespace ProjectDesigner.V2.Editor
             }
 
             _dragStartNodePositions.Clear();
+            ClearAlignmentGuides();
             if (newPositions.Count == 1)
             {
                 KeyValuePair<string, Vector2> onlyMove = newPositions.First();
@@ -1156,6 +1691,39 @@ namespace ProjectDesigner.V2.Editor
             {
                 _dispatcher.Execute(new MoveNodesCommand(_boardAsset, newPositions));
                 return;
+            }
+
+            _edgeLayer.MarkDirtyRepaint();
+            MarkDirtyRepaint();
+        }
+
+        private void CompleteNodeResize()
+        {
+            string resizingNodeId = _resizingNodeId;
+            _resizingNodeId = string.Empty;
+            _resizePointerId = -1;
+
+            BoardNodeModel node = _boardAsset.Document.GetNode(resizingNodeId);
+            Vector2 previewSize = node == null
+                ? _resizeStartSize
+                : (_previewNodeSizes.TryGetValue(resizingNodeId, out Vector2 value) ? value : node.Size);
+            _previewNodeSizes.Remove(resizingNodeId);
+            ClearAlignmentGuides();
+
+            if (node == null)
+            {
+                return;
+            }
+
+            if ((previewSize - node.Size).sqrMagnitude > 0.01f)
+            {
+                _dispatcher.Execute(new ResizeNodeCommand(_boardAsset, resizingNodeId, previewSize));
+                return;
+            }
+
+            if (_nodeViews.TryGetValue(resizingNodeId, out BoardNodeView nodeView))
+            {
+                nodeView.SetPreviewSize(node.Size);
             }
 
             _edgeLayer.MarkDirtyRepaint();
@@ -1184,10 +1752,40 @@ namespace ProjectDesigner.V2.Editor
 
             _draggingNodeIds.Clear();
             _dragStartNodePositions.Clear();
+            ClearAlignmentGuides();
 
             if (dragPointerId >= 0 && PointerCaptureHelper.HasPointerCapture(this, dragPointerId))
             {
                 PointerCaptureHelper.ReleasePointer(this, dragPointerId);
+            }
+
+            _edgeLayer.MarkDirtyRepaint();
+            MarkDirtyRepaint();
+        }
+
+        private void CancelNodeResizePreview()
+        {
+            if (string.IsNullOrEmpty(_resizingNodeId))
+            {
+                return;
+            }
+
+            int resizePointerId = _resizePointerId;
+            string resizingNodeId = _resizingNodeId;
+            _resizingNodeId = string.Empty;
+            _resizePointerId = -1;
+            _previewNodeSizes.Remove(resizingNodeId);
+            ClearAlignmentGuides();
+
+            BoardNodeModel node = _boardAsset.Document.GetNode(resizingNodeId);
+            if (node != null && _nodeViews.TryGetValue(resizingNodeId, out BoardNodeView nodeView))
+            {
+                nodeView.SetPreviewSize(node.Size);
+            }
+
+            if (resizePointerId >= 0 && PointerCaptureHelper.HasPointerCapture(this, resizePointerId))
+            {
+                PointerCaptureHelper.ReleasePointer(this, resizePointerId);
             }
 
             _edgeLayer.MarkDirtyRepaint();
@@ -1204,6 +1802,7 @@ namespace ProjectDesigner.V2.Editor
             int connectPointerId = _connectPointerId;
             _connectingNodeId = string.Empty;
             _connectPointerId = -1;
+            _connectStartCanvasPosition = Vector2.zero;
             _hoveredConnectionTargetId = string.Empty;
             _connectionTargetOptions = new Dictionary<string, List<ProjectDesignerLinkOption>>();
             _edgeLayer.PreviewConnection = null;

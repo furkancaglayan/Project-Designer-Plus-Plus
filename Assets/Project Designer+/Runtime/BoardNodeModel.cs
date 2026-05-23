@@ -8,6 +8,9 @@ namespace ProjectDesigner.V2.Data
     [Serializable]
     public abstract class BoardNodeModel
     {
+        public const float MinimumWidth = 180f;
+        public const float MinimumHeight = 180f;
+
         [SerializeField]
         private string _id;
         [SerializeField]
@@ -53,7 +56,7 @@ namespace ProjectDesigner.V2.Data
         public Vector2 Size
         {
             get { return _size; }
-            set { _size = new Vector2(Mathf.Max(180f, value.x), Mathf.Max(120f, value.y)); }
+            set { _size = ClampSize(value); }
         }
 
         public IReadOnlyList<string> Tags
@@ -126,7 +129,17 @@ namespace ProjectDesigner.V2.Data
             return string.Join(" ", new[] { Title, string.Join(" ", _tags) });
         }
 
+        public virtual void EnsureDefaults()
+        {
+            _size = ClampSize(_size);
+        }
+
         public abstract BoardNodeModel Clone();
+
+        public static Vector2 ClampSize(Vector2 size)
+        {
+            return new Vector2(Mathf.Max(MinimumWidth, size.x), Mathf.Max(MinimumHeight, size.y));
+        }
 
         public void RegenerateId()
         {
